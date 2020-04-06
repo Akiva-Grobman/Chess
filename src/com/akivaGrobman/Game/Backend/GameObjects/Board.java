@@ -12,6 +12,7 @@ import java.util.List;
 
 public class Board {
 
+    private boolean h;
     protected Tile[][] board;
     private King whiteKing;
     private King blackKing;
