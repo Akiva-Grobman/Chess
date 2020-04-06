@@ -9,9 +9,11 @@ import com.akivaGrobman.Game.Backend.GameObjects.Pieces.PieceType;
 
 import java.awt.*;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Board {
 
+    private final int STARTING_DEPTH = 1;
     protected Tile[][] board;
     private King whiteKing;
     private King blackKing;
@@ -59,7 +61,7 @@ public class Board {
             clone.whiteKing = (King) clone.getPiece(whiteKingPosition);
             clone.blackKing = (King) clone.getPiece(blackKingPosition);
         } catch (NoPieceFoundException e) {
-            e.printStackTrace();
+            throw new NoSuchElementException();
         }
         return clone;
     }
@@ -68,8 +70,12 @@ public class Board {
         if(pieceOriginalPosition.equals(destination)) throw new IllegalMoveException("can not move piece to original position");
         Piece piece = board[pieceOriginalPosition.y][pieceOriginalPosition.x].getPiece();
         piece.move(destination, this);
-        board[piece.getPiecePosition().y][piece.getPiecePosition().x].setPiece(piece);
-        board[pieceOriginalPosition.y][pieceOriginalPosition.x].setPiece(null);
+        if(getKing(piece.getPieceColor()).isInCheck(this, STARTING_DEPTH)) {
+            board[piece.getPiecePosition().y][piece.getPiecePosition().x].setPiece(piece);
+            board[pieceOriginalPosition.y][pieceOriginalPosition.x].setPiece(null);
+        } else {
+            //todo reverse move
+        }
     }
 
     public boolean hasPieceInThisPosition(Point position) {
@@ -107,7 +113,7 @@ public class Board {
                 }
             }
         }
-        throw new Error("no king of color " + kingColor + " found");
+        throw new NoSuchElementException("no king of color " + kingColor + " found");
     }
 
     @Override

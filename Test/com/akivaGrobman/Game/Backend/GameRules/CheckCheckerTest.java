@@ -45,6 +45,7 @@ class CheckCheckerTest {
         isInCheck = CheckChecker.kingIsInCheck(pawn.getPieceColor(), board, 1);
 
         assertTrue(isInCheck);
+
 //        MoveWillPutKingInCheck thrown = assertThrows(
 //                MoveWillPutKingInCheck.class,
 //                () -> pawn.move(destination, board),
@@ -54,6 +55,7 @@ class CheckCheckerTest {
 //
 //        assertTrue(thrown.getMessage().contains(String.format("can not move form 3,1 to %d,%d %s in position 4,5 will put king in check",
 //                destination.x, destination.y, enemyRook.getClass().getSimpleName())));
+
     }
 
 }

@@ -18,7 +18,9 @@ public class CheckChecker {
     private static PieceColor playersColor;
     
     public static boolean kingIsInCheck(PieceColor playersColor, Board board, int depth) {
-        CheckChecker.board = Board.getClone(board);
+        try {
+            CheckChecker.board = Board.getClone(board);
+        } catch (NoSuchElementException ignored) {}
         CheckChecker.playersColor = playersColor;
         enemyPieces = getEnemyPieces();
         return isInCheck(depth);
