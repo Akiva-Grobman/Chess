@@ -12,7 +12,6 @@ import java.util.List;
 
 public class Board {
 
-    // hey
     protected Tile[][] board;
     private King whiteKing;
     private King blackKing;
