@@ -74,7 +74,8 @@ public class Board {
             board[piece.getPiecePosition().y][piece.getPiecePosition().x].setPiece(piece);
             board[pieceOriginalPosition.y][pieceOriginalPosition.x].setPiece(null);
         } else {
-            //todo reverse move
+            // todo revers move
+            // reset enpassant and probably castling
         }
     }
 

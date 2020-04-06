@@ -1,6 +1,7 @@
 package com.akivaGrobman.Game.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Backend.Exceptions.IllegalMoveException;
+import com.akivaGrobman.Game.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Backend.GameObjects.Board;
 import java.awt.*;
 import java.util.List;
@@ -14,23 +15,27 @@ public class Pawn extends Piece implements PieceMoves {
     }
 
     private Direction direction;
-    private boolean hasEnpassantMove;
+    private boolean isInEnpassantPosition;
     private boolean isOnStartingLine;
 
     public Pawn(Point position, PieceColor color) {
         super(position, PieceType.PAWN, color);
         board = null;
         setDirection();
-        hasEnpassantMove = false;
+        isInEnpassantPosition = false;
         isOnStartingLine = true;
     }
 
     @Override
     public void move(Point destinationsPosition, Board board) throws IllegalMoveException {
         this.board = board;
+        boolean enpassant = isInEnpassantPosition;
         if (isLegalMove(destinationsPosition)) {
             super.move(destinationsPosition, board);
             isOnStartingLine = false;
+            if(enpassant) {
+                isInEnpassantPosition = false;
+            }
         } else {
             throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
         }
@@ -40,7 +45,7 @@ public class Pawn extends Piece implements PieceMoves {
     public Piece getClone() {
         Pawn pawn = new Pawn((Point) getPiecePosition().clone(), getPieceColor());
         pawn.direction = direction;
-        pawn.hasEnpassantMove = hasEnpassantMove;
+        pawn.isInEnpassantPosition = isInEnpassantPosition;
         pawn.isOnStartingLine = isOnStartingLine;
         return pawn;
     }
@@ -87,10 +92,36 @@ public class Pawn extends Piece implements PieceMoves {
             tempDestination.x = getPiecePosition().x;
             // then the tile two to the front
             if (tempDestination.equals(destination)) {
-                return isInBounds(tempDestination) && isVacantPosition(tempDestination, board) && isVacantPosition(new Point(tempDestination.x, oldY), board);
+                boolean isLegal = isInBounds(tempDestination) && isVacantPosition(tempDestination, board) && isVacantPosition(new Point(tempDestination.x, oldY), board);
+                isInEnpassantPosition = isLegal;
+                return isLegal;
             }
         }
-        // todo add enpassant
+        tempDestination = new Point(getPiecePosition());
+        if(Math.abs(tempDestination.x - destination.x) == 1 && tempDestination.y + direction == destination.y) {
+            try {
+                tempDestination.x += 1;
+                if (isEnpassant(tempDestination)) {
+                    return true;
+                }
+                tempDestination.x -= 2;
+                if (isEnpassant(tempDestination)) {
+                    return true;
+                }
+            } catch (NoPieceFoundException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private boolean isEnpassant(Point tempDestination) throws IllegalMoveException, NoPieceFoundException {
+        if (isInBounds(tempDestination)) {
+            if (board.getPiece(tempDestination) instanceof Pawn) {
+                Pawn pawn = ((Pawn) board.getPiece(tempDestination));
+                return pawn.isInEnpassantPosition;
+            }
+        }
         return false;
     }
 
