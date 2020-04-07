@@ -17,6 +17,8 @@ public class Pawn extends Piece implements PieceMoves {
     private Direction direction;
     private boolean isInEnpassantPosition;
     private boolean isOnStartingLine;
+    private boolean previousEnpassantStatus;
+    private boolean previousStatingLineState;
 
     public Pawn(Point position, PieceColor color) {
         super(position, PieceType.PAWN, color);
@@ -29,13 +31,14 @@ public class Pawn extends Piece implements PieceMoves {
     @Override
     public void move(Point destinationsPosition, Board board) throws IllegalMoveException {
         this.board = board;
-        boolean enpassant = isInEnpassantPosition;
         if (isLegalMove(destinationsPosition)) {
             super.move(destinationsPosition, board);
+            previousStatingLineState = isOnStartingLine;
             isOnStartingLine = false;
-            if(enpassant) {
+            if(previousEnpassantStatus) {
                 isInEnpassantPosition = false;
             }
+            previousEnpassantStatus = isInEnpassantPosition;
         } else {
             throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
         }
@@ -58,6 +61,10 @@ public class Pawn extends Piece implements PieceMoves {
     @Override
     public List<Point> getLegalMoves() {
         return null;
+    }
+
+    public void resetEnpassant() {
+        isInEnpassantPosition = previousEnpassantStatus;
     }
 
     private void setDirection() {
@@ -131,6 +138,10 @@ public class Pawn extends Piece implements PieceMoves {
         } else {
             return -1;
         }
+    }
+
+    public void resetFirsLine() {
+        isOnStartingLine = previousStatingLineState;
     }
 
 }

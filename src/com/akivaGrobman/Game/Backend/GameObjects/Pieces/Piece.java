@@ -5,8 +5,9 @@ import com.akivaGrobman.Game.Backend.GameObjects.Board;
 import java.awt.*;
 import java.util.Objects;
 
-public abstract class Piece extends PieceMovingMethods implements PieceMoves{
+public abstract class Piece extends PieceMovingMethods implements PieceMoves {
 
+    private Point previousPosition;
     private Point position;
     private PieceType type;
     private PieceColor color;
@@ -15,10 +16,12 @@ public abstract class Piece extends PieceMovingMethods implements PieceMoves{
         this.position = position;
         this.type = type;
         this.color = color;
+        previousPosition = position;
     }
 
     @Override
     public void move(Point destinationsPosition, Board board) throws IllegalMoveException {
+        previousPosition = new Point(position);
         setPiecePosition(destinationsPosition);
     }
 
@@ -36,6 +39,10 @@ public abstract class Piece extends PieceMovingMethods implements PieceMoves{
 
     public PieceColor getPieceColor() {
         return color;
+    }
+
+    public void moveBack() {
+        position = new Point(previousPosition);
     }
 
     @Override

@@ -31,10 +31,11 @@ class BoardTest {
 
     @Test
     void moveWillMoveAPieceCorrectly() throws Exception {
+        board = new Board();
         Point pawnOrigin = new Point(2, 1);
         Point destination = new Point(2, 3);
         String boardAfterMove = "\n----------------------------------------------------------------------------\n" +
-                "||  ROOK  || KNIGHT || BISHOP ||  KING  ||  QUEEN || BISHOP || KNIGHT ||  ROOK  |\n" +
+                "||  ROOK  || KNIGHT || BISHOP ||  QUEEN ||  KING  || BISHOP || KNIGHT ||  ROOK  |\n" +
                 "----------------------------------------------------------------------------\n" +
                 "||  PAWN  ||  PAWN  ||        ||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  |\n" +
                 "----------------------------------------------------------------------------\n" +
@@ -48,7 +49,7 @@ class BoardTest {
                 "----------------------------------------------------------------------------\n" +
                 "||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  |\n" +
                 "----------------------------------------------------------------------------\n" +
-                "||  ROOK  || KNIGHT || BISHOP ||  KING  ||  QUEEN || BISHOP || KNIGHT ||  ROOK  |\n" +
+                "||  ROOK  || KNIGHT || BISHOP ||  QUEEN ||  KING  || BISHOP || KNIGHT ||  ROOK  |\n" +
                 "----------------------------------------------------------------------------\n";
 
         board.move(pawnOrigin, destination);

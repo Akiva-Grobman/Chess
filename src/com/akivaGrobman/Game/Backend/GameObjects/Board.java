@@ -2,10 +2,7 @@ package com.akivaGrobman.Game.Backend.GameObjects;
 
 import com.akivaGrobman.Game.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Backend.Exceptions.NoPieceFoundException;
-import com.akivaGrobman.Game.Backend.GameObjects.Pieces.King;
-import com.akivaGrobman.Game.Backend.GameObjects.Pieces.Piece;
-import com.akivaGrobman.Game.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Backend.GameObjects.Pieces.PieceType;
+import com.akivaGrobman.Game.Backend.GameObjects.Pieces.*;
 
 import java.awt.*;
 import java.util.List;
@@ -21,8 +18,8 @@ public class Board {
     public Board() {
         board = BoardBuilder.newBoard();
         try {
-            whiteKing = (King) board[0][3].getPiece();
-            blackKing = (King) board[7][3].getPiece();
+            whiteKing = (King) board[7][4].getPiece();
+            blackKing = (King) board[0][4].getPiece();
         } catch (NoPieceFoundException e) {
             e.printStackTrace();
         }
@@ -69,13 +66,24 @@ public class Board {
     public void move(Point pieceOriginalPosition, Point destination) throws IllegalMoveException, NoPieceFoundException {
         if(pieceOriginalPosition.equals(destination)) throw new IllegalMoveException("can not move piece to original position");
         Piece piece = board[pieceOriginalPosition.y][pieceOriginalPosition.x].getPiece();
+        Piece pieceAtDestination;
+        try {
+            pieceAtDestination = board[destination.y][destination.x].getPiece();
+        } catch (NoPieceFoundException e) {
+            pieceAtDestination = null;
+        }
         piece.move(destination, this);
-        if(getKing(piece.getPieceColor()).isInCheck(this, STARTING_DEPTH)) {
-            board[piece.getPiecePosition().y][piece.getPiecePosition().x].setPiece(piece);
-            board[pieceOriginalPosition.y][pieceOriginalPosition.x].setPiece(null);
-        } else {
-            // todo revers move
-            // reset enpassant and probably castling
+        board[piece.getPiecePosition().y][piece.getPiecePosition().x].setPiece(piece);
+        board[pieceOriginalPosition.y][pieceOriginalPosition.x].setPiece(null);
+        if(getKing(piece.getPieceColor()).isInCheck(this, STARTING_DEPTH)){
+            piece.moveBack();
+            board[pieceOriginalPosition.y][pieceOriginalPosition.x].setPiece(piece);
+            board[destination.y][destination.x].setPiece(pieceAtDestination);
+            if(piece instanceof Pawn) {
+                Pawn pawn = (Pawn) piece;
+                pawn.resetEnpassant();
+                pawn.resetFirsLine();
+            }
         }
     }
 

@@ -22,9 +22,9 @@ class CheckCheckerTest {
 
     @Test
     void willReturnTrueIfIsLegalMove() throws Exception {
-        Rook enemyRook = new Rook(new Point(4, 1), PieceColor.WHITE);
+        Rook enemyRook = new Rook(new Point(5, 1), PieceColor.WHITE);
         board = Board.getConsumeBoard(Collections.singletonList(enemyRook), new ArrayList<>());
-        King king = (King) board.getPiece(new Point(3, 0));
+        King king = (King) board.getPiece(new Point(4, 0));
         boolean isInCheck;
 
         board.move(king.getPiecePosition(), enemyRook.getPiecePosition());
@@ -35,27 +35,18 @@ class CheckCheckerTest {
 
     @Test
     void willReturnFalseIfIsIllegalMove() throws Exception {
-        Rook enemyRook = new Rook(new Point(3, 5), PieceColor.WHITE);
-        Pawn enemyPawn = new Pawn(new Point(4,2), PieceColor.WHITE);
+        Rook enemyRook = new Rook(new Point(4, 5), PieceColor.WHITE);
+        Pawn enemyPawn = new Pawn(new Point(5,2), PieceColor.WHITE);
         board = Board.getConsumeBoard(List.of(enemyPawn, enemyRook), new ArrayList<>());
-        Pawn pawn = (Pawn) board.getPiece(new Point(3, 1));
+        Pawn pawn = (Pawn) board.getPiece(new Point(4, 1));
+        String originalBoard = board.toString();
         boolean isInCheck;
 
         board.move(pawn.getPiecePosition(), enemyPawn.getPiecePosition());
         isInCheck = CheckChecker.kingIsInCheck(pawn.getPieceColor(), board, 1);
 
+        assertEquals(originalBoard, board.toString());
         assertTrue(isInCheck);
-
-//        MoveWillPutKingInCheck thrown = assertThrows(
-//                MoveWillPutKingInCheck.class,
-//                () -> pawn.move(destination, board),
-//                String.format("can not move form 3,1 to %d,%d %s in position 4,5 will put king in check",
-//                        destination.x, destination.y, enemyRook.getClass().getSimpleName())
-//        );
-//
-//        assertTrue(thrown.getMessage().contains(String.format("can not move form 3,1 to %d,%d %s in position 4,5 will put king in check",
-//                destination.x, destination.y, enemyRook.getClass().getSimpleName())));
-
     }
 
 }

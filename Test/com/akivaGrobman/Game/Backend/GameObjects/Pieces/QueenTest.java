@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,11 +35,11 @@ class QueenTest {
         queenDiagonal = new Queen(new Point(3,3), PieceColor.WHITE);
         Pawn diagonalBlock = new Pawn(new Point(4,4), PieceColor.BLACK);
         board = Board.getConsumeBoard(Arrays.asList(queenDiagonal, diagonalBlock), new ArrayList<>());
-        queenStraight = (Queen) board.getPiece(new Point(4,0));
+        queenStraight = (Queen) board.getPiece(new Point(3,0));
 
         IllegalMoveException straight = assertThrows(
                 IllegalMoveException.class,
-                () -> queenStraight.move(new Point(4,2), board),
+                () -> queenStraight.move(new Point(3,2), board),
                 "Queen can not move from 4,0 to 4,2"
         );
         IllegalMoveException diagonal = assertThrows(
@@ -47,19 +48,19 @@ class QueenTest {
                 "Queen can not move from 3,3 to 5,5"
         );
 
-        assertTrue(straight.getMessage().contains("Queen can not move from 4,0 to 4,2"));
+        assertTrue(straight.getMessage().contains("Queen can not move from 3,0 to 3,2"));
         assertTrue(diagonal.getMessage().contains("Queen can not move from 3,3 to 5,5"));
     }
 
     @Test
     void willNotKillSameColorPiece() throws Exception {
         queenDiagonal = new Queen(new Point(0, 3), PieceColor.BLACK);
-        board = Board.getConsumeBoard(Arrays.asList(queenDiagonal), new ArrayList<>());
-        queenStraight = (Queen) board.getPiece(new Point(4,0));
+        board = Board.getConsumeBoard(Collections.singletonList(queenDiagonal), new ArrayList<>());
+        queenStraight = (Queen) board.getPiece(new Point(3,0));
 
         IllegalMoveException straight = assertThrows(
                 IllegalMoveException.class,
-                () -> queenStraight.move(new Point(4,1), board),
+                () -> queenStraight.move(new Point(3,1), board),
                 "Queen can not move from 4,0 to 4,1"
         );
         IllegalMoveException diagonal = assertThrows(
@@ -68,9 +69,8 @@ class QueenTest {
                 "Queen can not move from 0,3 to 2,1"
         );
 
-        assertTrue(straight.getMessage().contains("Queen can not move from 4,0 to 4,1"));
+        assertTrue(straight.getMessage().contains("Queen can not move from 3,0 to 3,1"));
         assertTrue(diagonal.getMessage().contains("Queen can not move from 0,3 to 2,1"));
-
     }
 
 }

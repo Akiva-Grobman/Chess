@@ -32,15 +32,15 @@ class KingTest {
     @Test
     void willNotKillSameColorPiece() throws Exception {
         board = new Board();
-        kingStraight = (King) board.getPiece(new Point(3, 0));
+        kingStraight = (King) board.getPiece(new Point(4, 0));
 
         IllegalMoveException thrown = assertThrows(
                 IllegalMoveException.class,
-                () -> kingStraight.move(new Point(3, 1), board),
-                ""
+                () -> kingStraight.move(new Point(4, 1), board),
+                "King can not move from 4,0 to 4,1"
         );
 
-        assertTrue(thrown.getMessage().contains("King can not move from 3,0 to 3,1"));
+        assertTrue(thrown.getMessage().contains("King can not move from 4,0 to 4,1"));
     }
 
     //todo add willNotPutItselfInCheck

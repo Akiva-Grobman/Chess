@@ -1,11 +1,15 @@
 package com.akivaGrobman.Game.Backend.GameObjects;
 
+import com.akivaGrobman.Game.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Backend.GameObjects.Pieces.*;
 import com.akivaGrobman.Game.ChessGame;
+import com.akivaGrobman.Game.Frontend.GraphicBoard;
+import com.akivaGrobman.Game.Frontend.GraphicTile;
+
 import java.awt.*;
 import java.util.List;
 
-class BoardBuilder {
+public class BoardBuilder {
 
     private static Tile[][] board;
 
@@ -103,13 +107,23 @@ class BoardBuilder {
                 case 5:
                     return new Bishop(position, color);
                 case 3:
-                    return new King(position, color);
-                case 4:
                     return new Queen(position, color);
+                case 4:
+                    return new King(position, color);
                 default:
                     throw new Error("no piece matches row " + position.y + " column " + position.x);
             }
         }
     }
 
+    public static void updateGraphicsBoard(Board board, GraphicTile[][] graphicTiles) {
+        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
+            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
+                try {
+                    Piece piece = board.getPiece(new Point(x,y));
+                    graphicTiles[y][x].update(piece.getPieceType(), piece.getPieceColor());
+                } catch (NoPieceFoundException ignore) {}
+            }
+        }
+    }
 }
