@@ -88,7 +88,7 @@ class BoardTest {
         doesNotHavePiece = board.hasPieceInThisPosition(new Point(4,4));
 
         assertTrue(hasPiece);
-        assertTrue(!doesNotHavePiece);
+        assertFalse(doesNotHavePiece);
     }
 
     //todo will not put piece in check

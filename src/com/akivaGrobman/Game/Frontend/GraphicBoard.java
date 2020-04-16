@@ -18,7 +18,7 @@ public class GraphicBoard extends JFrame {
     private Color Black = new Color(181, 137, 102);
     static final int TILE_SIZE = 90;
 
-    public GraphicBoard(Board board) {
+    public GraphicBoard(GraphicTile[][] board) {
         Image icon = null;
         this.setTitle("Chess");
         try {
@@ -44,7 +44,7 @@ public class GraphicBoard extends JFrame {
         board[tilePosition.y][tilePosition.x].update(pieceType, pieceColor);
     }
 
-    private void boardSetUp(Board board) {
+    private void boardSetUp(GraphicTile[][] board) {
         int windowWidth = TILE_SIZE * ChessGame.SUM_OF_ROWS;;
         int windowHeight = TILE_SIZE * ChessGame.SUM_OF_ROWS;
         this.setLayout(new GridLayout(ChessGame.SUM_OF_ROWS, ChessGame.SUM_OF_COLUMNS));
@@ -57,7 +57,7 @@ public class GraphicBoard extends JFrame {
         addTiles(board);
     }
 
-    private void addTiles(Board board) {
+    private void addTiles(GraphicTile[][] board) {
         GraphicTile tile;
         Color color;
         for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
@@ -72,7 +72,7 @@ public class GraphicBoard extends JFrame {
                 this.board[y][x] = tile;
             }
         }
-        BoardBuilder.updateGraphicsBoard(board, this.board);
+        this.board = board;
     }
 
 }
