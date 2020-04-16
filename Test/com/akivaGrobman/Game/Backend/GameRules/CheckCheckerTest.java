@@ -27,25 +27,20 @@ class CheckCheckerTest {
         King king = (King) board.getPiece(new Point(4, 0));
         boolean isInCheck;
 
-        board.move(king.getPiecePosition(), enemyRook.getPiecePosition());
+        board.move(king.getPiecePosition(), enemyRook.getPiecePosition(), 1);
         isInCheck = CheckChecker.kingIsInCheck(king.getPieceColor(), board, 1);
 
         assertFalse(isInCheck);
     }
 
     @Test
-    void willReturnFalseIfIsIllegalMove() throws Exception {
+    void willReturnFalseIfMovePuttsKingInCheck() throws Exception {
         Rook enemyRook = new Rook(new Point(4, 5), PieceColor.WHITE);
-        Pawn enemyPawn = new Pawn(new Point(5,2), PieceColor.WHITE);
-        board = Board.getConsumeBoard(List.of(enemyPawn, enemyRook), new ArrayList<>());
-        Pawn pawn = (Pawn) board.getPiece(new Point(4, 1));
-        String originalBoard = board.toString();
+        board = Board.getConsumeBoard(List.of(enemyRook), List.of(new Point(4,1)));
         boolean isInCheck;
 
-        board.move(pawn.getPiecePosition(), enemyPawn.getPiecePosition());
-        isInCheck = CheckChecker.kingIsInCheck(pawn.getPieceColor(), board, 1);
+        isInCheck = CheckChecker.kingIsInCheck(PieceColor.BLACK, board, 1);
 
-        assertEquals(originalBoard, board.toString());
         assertTrue(isInCheck);
     }
 

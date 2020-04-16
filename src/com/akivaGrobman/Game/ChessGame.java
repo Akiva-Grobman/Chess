@@ -6,6 +6,7 @@ import com.akivaGrobman.Game.Frontend.GraphicBoard;
 
 public class ChessGame {
 
+    private final int STARTING_DEPTH = 1;
     public static final int SUM_OF_ROWS = 8;
     public static final int SUM_OF_COLUMNS = 8;
 

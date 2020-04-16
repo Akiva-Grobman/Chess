@@ -10,7 +10,6 @@ import java.util.NoSuchElementException;
 
 public class Board {
 
-    private final int STARTING_DEPTH = 1;
     protected Tile[][] board;
     private King whiteKing;
     private King blackKing;
@@ -27,43 +26,38 @@ public class Board {
 
     private Board(Tile[][] costumeBoard) {
         this.board = costumeBoard;
-        try {
-            Point whiteKingPosition = getKingPosition(PieceColor.WHITE, board);
-            Point blackKingPosition = getKingPosition(PieceColor.BLACK, board);
-            whiteKing = (King) getPiece(whiteKingPosition);
-            blackKing = (King) getPiece(blackKingPosition);
-        } catch (NoPieceFoundException e) {
-            e.printStackTrace();
-        }
+        setKings(Board.this);
     }
 
     public static Board getConsumeBoard(List<Piece> piecesChanged, List<Point> emptyTiles) {
         Board board = new Board(BoardBuilder.costumeBoard(piecesChanged, emptyTiles));
-        try {
-            Point whiteKingPosition = getKingPosition(PieceColor.WHITE, board.board);
-            Point blackKingPosition = getKingPosition(PieceColor.BLACK, board.board);
-            board.whiteKing = (King) board.getPiece(whiteKingPosition);
-            board.blackKing = (King) board.getPiece(blackKingPosition);
-        } catch (NoPieceFoundException e) {
-            e.printStackTrace();
-        }
+        setKings(board);
         return board;
     }
 
     public static Board getClone(Board board) {
         Board clone = new Board(BoardBuilder.clone(board));
-        try {
-            Point whiteKingPosition = getKingPosition(PieceColor.WHITE, clone.board);
-            Point blackKingPosition = getKingPosition(PieceColor.BLACK, clone.board);
-            clone.whiteKing = (King) clone.getPiece(whiteKingPosition);
-            clone.blackKing = (King) clone.getPiece(blackKingPosition);
-        } catch (NoPieceFoundException e) {
-            throw new NoSuchElementException();
-        }
+        setKings(clone);
         return clone;
     }
 
-    public void move(Point pieceOriginalPosition, Point destination) throws IllegalMoveException, NoPieceFoundException {
+    private static void setKings(Board board) {
+        try {
+            Point whiteKingPosition = getKingPosition(PieceColor.WHITE, board.board);
+            board.whiteKing = (King) board.getPiece(whiteKingPosition);
+        } catch (NoSuchElementException | NoPieceFoundException e) {
+            board.whiteKing = null;
+        }
+        try {
+            Point blackKingPosition = getKingPosition(PieceColor.BLACK, board.board);
+            board.blackKing = (King) board.getPiece(blackKingPosition);
+        } catch (NoSuchElementException | NoPieceFoundException e) {
+            board.blackKing = null;
+        }
+    }
+
+    // todo debug is letting pawn put king in check
+    public void move(Point pieceOriginalPosition, Point destination, int depth) throws IllegalMoveException, NoPieceFoundException {
         if(pieceOriginalPosition.equals(destination)) throw new IllegalMoveException("can not move piece to original position");
         Piece piece = board[pieceOriginalPosition.y][pieceOriginalPosition.x].getPiece();
         Piece pieceAtDestination;
@@ -75,7 +69,7 @@ public class Board {
         piece.move(destination, this);
         board[piece.getPiecePosition().y][piece.getPiecePosition().x].setPiece(piece);
         board[pieceOriginalPosition.y][pieceOriginalPosition.x].setPiece(null);
-        if(getKing(piece.getPieceColor()).isInCheck(this, STARTING_DEPTH)){
+        if(getKing(piece.getPieceColor()).isInCheck(this, depth)) {
             piece.moveBack();
             board[pieceOriginalPosition.y][pieceOriginalPosition.x].setPiece(piece);
             board[destination.y][destination.x].setPiece(pieceAtDestination);

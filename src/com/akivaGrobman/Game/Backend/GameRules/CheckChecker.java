@@ -13,44 +13,34 @@ import java.util.NoSuchElementException;
 
 public class CheckChecker {
 
+    private static final int MAX_DEPTH = 3;
     private static Board board;
     private static List<Piece> enemyPieces;
     private static PieceColor playersColor;
     
     public static boolean kingIsInCheck(PieceColor playersColor, Board board, int depth) {
-        try {
-            CheckChecker.board = Board.getClone(board);
-        } catch (NoSuchElementException ignored) {}
+        CheckChecker.board = Board.getClone(board);
         CheckChecker.playersColor = playersColor;
         enemyPieces = getEnemyPieces();
         return isInCheck(depth);
     }
 
     private static boolean isInCheck(int depth) {
+        // in this method we ignore the NoSuchElementException because when depth == 2.because one of the players doesn't have a king
         Board testingBoard;
         King playersKing = getKing(playersColor);
-        King enemiesKing = null;
-        try {
-             enemiesKing = getKing(getEnemiesColor());
-        } catch (NoSuchElementException ignored) {}
         for (Piece enemyPiece: enemyPieces) {
+            if(enemyPiece instanceof King)
+                continue;
             try {
-                if(depth < 3) {
+                if(depth < MAX_DEPTH) {
                     testingBoard = Board.getClone(board);
-                    testingBoard.move(enemyPiece.getPiecePosition(), playersKing.getPiecePosition());
-                    if(enemiesKing.isInCheck(testingBoard, depth + 1)) {
-                        continue;
-                    }
+                    testingBoard.move(enemyPiece.getPiecePosition(), playersKing.getPiecePosition(), depth + 1);
+                    return true;
                 }
-                board.move(enemyPiece.getPiecePosition(), playersKing.getPiecePosition());
-                return true;
             } catch (IllegalMoveException | NoPieceFoundException ignore) {}
         }
         return false;
-    }
-
-    private static PieceColor getEnemiesColor() {
-        return (playersColor == PieceColor.BLACK)? PieceColor.WHITE : PieceColor.BLACK;
     }
 
     private static King getKing(PieceColor playersColor) {
