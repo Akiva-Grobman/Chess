@@ -115,8 +115,7 @@ public class BoardBuilder {
         }
     }
 
-    public static GraphicTile[][] getGraphicsBoard(Board board) {
-        GraphicTile[][] graphicTiles = new GraphicTile[ChessGame.SUM_OF_COLUMNS][ChessGame.SUM_OF_ROWS];
+    public static void updateGraphicsBoard(Board board, GraphicTile[][] graphicTiles) {
         for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
             for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
                 try {
@@ -125,6 +124,5 @@ public class BoardBuilder {
                 } catch (NoPieceFoundException ignore) {}
             }
         }
-        return graphicTiles;
     }
 }

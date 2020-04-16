@@ -18,10 +18,12 @@ public class GraphicTile extends JPanel implements MouseListener {
     private Color tileColor;
     private PieceType pieceType;
     private PieceColor pieceColor;
+    private GraphicBoard board;
 
-    public GraphicTile(Point position, Color color) {
+    public GraphicTile(Point position, Color color, GraphicBoard graphicBoard) {
         tilePosition = position;
         tileColor = color;
+        board = graphicBoard;
         image = null;
         panelSetUp();
     }
@@ -30,6 +32,7 @@ public class GraphicTile extends JPanel implements MouseListener {
         this.pieceType = pieceType;
         this.pieceColor = pieceColor;
         image = getPieceImage();
+        repaint();
     }
 
     public void paintComponent(Graphics g){
@@ -52,7 +55,7 @@ public class GraphicTile extends JPanel implements MouseListener {
     private BufferedImage getPieceImage() {
         try {
             return  getImageFromFileName("Images/" + pieceColor.toString().toLowerCase() + "_" + pieceType.toString().toLowerCase() + ".png");
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             return null;
         }
     }
@@ -68,17 +71,13 @@ public class GraphicTile extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
-        // todo logic
-        // tell someone that there was a click at x,y
-        // for now just log to console
-        System.out.println(tilePosition);
+        board.tileClicked(tilePosition);
     }
 
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
 
     }
-
 
     @Override
     public void mouseEntered(MouseEvent mouseEvent) {

@@ -3,9 +3,9 @@ package com.akivaGrobman.Game;
 import com.akivaGrobman.Game.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Backend.GameObjects.Board;
-import com.akivaGrobman.Game.Backend.GameObjects.BoardBuilder;
 import com.akivaGrobman.Game.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Backend.GameObjects.Pieces.PieceColor;
+import com.akivaGrobman.Game.Backend.GameObjects.Pieces.PieceType;
 import com.akivaGrobman.Game.Backend.Players.Move;
 import com.akivaGrobman.Game.Backend.Players.Player;
 import com.akivaGrobman.Game.Frontend.GraphicBoard;
@@ -22,12 +22,12 @@ public class ChessGame {
     private Player enemy;
     private Player currentPlayer;
     private Board backendBoard;
-    private GraphicBoard ouScreenBoard;
+    private GraphicBoard onScreenBoard;
 
     public ChessGame() {
         backendBoard = new Board();
-        ouScreenBoard = new GraphicBoard(BoardBuilder.getGraphicsBoard(backendBoard));
         setPlayers();
+        onScreenBoard = new GraphicBoard(backendBoard, player);
     }
 
     private void setPlayers() {
@@ -43,14 +43,20 @@ public class ChessGame {
 
     public synchronized void move(Move move, Player player) {
         if(currentPlayer.equals(player)) {
+            Piece oldPiece = getPiece(move.getDestination());
             move(move);
-            if(wasLegalMove(move.getOrigin())) {
+            if(wasLegalMove(move, oldPiece)) {
                 Point destination = move.getDestination();
                 Piece piece = getPiece(destination);
-                ouScreenBoard.updateTile(destination, piece.getPieceType(),currentPlayer.getPlayersColor());
+                onScreenBoard.updateTile(destination, piece.getPieceType(), currentPlayer.getPlayersColor());
+                onScreenBoard.updateTile(move.getOrigin(), null, null);
                 changeCurrentPlayer();
             }
         }
+    }
+
+    private boolean wasLegalMove(Move move, Piece oldPiece) {
+        return getPiece(move.getDestination()) != null && oldPiece != getPiece(move.getDestination()) && !backendBoard.hasPieceInThisPosition(move.getOrigin());
     }
 
     private void move(Move currentMove) {
@@ -66,15 +72,11 @@ public class ChessGame {
         }
     }
 
-    private boolean wasLegalMove(Point origin) {
-        return !backendBoard.hasPieceInThisPosition(origin);
-    }
-
     private Piece getPiece(Point position) {
         try {
             return backendBoard.getPiece(position);
         } catch (NoPieceFoundException e) {
-            throw new Error("the original position is empty yet no piece found in position " + position);
+            return null;
         }
     }
 
