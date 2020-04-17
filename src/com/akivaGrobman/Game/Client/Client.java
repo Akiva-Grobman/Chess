@@ -2,7 +2,7 @@ package com.akivaGrobman.Game.Client;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.Players.Enemy;
-import com.akivaGrobman.Game.Client.Backend.Players.Player;
+import com.akivaGrobman.Game.Server.Server;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,7 +15,7 @@ public class Client {
         Socket socket;
         PieceColor playersColor;
         Enemy enemy;
-        socket = new Socket("127.0.0.1", 9090);
+        socket = new Socket("127.0.0.1", Server.PORT);
         ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
         ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
         playersColor = PieceColor.valueOf((String) inputStream.readObject());

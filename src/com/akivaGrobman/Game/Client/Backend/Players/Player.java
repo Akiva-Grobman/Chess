@@ -9,13 +9,13 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-class Player {
+public class Player {
 
     private PieceColor playersPieceColor;
     private boolean isPlayersTurn;
     private List<Move> playersMoves;
     private Move currentMove;
-    private ChessGame game;
+    protected ChessGame game;
 
     public Player(PieceColor playersPieceColor) {
         this.playersPieceColor = playersPieceColor;
@@ -25,18 +25,18 @@ class Player {
 
     public void addPositionToMove(Point position) {
        if(currentMove == null) {
-           currentMove = new Move(position);
+           currentMove = new Move(position, playersPieceColor);
        } else if(!currentMove.isReadyToBeUsed()) {
            currentMove.setDestination(position);
            playersMoves.add(currentMove);
            game.move(currentMove, this);
        } else {
-           currentMove = new Move(position);
+           currentMove = new Move(position, playersPieceColor);
        }
     }
 
     public Move getMove() {
-        if (!currentMove.isReadyToBeUsed()) throw new Error("Move data is not complete and ready for usage");
+        if (currentMove == null || !currentMove.isReadyToBeUsed()) throw new Error("Move data is not complete and ready for usage");
         playersMoves.add(currentMove);
         return currentMove;
     }

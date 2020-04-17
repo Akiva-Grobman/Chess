@@ -32,7 +32,6 @@ public class GraphicTile extends JPanel implements MouseListener {
         this.pieceType = pieceType;
         this.pieceColor = pieceColor;
         image = getPieceImage();
-        repaint();
     }
 
     public void paintComponent(Graphics g){

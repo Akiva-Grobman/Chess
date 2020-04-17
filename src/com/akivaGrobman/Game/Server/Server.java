@@ -9,7 +9,7 @@ import java.net.Socket;
 
 public class Server {
 
-    private static final int PORT = 9090;
+    public static final int PORT = 9090;
 
     private static Player[] players;
     private static Player currentPlayer;
@@ -32,6 +32,7 @@ public class Server {
     private static void runGame() throws IOException, ClassNotFoundException {
         run = true;
         currentPlayer = players[0];
+        otherPlayer = players[1];
         do {
             Move move = currentPlayer.getMove();
             otherPlayer.sendMove(move);

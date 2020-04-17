@@ -14,12 +14,11 @@ import java.awt.*;
 
 public class ChessGame {
 
-    private final int STARTING_DEPTH = 1;
     public static final int SUM_OF_ROWS = 8;
     public static final int SUM_OF_COLUMNS = 8;
 
     private Player player;
-    private Player enemy;
+    private Enemy enemy;
     private Player currentPlayer;
     private Board backendBoard;
     private GraphicBoard onScreenBoard;
@@ -28,6 +27,9 @@ public class ChessGame {
         backendBoard = new Board();
         setPlayers(playersColor, enemy);
         onScreenBoard = new GraphicBoard(backendBoard, player);
+        if(player.getPlayersColor() == PieceColor.BLACK) {
+            makeEnemyMove();
+        }
     }
 
     private void setPlayers(PieceColor playersColor, Enemy enemy) {
@@ -42,7 +44,7 @@ public class ChessGame {
         }
     }
 
-    public synchronized void move(Move move, Player player) {
+    public void move(Move move, Player player) {
         if(currentPlayer.equals(player)) {
             Piece oldPiece = getPiece(move.getDestination());
             move(move);
@@ -51,9 +53,19 @@ public class ChessGame {
                 Piece piece = getPiece(destination);
                 onScreenBoard.updateTile(destination, piece.getPieceType(), currentPlayer.getPlayersColor());
                 onScreenBoard.updateTile(move.getOrigin(), null, null);
+                if(move.getPlayersColor() == this.player.getPlayersColor()) {
+                    enemy.sendMove(move);
+                }
                 changeCurrentPlayer();
+                if (player.equals(this.player)) {
+                    makeEnemyMove();
+                }
             }
         }
+    }
+
+    public void makeEnemyMove() {
+        move(enemy.getMove(), enemy);
     }
 
     private boolean wasLegalMove(Move move, Piece oldPiece) {
@@ -62,6 +74,7 @@ public class ChessGame {
 
     private void move(Move currentMove) {
         try {
+            int STARTING_DEPTH = 1;
             backendBoard.move(currentMove.getOrigin(), currentMove.getDestination(), STARTING_DEPTH);
         } catch (IllegalMoveException | NoPieceFoundException e) {
             String msg = e.getMessage();

@@ -36,7 +36,9 @@ public class GraphicBoard extends JFrame {
     }
 
     public void updateTile(Point tilePosition, PieceType pieceType, PieceColor pieceColor) {
+        System.out.println(tilePosition.toString() + pieceType + pieceColor);
         board[tilePosition.y][tilePosition.x].update(pieceType, pieceColor);
+        board[tilePosition.y][tilePosition.x].repaint();
     }
 
     private void boardSetUp(Board board) {
@@ -48,12 +50,32 @@ public class GraphicBoard extends JFrame {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
+        this.setTitle("Akiva's Awesome Chess");
         setFrameIcon();
         this.board = new GraphicTile[ChessGame.SUM_OF_ROWS][ChessGame.SUM_OF_COLUMNS];
         addTiles(board);
     }
 
     private void addTiles(Board board) {
+        initializeTiles(board);
+        if(player.getPlayersColor() == PieceColor.WHITE) {
+            // will show white pieces on the bottom
+            for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
+                for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
+                    add(this.board[y][x]);
+                }
+            }
+        } else {
+            // will show black pieces on the bottom
+            for (int y = ChessGame.SUM_OF_ROWS - 1; y >= 0; y--) {
+                for (int x = ChessGame.SUM_OF_COLUMNS - 1; x >= 0; x--) {
+                    add(this.board[y][x]);
+                }
+            }
+        }
+    }
+
+    private void initializeTiles(Board board) {
         GraphicTile tile;
         Color color;
         for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
@@ -64,7 +86,6 @@ public class GraphicBoard extends JFrame {
                     color = Black;
                 }
                 tile = new GraphicTile(new Point(x,y), color, this);
-                this.add(tile);
                 this.board[y][x] = tile;
             }
         }
@@ -73,7 +94,6 @@ public class GraphicBoard extends JFrame {
 
     private void setFrameIcon() {
         Image icon = null;
-        this.setTitle("Chess");
         try {
             icon = ImageIO.read(getClass().getResource("Images/icon.png"));
         } catch (IOException e) {
