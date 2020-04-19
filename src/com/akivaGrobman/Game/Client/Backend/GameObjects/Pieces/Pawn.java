@@ -2,7 +2,7 @@ package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import java.awt.*;
 import java.util.List;
 import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.*;
@@ -29,22 +29,6 @@ public class Pawn extends Piece implements PieceMoves {
     }
 
     @Override
-    public void move(Point destinationsPosition, Board board) throws IllegalMoveException {
-        this.board = board;
-        if (isLegalMove(destinationsPosition)) {
-            super.move(destinationsPosition, board);
-            previousStatingLineState = isOnStartingLine;
-            isOnStartingLine = false;
-            if(previousEnpassantStatus) {
-                isInEnpassantPosition = false;
-            }
-            previousEnpassantStatus = isInEnpassantPosition;
-        } else {
-            throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
-        }
-    }
-
-    @Override
     public Piece getClone() {
         Pawn pawn = new Pawn((Point) getPiecePosition().clone(), getPieceColor());
         pawn.direction = direction;
@@ -63,8 +47,9 @@ public class Pawn extends Piece implements PieceMoves {
         return null;
     }
 
-    public void resetEnpassant() {
+    public void reset() {
         isInEnpassantPosition = previousEnpassantStatus;
+        isOnStartingLine = previousStatingLineState;
     }
 
     private void setDirection() {
@@ -75,51 +60,66 @@ public class Pawn extends Piece implements PieceMoves {
         }
     }
 
-    private boolean isLegalMove(Point destination) throws IllegalMoveException {
+    @Override
+    protected boolean isLegalMove(Point destination) throws IllegalMoveException {
+        boolean isLegal = false;
         int direction = getDirection();
         Point tempDestination = new Point(getPiecePosition());
         tempDestination.y += direction;
         // the tile in front
         if (tempDestination.equals(destination)) {
-            return isInBounds(tempDestination) && isVacantPosition(tempDestination, board);
+            isLegal = isInBounds(tempDestination) && isVacantPosition(tempDestination, board);
         }
         // then one to the left
-        tempDestination.x -= 1;
-        if (tempDestination.equals(destination)) {
-            return isInBounds(tempDestination) && hasEnemyPiece(getPieceColor(), tempDestination, board);
+        if(!isLegal) {
+            tempDestination.x -= 1;
+            if (tempDestination.equals(destination)) {
+                isLegal = isInBounds(tempDestination) && hasEnemyPiece(getPieceColor(), tempDestination, board);
+            }
         }
         // then the one on the right
-        tempDestination.x += 2;
-        if (tempDestination.equals(destination)) {
-            return isInBounds(tempDestination) && hasEnemyPiece(getPieceColor(), tempDestination, board);
-        }
-        if (isOnStartingLine) {
-            int oldY = tempDestination.y;
-            tempDestination.y += direction;
-            tempDestination.x = getPiecePosition().x;
-            // then the tile two to the front
+        if(!isLegal) {
+            tempDestination.x += 2;
             if (tempDestination.equals(destination)) {
-                boolean isLegal = isInBounds(tempDestination) && isVacantPosition(tempDestination, board) && isVacantPosition(new Point(tempDestination.x, oldY), board);
-                isInEnpassantPosition = isLegal;
-                return isLegal;
+                isLegal = isInBounds(tempDestination) && hasEnemyPiece(getPieceColor(), tempDestination, board);
             }
         }
-        tempDestination = new Point(getPiecePosition());
-        if(Math.abs(tempDestination.x - destination.x) == 1 && tempDestination.y + direction == destination.y) {
-            try {
-                tempDestination.x += 1;
-                if (isEnpassant(tempDestination)) {
-                    return true;
+        if(!isLegal) {
+            if (isOnStartingLine) {
+                int oldY = tempDestination.y;
+                tempDestination.y += direction;
+                tempDestination.x = getPiecePosition().x;
+                // then the tile two to the front
+                if (tempDestination.equals(destination)) {
+                    isLegal = isInBounds(tempDestination) && isVacantPosition(tempDestination, board) && isVacantPosition(new Point(tempDestination.x, oldY), board);
+                    isInEnpassantPosition = isLegal;
                 }
-                tempDestination.x -= 2;
-                if (isEnpassant(tempDestination)) {
-                    return true;
-                }
-            } catch (NoPieceFoundException e) {
-                return false;
             }
         }
-        return false;
+        if(!isLegal) {
+            tempDestination = new Point(getPiecePosition());
+            if (Math.abs(tempDestination.x - destination.x) == 1 && tempDestination.y + direction == destination.y) {
+                try {
+                    tempDestination.x += 1;
+                    isLegal = isEnpassant(tempDestination);
+                    if(!isLegal) {
+                        tempDestination.x -=2;
+                        isLegal = isEnpassant(tempDestination);
+                    }
+                } catch (NoPieceFoundException e) {
+                    isLegal = false;
+                }
+            }
+        }
+        if(isLegal) {
+            previousStatingLineState = isOnStartingLine;
+            isOnStartingLine = false;
+            if(previousEnpassantStatus) {
+                isInEnpassantPosition = false;
+            }
+            previousEnpassantStatus = isInEnpassantPosition;
+        }
+        return isLegal;
     }
 
     private boolean isEnpassant(Point tempDestination) throws IllegalMoveException, NoPieceFoundException {
@@ -138,10 +138,6 @@ public class Pawn extends Piece implements PieceMoves {
         } else {
             return -1;
         }
-    }
-
-    public void resetFirsLine() {
-        isOnStartingLine = previousStatingLineState;
     }
 
 }

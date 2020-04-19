@@ -1,6 +1,6 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 
 import java.awt.*;
 

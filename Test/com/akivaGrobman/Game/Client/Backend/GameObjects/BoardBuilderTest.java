@@ -1,5 +1,7 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects;
 
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.BoardBuilder;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Tile;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Pawn;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;

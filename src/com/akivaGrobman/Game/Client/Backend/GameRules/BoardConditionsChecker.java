@@ -2,7 +2,7 @@ package com.akivaGrobman.Game.Client.Backend.GameRules;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.ChessGame;
 

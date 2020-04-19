@@ -1,7 +1,7 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameRules.CheckChecker;
 
 import java.awt.*;
@@ -15,16 +15,6 @@ public class King extends Piece implements PieceMoves {
     public King(Point position, PieceColor color) {
         super(position, PieceType.KING, color);
         wasInCheck = false;
-    }
-
-    @Override
-    public void move(Point destinationsPosition, Board board) throws IllegalMoveException {
-        this.board = board;
-        if (isLegalMove(destinationsPosition)) {
-            super.move(destinationsPosition, board);
-        }  else {
-            throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
-        }
     }
 
     @Override
@@ -43,7 +33,8 @@ public class King extends Piece implements PieceMoves {
         return CheckChecker.kingIsInCheck(getPieceColor(), board, depth);
     }
 
-    private boolean isLegalMove(Point destination) throws IllegalMoveException {
+    @Override
+    protected boolean isLegalMove(Point destination) throws IllegalMoveException {
         Point tempDestination = new Point(getPiecePosition());
         Point direction = getDirection(destination);
         tempDestination.x += direction.x;

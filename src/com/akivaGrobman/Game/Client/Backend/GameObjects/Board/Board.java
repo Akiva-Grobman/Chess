@@ -1,4 +1,4 @@
-package com.akivaGrobman.Game.Client.Backend.GameObjects;
+package com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
@@ -75,8 +75,7 @@ public class Board {
             board[destination.y][destination.x].setPiece(pieceAtDestination);
             if(piece instanceof Pawn) {
                 Pawn pawn = (Pawn) piece;
-                pawn.resetEnpassant();
-                pawn.resetFirsLine();
+                pawn.reset();
             }
         }
     }
@@ -117,6 +116,10 @@ public class Board {
             }
         }
         throw new NoSuchElementException("no king of color " + kingColor + " found");
+    }
+
+    public Tile[][] getBoard() {
+        return board;
     }
 
     @Override

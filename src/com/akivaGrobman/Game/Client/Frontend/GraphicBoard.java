@@ -1,7 +1,7 @@
 package com.akivaGrobman.Game.Client.Frontend;
 
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.BoardBuilder;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.BoardBuilder;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceType;
 import com.akivaGrobman.Game.Client.Backend.Players.Player;
@@ -36,7 +36,6 @@ public class GraphicBoard extends JFrame {
     }
 
     public void updateTile(Point tilePosition, PieceType pieceType, PieceColor pieceColor) {
-        System.out.println(tilePosition.toString() + pieceType + pieceColor);
         board[tilePosition.y][tilePosition.x].update(pieceType, pieceColor);
         board[tilePosition.y][tilePosition.x].repaint();
     }

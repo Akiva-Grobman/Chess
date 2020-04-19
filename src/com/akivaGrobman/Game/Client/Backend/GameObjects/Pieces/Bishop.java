@@ -1,7 +1,7 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 
 import java.awt.*;
 import java.util.List;
@@ -15,16 +15,6 @@ public class Bishop extends Piece implements PieceMoves {
     }
 
     @Override
-    public void move(Point destinationsPosition, Board board) throws IllegalMoveException {
-        this.board = board;
-        if (isLegalMove(destinationsPosition)) {
-            super.move(destinationsPosition, board);
-        }  else {
-            throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
-        }
-    }
-
-    @Override
     public Piece getClone() {
         return new Bishop((Point) getPiecePosition().clone(), getPieceColor());
     }
@@ -34,7 +24,8 @@ public class Bishop extends Piece implements PieceMoves {
         return getPieceType().toString();
     }
 
-    private boolean isLegalMove(Point destinationsPosition) throws IllegalMoveException {
+    @Override
+    protected boolean isLegalMove(Point destinationsPosition) throws IllegalMoveException {
         if(movingInStraightLine(destinationsPosition)) throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
         Point tempDestination = new Point(getPiecePosition());
         Point direction = getDirection(destinationsPosition);

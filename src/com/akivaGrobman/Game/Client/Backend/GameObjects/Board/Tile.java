@@ -1,11 +1,11 @@
-package com.akivaGrobman.Game.Client.Backend.GameObjects;
+package com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 
 import java.awt.*;
 
-class Tile {
+public class Tile {
 
     private Piece piece;
     private Point tilePosition;

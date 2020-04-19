@@ -1,7 +1,7 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import java.awt.*;
 import java.util.Objects;
 
@@ -21,8 +21,13 @@ public abstract class Piece extends PieceMovingMethods implements PieceMoves {
 
     @Override
     public void move(Point destinationsPosition, Board board) throws IllegalMoveException {
-        previousPosition = new Point(position);
-        setPiecePosition(destinationsPosition);
+        this.board = board;
+        if (isLegalMove(destinationsPosition)) {
+            previousPosition = new Point(position);
+            setPiecePosition(destinationsPosition);
+        } else {
+            throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
+        }
     }
 
     public Point getPiecePosition() {
@@ -72,4 +77,7 @@ public abstract class Piece extends PieceMovingMethods implements PieceMoves {
     public abstract Piece getClone();
 
     public abstract String getPieceInString();
+
+    protected abstract boolean isLegalMove(Point destination) throws IllegalMoveException;
+
 }

@@ -1,8 +1,6 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
-
 import java.awt.*;
 import java.util.List;
 
@@ -15,16 +13,6 @@ public class Rook extends Piece implements PieceMoves{
     }
 
     @Override
-    public void move(Point destinationsPosition, Board board) throws IllegalMoveException {
-        this.board = board;
-        if (isLegalMove(destinationsPosition)) {
-            super.move(destinationsPosition, board);
-        } else {
-            throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
-        }
-    }
-
-    @Override
     public Piece getClone() {
         return new Rook((Point) getPiecePosition().clone(), getPieceColor());
     }
@@ -34,7 +22,8 @@ public class Rook extends Piece implements PieceMoves{
         return " " + getPieceType() + " ";
     }
 
-    private boolean isLegalMove(Point destinationsPosition) throws IllegalMoveException {
+    @Override
+    protected boolean isLegalMove(Point destinationsPosition) throws IllegalMoveException {
         if(destinationsPosition.x != getPiecePosition().x && destinationsPosition.y != getPiecePosition().y) throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
         Point tempDestination = new Point(getPiecePosition());
         int direction;

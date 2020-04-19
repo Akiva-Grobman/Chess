@@ -1,7 +1,7 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +18,6 @@ public class Knight extends Piece implements PieceMoves{
     }
 
     @Override
-    public void move(Point destinationsPosition, Board board) throws IllegalMoveException {
-        this.board = board;
-        if (isLegalMove(destinationsPosition)) {
-            super.move(destinationsPosition, board);
-        } else {
-            throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
-        }
-    }
-
-    @Override
     public Piece getClone() {
         return new Knight((Point) getPiecePosition().clone(), getPieceColor());
     }
@@ -37,7 +27,8 @@ public class Knight extends Piece implements PieceMoves{
         return getPieceType().toString();
     }
 
-    private boolean isLegalMove(Point destination) throws IllegalMoveException {
+    @Override
+    protected boolean isLegalMove(Point destination) throws IllegalMoveException {
 //        Point tempDestination = null;
 //        for (Point direction: allPossibleDirections) {
 //            tempDestination = new Point(getPiecePosition().x + direction.x, getPiecePosition().y + direction.y);

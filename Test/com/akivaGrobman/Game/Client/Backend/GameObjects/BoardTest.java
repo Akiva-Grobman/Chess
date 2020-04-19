@@ -2,6 +2,7 @@ package com.akivaGrobman.Game.Client.Backend.GameObjects;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.awt.*;
@@ -26,7 +27,7 @@ class BoardTest {
         assertEquals(board.getPiece(new Point(1,1)).getPiecePosition(), clone.getPiece(new Point(1,1)).getPiecePosition());
         assertEquals(board.getPiece(new Point(1,1)), clone.getPiece(new Point(1,1)));
         assertNotEquals(board.hashCode(), clone.hashCode());
-        assertNotEquals(Arrays.deepHashCode(board.board), Arrays.deepHashCode(clone.board));
+        assertNotEquals(Arrays.deepHashCode(board.getBoard()), Arrays.deepHashCode(clone.getBoard()));
     }
 
     @Test
