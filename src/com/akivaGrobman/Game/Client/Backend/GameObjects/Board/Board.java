@@ -56,7 +56,6 @@ public class Board {
         }
     }
 
-    // todo debug is letting pawn put king in check
     public void move(Point pieceOriginalPosition, Point destination, int depth) throws IllegalMoveException, NoPieceFoundException {
         if(pieceOriginalPosition.equals(destination)) throw new IllegalMoveException("can not move piece to original position");
         Piece piece = board[pieceOriginalPosition.y][pieceOriginalPosition.x].getPiece();
@@ -69,15 +68,12 @@ public class Board {
         piece.move(destination, this);
         board[piece.getPiecePosition().y][piece.getPiecePosition().x].setPiece(piece);
         board[pieceOriginalPosition.y][pieceOriginalPosition.x].setPiece(null);
-        if(getKing(piece.getPieceColor()).isInCheck(this, depth)) {
+       if(getKing(piece.getPieceColor()).isInCheck(this, depth)) {
             piece.moveBack();
             board[pieceOriginalPosition.y][pieceOriginalPosition.x].setPiece(piece);
             board[destination.y][destination.x].setPiece(pieceAtDestination);
-            if(piece instanceof Pawn) {
-                Pawn pawn = (Pawn) piece;
-                pawn.reset();
-            }
         }
+       // todo handle enpassant
     }
 
     public boolean hasPieceInThisPosition(Point position) {

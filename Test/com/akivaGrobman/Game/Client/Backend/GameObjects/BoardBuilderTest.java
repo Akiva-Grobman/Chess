@@ -6,10 +6,8 @@ import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Pawn;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import org.junit.jupiter.api.Test;
-
 import java.awt.*;
 import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardBuilderTest {

@@ -15,33 +15,26 @@ import java.io.IOException;
 public class GraphicBoard extends JFrame {
 
     private GraphicTile [][] board;
-    private Color White = new Color(242, 218, 182);
-    private Color Black = new Color(181, 137, 102);
-    private Player player;
+    private final Color White = new Color(242, 218, 182);
+    private final Color Black = new Color(181, 137, 102);
+    private final Player player;
     static final int TILE_SIZE = 90;
 
     public GraphicBoard(Board board, Player player) {
         this.player = player;
         boardSetUp(board);
-        showBoard();
-    }
-
-    public void showBoard() {
-        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
-            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
-                board[y][x].repaint();
-            }
-        }
-        this.setVisible(true);
+        setVisible(true);
     }
 
     public void updateTile(Point tilePosition, PieceType pieceType, PieceColor pieceColor) {
+        System.out.println("updating data " + tilePosition);
         board[tilePosition.y][tilePosition.x].update(pieceType, pieceColor);
+        System.out.println("repainting " + tilePosition);
         board[tilePosition.y][tilePosition.x].repaint();
     }
 
     private void boardSetUp(Board board) {
-        int windowWidth = TILE_SIZE * ChessGame.SUM_OF_ROWS;;
+        int windowWidth = TILE_SIZE * ChessGame.SUM_OF_ROWS;
         int windowHeight = TILE_SIZE * ChessGame.SUM_OF_ROWS;
         this.setLayout(new GridLayout(ChessGame.SUM_OF_ROWS, ChessGame.SUM_OF_COLUMNS));
         this.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);

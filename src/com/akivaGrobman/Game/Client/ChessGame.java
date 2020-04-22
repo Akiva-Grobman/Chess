@@ -20,8 +20,8 @@ public class ChessGame {
     private Player player;
     private Enemy enemy;
     private Player currentPlayer;
-    private Board backendBoard;
-    private GraphicBoard onScreenBoard;
+    private final Board backendBoard;
+    private final GraphicBoard onScreenBoard;
 
     public ChessGame(PieceColor playersColor, Enemy enemy) {
         backendBoard = new Board();

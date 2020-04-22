@@ -26,7 +26,7 @@ public class CheckChecker {
     }
 
     private static boolean isInCheck(int depth) {
-        // in this method we ignore the NoSuchElementException because when depth == 2.because one of the players doesn't have a king
+        // in this method we ignore the NoSuchElementException because when depth == 2.  because one of the players doesn't have a king
         Board testingBoard;
         King playersKing = getKing(playersColor);
         for (Piece enemyPiece: enemyPieces) {

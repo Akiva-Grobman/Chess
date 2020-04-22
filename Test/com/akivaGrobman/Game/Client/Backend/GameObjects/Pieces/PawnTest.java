@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PawnTest {
@@ -22,7 +24,7 @@ class PawnTest {
         pawn1 = (Pawn) board.getPiece(new Point(1,1));
         pawn2 = new Pawn(new Point(1,1), PieceColor.BLACK);
         expectedPawn1 = new Pawn(new Point(1, 2),PieceColor.BLACK);
-        expectedPawn2 = new Pawn(new Point(1, 3),PieceColor.BLACK);;
+        expectedPawn2 = new Pawn(new Point(1, 3),PieceColor.BLACK);
 
         pawn1.move(new Point(1, 2), board);
         pawn2.move(new Point(1,3), board);
@@ -60,5 +62,20 @@ class PawnTest {
     }
 
     //todo enpassant
+
+    @Test
+    void willAllowEnpassant() throws Exception{
+        pawn1 = new Pawn(new Point(2,3), PieceColor.WHITE);
+        expectedPawn1 = new Pawn(new Point(1, 2), PieceColor.WHITE);
+        board = Board.getConsumeBoard(List.of(pawn1), new ArrayList<>());
+        pawn2 = (Pawn) board.getPiece(new Point(1, 1));
+
+        board.move(pawn2.getPiecePosition(), new Point(1,3), 1);
+        board.move(pawn1.getPiecePosition(), expectedPawn1.getPiecePosition(), 1);
+
+        assertEquals(expectedPawn1, pawn1);
+    }
+
+
     //todo promotion
 }

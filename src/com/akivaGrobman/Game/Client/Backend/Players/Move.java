@@ -6,9 +6,9 @@ import java.io.Serializable;
 
 public class Move implements Serializable {
 
-    private Point origin;
+    private final Point origin;
+    private final PieceColor playersColor;
     private Point destination;
-    private PieceColor playersColor;
 
     public Move(Point origin, PieceColor playersColor) {
         this.origin = origin;
@@ -38,5 +38,12 @@ public class Move implements Serializable {
     @Override
     public String toString() {
         return origin.toString() + destination.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Move)) return false;
+        Move move = (Move) obj;
+        return origin.equals(move.origin) && destination.equals(move.destination);
     }
 }

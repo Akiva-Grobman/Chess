@@ -7,8 +7,8 @@ import java.awt.*;
 
 public class Tile {
 
+    private final Point tilePosition;
     private Piece piece;
-    private Point tilePosition;
 
     Tile(Point tilePosition) {
         this.tilePosition = tilePosition;

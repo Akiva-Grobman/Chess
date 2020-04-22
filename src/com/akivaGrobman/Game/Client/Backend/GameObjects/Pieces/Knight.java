@@ -1,7 +1,6 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +9,7 @@ import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChec
 
 public class Knight extends Piece implements PieceMoves{
 
-    private List<Point> possibleDirections;
+    private final List<Point> possibleDirections;
 
     public Knight(Point position, PieceColor color) {
         super(position, PieceType.KNIGHT, color);
@@ -65,10 +64,10 @@ public class Knight extends Piece implements PieceMoves{
         List<Point> possiblePositions = new ArrayList<>();
         int [] half1 = {1,-1};
         int [] half2 = {2,-2};
-        for (int i = 0; i < half1.length; i++) {
-            for (int j = 0; j < half2.length; j++) {
-                possiblePositions.add(new Point(half1[i], half2[j]));
-                possiblePositions.add(new Point(half2[j], half1[i]));
+        for (int i : half1) {
+            for (int j : half2) {
+                possiblePositions.add(new Point(j, i));
+                possiblePositions.add(new Point(i, j));
             }
         }
         return possiblePositions;

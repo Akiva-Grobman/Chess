@@ -7,8 +7,8 @@ import java.io.ObjectOutputStream;
 
 public class Enemy extends Player {
 
-    private ObjectInputStream inputStream;
-    private ObjectOutputStream outputStream;
+    private final ObjectInputStream inputStream;
+    private final ObjectOutputStream outputStream;
 
     public Enemy(PieceColor playersPieceColor, ObjectInputStream inputStream, ObjectOutputStream outputStream) {
         super(playersPieceColor);
@@ -18,7 +18,6 @@ public class Enemy extends Player {
 
     public void sendMove(Move move) {
         try {
-            System.out.println("sending " + move);
             outputStream.writeObject(move);
         } catch (IOException e) {
             e.printStackTrace();
@@ -27,7 +26,6 @@ public class Enemy extends Player {
 
     public Move getMove() {
         try {
-            System.out.println("getting move");
             Object input = inputStream.readObject();
             if(input instanceof Move) {
                 return (Move)input;

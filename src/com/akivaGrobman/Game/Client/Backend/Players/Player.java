@@ -2,24 +2,19 @@ package com.akivaGrobman.Game.Client.Backend.Players;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.ChessGame;
-
 import java.awt.*;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
 
-    private PieceColor playersPieceColor;
-    private boolean isPlayersTurn;
-    private List<Move> playersMoves;
+    private final List<Move> playersMoves;
+    private final PieceColor playersPieceColor;
     private Move currentMove;
     protected ChessGame game;
 
     public Player(PieceColor playersPieceColor) {
         this.playersPieceColor = playersPieceColor;
-        isPlayersTurn = playersPieceColor == PieceColor.WHITE;
         playersMoves = new ArrayList<>();
     }
 
@@ -39,14 +34,6 @@ public class Player {
         if (currentMove == null || !currentMove.isReadyToBeUsed()) throw new Error("Move data is not complete and ready for usage");
         playersMoves.add(currentMove);
         return currentMove;
-    }
-
-    public boolean isPlayersTurn() {
-        return isPlayersTurn;
-    }
-
-    public void updateTurn() {
-        isPlayersTurn = !isPlayersTurn;
     }
 
     public PieceColor getPlayersColor() {

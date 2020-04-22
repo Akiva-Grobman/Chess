@@ -7,10 +7,10 @@ import java.util.Objects;
 
 public abstract class Piece extends PieceMovingMethods implements PieceMoves {
 
+    private final PieceType type;
+    private final PieceColor color;
     private Point previousPosition;
     private Point position;
-    private PieceType type;
-    private PieceColor color;
 
     public Piece(Point position, PieceType type, PieceColor color) {
         this.position = position;

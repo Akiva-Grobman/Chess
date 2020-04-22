@@ -10,8 +10,8 @@ import java.net.Socket;
 
 class Player {
 
-    private ObjectOutputStream outputStream;
-    private ObjectInputStream inputStream;
+    private final ObjectOutputStream outputStream;
+    private final ObjectInputStream inputStream;
 
     public Player(Socket socket, PieceColor playersColor) throws IOException {
         outputStream = new ObjectOutputStream(socket.getOutputStream());

@@ -2,7 +2,6 @@ package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import java.awt.*;
 import java.util.List;
 import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.*;
@@ -47,7 +46,9 @@ public class Pawn extends Piece implements PieceMoves {
         return null;
     }
 
-    public void reset() {
+    @Override
+    public void moveBack() {
+        super.moveBack();
         isInEnpassantPosition = previousEnpassantStatus;
         isOnStartingLine = previousStatingLineState;
     }
@@ -98,16 +99,16 @@ public class Pawn extends Piece implements PieceMoves {
         }
         if(!isLegal) {
             tempDestination = new Point(getPiecePosition());
-            if (Math.abs(tempDestination.x - destination.x) == 1 && tempDestination.y + direction == destination.y) {
-                try {
-                    tempDestination.x += 1;
+            tempDestination.y += direction;
+            tempDestination.x += 1;
+            if(tempDestination.equals(destination)) {
+                isLegal = isEnpassant(tempDestination);
+            }
+            if(!isLegal) {
+                tempDestination.x -= 2;
+                tempDestination.y -= direction;
+                if(tempDestination.equals(destination)) {
                     isLegal = isEnpassant(tempDestination);
-                    if(!isLegal) {
-                        tempDestination.x -=2;
-                        isLegal = isEnpassant(tempDestination);
-                    }
-                } catch (NoPieceFoundException e) {
-                    isLegal = false;
                 }
             }
         }
@@ -122,12 +123,20 @@ public class Pawn extends Piece implements PieceMoves {
         return isLegal;
     }
 
-    private boolean isEnpassant(Point tempDestination) throws IllegalMoveException, NoPieceFoundException {
-        if (isInBounds(tempDestination)) {
-            if (board.getPiece(tempDestination) instanceof Pawn) {
-                Pawn pawn = ((Pawn) board.getPiece(tempDestination));
-                return pawn.isInEnpassantPosition;
+    private boolean isEnpassant(Point tempDestination) {
+        try {
+            if (isInBounds(tempDestination)) {
+                try {
+                    if (board.getPiece(tempDestination) instanceof Pawn) {
+                        Pawn pawn = ((Pawn) board.getPiece(tempDestination));
+                        return pawn.isInEnpassantPosition;
+                    }
+                } catch (NoPieceFoundException e) {
+                    return false;
+                }
             }
+        } catch (IllegalMoveException e) {
+            return false;
         }
         return false;
     }

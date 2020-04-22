@@ -13,12 +13,12 @@ import java.io.IOException;
 
 public class GraphicTile extends JPanel implements MouseListener {
 
+    private final GraphicBoard board;
+    private final Point tilePosition;
+    private final Color tileColor;
     private BufferedImage image;
-    private Point tilePosition;
-    private Color tileColor;
     private PieceType pieceType;
     private PieceColor pieceColor;
-    private GraphicBoard board;
 
     public GraphicTile(Point position, Color color, GraphicBoard graphicBoard) {
         tilePosition = position;
@@ -36,7 +36,7 @@ public class GraphicTile extends JPanel implements MouseListener {
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        this.setBackground(tileColor);
+        System.out.println(tilePosition);
         if(hasPiece())
             g.drawImage(image, 10, 10, GraphicBoard.TILE_SIZE - 20, GraphicBoard.TILE_SIZE - 20, this);
     }
@@ -45,6 +45,7 @@ public class GraphicTile extends JPanel implements MouseListener {
         this.setPreferredSize(new Dimension(GraphicBoard.TILE_SIZE, GraphicBoard.TILE_SIZE));
         this.setBorder(BorderFactory.createLineBorder(Color.darkGray));
         this.addMouseListener(this);
+        this.setBackground(tileColor);
     }
 
     private boolean hasPiece() {
