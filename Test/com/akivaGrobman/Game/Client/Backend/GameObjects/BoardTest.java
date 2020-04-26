@@ -35,6 +35,7 @@ class BoardTest {
         board = new Board();
         Point pawnOrigin = new Point(2, 1);
         Point destination = new Point(2, 3);
+        boolean isLegal;
         String boardAfterMove = "\n----------------------------------------------------------------------------\n" +
                 "||  ROOK  || KNIGHT || BISHOP ||  QUEEN ||  KING  || BISHOP || KNIGHT ||  ROOK  |\n" +
                 "----------------------------------------------------------------------------\n" +
@@ -53,16 +54,16 @@ class BoardTest {
                 "||  ROOK  || KNIGHT || BISHOP ||  QUEEN ||  KING  || BISHOP || KNIGHT ||  ROOK  |\n" +
                 "----------------------------------------------------------------------------\n";
 
-        board.move(pawnOrigin, destination, 1);
+        isLegal = board.isLegalMove(pawnOrigin, destination, 1);
 
-        assertEquals(boardAfterMove, board.toString());
+        assertTrue(isLegal);
     }
 
     @Test
     void willNotAllowIllegalMove() {
         NoPieceFoundException thrown = assertThrows(
                 NoPieceFoundException.class,
-                () -> board.move(new Point(4,4), new Point(3,3), 1),
+                () -> board.isLegalMove(new Point(4,4), new Point(3,3), 1),
                 "no piece found in position x = " + 4 + " y = " + 4
         );
 
@@ -73,7 +74,7 @@ class BoardTest {
     void willNotAllowMoveToSamePosition() {
         IllegalMoveException thrown = assertThrows(
             IllegalMoveException.class,
-            () -> board.move(new Point(0,0), new Point(0,0), 1),
+            () -> board.isLegalMove(new Point(0,0), new Point(0,0), 1),
    "can not move piece to original position"
         );
 

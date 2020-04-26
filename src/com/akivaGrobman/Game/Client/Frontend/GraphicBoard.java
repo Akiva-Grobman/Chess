@@ -4,9 +4,7 @@ import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.BoardBuilder;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceType;
-import com.akivaGrobman.Game.Client.Backend.Players.Player;
 import com.akivaGrobman.Game.Client.ChessGame;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -17,19 +15,17 @@ public class GraphicBoard extends JFrame {
     private GraphicTile [][] board;
     private final Color White = new Color(242, 218, 182);
     private final Color Black = new Color(181, 137, 102);
-    private final Player player;
+    private final ChessGame game;
     static final int TILE_SIZE = 90;
 
-    public GraphicBoard(Board board, Player player) {
-        this.player = player;
+    public GraphicBoard(Board board, ChessGame game) {
+        this.game = game;
         boardSetUp(board);
         setVisible(true);
     }
 
     public void updateTile(Point tilePosition, PieceType pieceType, PieceColor pieceColor) {
-        System.out.println("updating data " + tilePosition);
         board[tilePosition.y][tilePosition.x].update(pieceType, pieceColor);
-        System.out.println("repainting " + tilePosition);
         board[tilePosition.y][tilePosition.x].repaint();
     }
 
@@ -50,7 +46,7 @@ public class GraphicBoard extends JFrame {
 
     private void addTiles(Board board) {
         initializeTiles(board);
-        if(player.getPlayersColor() == PieceColor.WHITE) {
+        if(game.getPlayersColor() == PieceColor.WHITE) {
             // will show white pieces on the bottom
             for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
                 for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
@@ -77,7 +73,7 @@ public class GraphicBoard extends JFrame {
                 } else {
                     color = Black;
                 }
-                tile = new GraphicTile(new Point(x,y), color, this);
+                tile = new GraphicTile(new Point(x,y), color, game);
                 this.board[y][x] = tile;
             }
         }
@@ -92,10 +88,6 @@ public class GraphicBoard extends JFrame {
             e.printStackTrace();
         }
         this.setIconImage(icon);
-    }
-
-    public void tileClicked(Point tilePosition) {
-        player.addPositionToMove(tilePosition);
     }
 
 }

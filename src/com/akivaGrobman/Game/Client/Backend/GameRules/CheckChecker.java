@@ -27,16 +27,15 @@ public class CheckChecker {
 
     private static boolean isInCheck(int depth) {
         // in this method we ignore the NoSuchElementException because when depth == 2.  because one of the players doesn't have a king
-        Board testingBoard;
         King playersKing = getKing(playersColor);
         for (Piece enemyPiece: enemyPieces) {
             if(enemyPiece instanceof King)
                 continue;
             try {
                 if(depth < MAX_DEPTH) {
-                    testingBoard = Board.getClone(board);
-                    testingBoard.move(enemyPiece.getPiecePosition(), playersKing.getPiecePosition(), depth + 1);
-                    return true;
+                    if(board.isLegalMove(enemyPiece.getPiecePosition(), playersKing.getPiecePosition(), depth)){
+                        return true;
+                    }
                 }
             } catch (IllegalMoveException | NoPieceFoundException ignore) {}
         }

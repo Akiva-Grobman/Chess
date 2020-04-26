@@ -2,6 +2,8 @@ package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
+import com.akivaGrobman.Game.Client.Backend.Players.Enemy;
+import com.akivaGrobman.Game.Client.ChessGame;
 import org.junit.jupiter.api.Test;
 import java.awt.*;
 import java.util.ArrayList;
@@ -66,16 +68,13 @@ class PawnTest {
     @Test
     void willAllowEnpassant() throws Exception{
         pawn1 = new Pawn(new Point(2,3), PieceColor.WHITE);
-        expectedPawn1 = new Pawn(new Point(1, 2), PieceColor.WHITE);
-        board = Board.getConsumeBoard(List.of(pawn1), new ArrayList<>());
-        pawn2 = (Pawn) board.getPiece(new Point(1, 1));
+        pawn2 = new Pawn(new Point(1, 3), PieceColor.WHITE, true);
+        board = Board.getConsumeBoard(List.of(pawn1, pawn2), new ArrayList<>());
+        boolean isLegal;
 
-        board.move(pawn2.getPiecePosition(), new Point(1,3), 1);
-        board.move(pawn1.getPiecePosition(), expectedPawn1.getPiecePosition(), 1);
+        isLegal = board.isLegalMove(pawn1.getPiecePosition(), new Point(1,2), 1);
 
-        assertEquals(expectedPawn1, pawn1);
+        assertTrue(isLegal);
     }
 
-
-    //todo promotion
 }

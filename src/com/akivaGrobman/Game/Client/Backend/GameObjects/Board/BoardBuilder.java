@@ -10,6 +10,8 @@ import java.util.List;
 
 public class BoardBuilder {
 
+    //todo split into frontend and backend
+
     private static Tile[][] board;
 
     public static Tile[][] newBoard() {
@@ -27,6 +29,17 @@ public class BoardBuilder {
         board = oldBoard.board;
         board = getClone(board);
         return board;
+    }
+
+    public static void updateGraphicsBoard(Board board, GraphicTile[][] graphicTiles) {
+        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
+            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
+                try {
+                    Piece piece = board.getPiece(new Point(x,y));
+                    graphicTiles[y][x].update(piece.getPieceType(), piece.getPieceColor());
+                } catch (NoPieceFoundException ignore) {}
+            }
+        }
     }
 
     private static Tile[][] getClone(Tile[][] board) {
@@ -115,14 +128,4 @@ public class BoardBuilder {
         }
     }
 
-    public static void updateGraphicsBoard(Board board, GraphicTile[][] graphicTiles) {
-        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
-            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
-                try {
-                    Piece piece = board.getPiece(new Point(x,y));
-                    graphicTiles[y][x].update(piece.getPieceType(), piece.getPieceColor());
-                } catch (NoPieceFoundException ignore) {}
-            }
-        }
-    }
 }

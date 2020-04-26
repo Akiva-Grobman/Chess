@@ -5,12 +5,9 @@ import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Rook;
 import org.junit.jupiter.api.Test;
-
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class CheckCheckerTest {
@@ -20,18 +17,16 @@ class CheckCheckerTest {
     @Test
     void willReturnTrueIfIsLegalMove() throws Exception {
         Rook enemyRook = new Rook(new Point(5, 1), PieceColor.WHITE);
-        board = Board.getConsumeBoard(Collections.singletonList(enemyRook), new ArrayList<>());
+        board = Board.getConsumeBoard(Collections.singletonList(enemyRook), Collections.singletonList(new Point(3, 1)));
         King king = (King) board.getPiece(new Point(4, 0));
-        boolean isInCheck;
+        boolean isLegal;
 
-        board.move(king.getPiecePosition(), enemyRook.getPiecePosition(), 1);
-        isInCheck = CheckChecker.kingIsInCheck(king.getPieceColor(), board, 1);
-
-        assertFalse(isInCheck);
+        isLegal = board.isLegalMove(king.getPiecePosition(), new Point(3, 1), 1);
+        assertTrue(isLegal);
     }
 
     @Test
-    void willReturnFalseIfMovePuttsKingInCheck() throws Exception {
+    void willReturnFalseIfMovePuttsKingInCheck() {
         Rook enemyRook = new Rook(new Point(4, 5), PieceColor.WHITE);
         board = Board.getConsumeBoard(List.of(enemyRook), List.of(new Point(4,1)));
         boolean isInCheck;

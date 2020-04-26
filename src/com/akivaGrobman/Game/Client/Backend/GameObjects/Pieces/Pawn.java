@@ -13,18 +13,30 @@ public class Pawn extends Piece implements PieceMoves {
         DOWN
     }
 
+    private final int STARTING_ROW;
     private Direction direction;
     private boolean isInEnpassantPosition;
-    private boolean isOnStartingLine;
     private boolean previousEnpassantStatus;
-    private boolean previousStatingLineState;
 
     public Pawn(Point position, PieceColor color) {
         super(position, PieceType.PAWN, color);
+        STARTING_ROW = position.y;
         board = null;
         setDirection();
         isInEnpassantPosition = false;
-        isOnStartingLine = true;
+    }
+
+    // this is for testing only (that's why it's protected)
+    protected Pawn(Point position, PieceColor color, boolean isInEnpassantPosition) {
+        super(position, PieceType.PAWN, color);
+        if(color == PieceColor.BLACK) {
+            STARTING_ROW = 1;
+        } else {
+            STARTING_ROW = 6;
+        }
+        board = null;
+        setDirection();
+        this.isInEnpassantPosition = isInEnpassantPosition;
     }
 
     @Override
@@ -32,7 +44,6 @@ public class Pawn extends Piece implements PieceMoves {
         Pawn pawn = new Pawn((Point) getPiecePosition().clone(), getPieceColor());
         pawn.direction = direction;
         pawn.isInEnpassantPosition = isInEnpassantPosition;
-        pawn.isOnStartingLine = isOnStartingLine;
         return pawn;
     }
 
@@ -47,10 +58,9 @@ public class Pawn extends Piece implements PieceMoves {
     }
 
     @Override
-    public void moveBack() {
-        super.moveBack();
+    public void reversMove() {
+        super.reversMove();
         isInEnpassantPosition = previousEnpassantStatus;
-        isOnStartingLine = previousStatingLineState;
     }
 
     private void setDirection() {
@@ -71,11 +81,18 @@ public class Pawn extends Piece implements PieceMoves {
         if (tempDestination.equals(destination)) {
             isLegal = isInBounds(tempDestination) && isVacantPosition(tempDestination, board);
         }
+
         // then one to the left
         if(!isLegal) {
             tempDestination.x -= 1;
             if (tempDestination.equals(destination)) {
                 isLegal = isInBounds(tempDestination) && hasEnemyPiece(getPieceColor(), tempDestination, board);
+                // enpassant to the left
+                if(!isLegal) {
+                    tempDestination.y -= direction;
+                    isLegal = isEnpassant(tempDestination);
+                    tempDestination.y += direction;
+                }
             }
         }
         // then the one on the right
@@ -83,10 +100,16 @@ public class Pawn extends Piece implements PieceMoves {
             tempDestination.x += 2;
             if (tempDestination.equals(destination)) {
                 isLegal = isInBounds(tempDestination) && hasEnemyPiece(getPieceColor(), tempDestination, board);
+                // enpassant to the right
+                if(!isLegal) {
+                    tempDestination.y -= direction;
+                    isLegal = isEnpassant(tempDestination);
+                    tempDestination.y += direction;
+                }
             }
         }
         if(!isLegal) {
-            if (isOnStartingLine) {
+            if (getPiecePosition().y == STARTING_ROW) {
                 int oldY = tempDestination.y;
                 tempDestination.y += direction;
                 tempDestination.x = getPiecePosition().x;
@@ -97,24 +120,24 @@ public class Pawn extends Piece implements PieceMoves {
                 }
             }
         }
-        if(!isLegal) {
-            tempDestination = new Point(getPiecePosition());
-            tempDestination.y += direction;
-            tempDestination.x += 1;
-            if(tempDestination.equals(destination)) {
-                isLegal = isEnpassant(tempDestination);
-            }
-            if(!isLegal) {
-                tempDestination.x -= 2;
-                tempDestination.y -= direction;
-                if(tempDestination.equals(destination)) {
-                    isLegal = isEnpassant(tempDestination);
-                }
-            }
-        }
+//        if(!isLegal) {
+//            tempDestination = new Point(getPiecePosition());
+//            tempDestination.y += direction;
+//            tempDestination.x += 1;
+//            if(tempDestination.equals(destination)) {
+//                tempDestination.y -= direction;
+//                isLegal = isEnpassant(tempDestination);
+//            }
+//            if(!isLegal) {
+//                tempDestination.x -= 2;
+//                tempDestination.y -= direction;
+//                if(tempDestination.equals(destination)) {
+//                    tempDestination.y -= direction;
+//                    isLegal = isEnpassant(tempDestination);
+//                }
+//            }
+//        }
         if(isLegal) {
-            previousStatingLineState = isOnStartingLine;
-            isOnStartingLine = false;
             if(previousEnpassantStatus) {
                 isInEnpassantPosition = false;
             }
@@ -123,6 +146,7 @@ public class Pawn extends Piece implements PieceMoves {
         return isLegal;
     }
 
+    // todo debug
     private boolean isEnpassant(Point tempDestination) {
         try {
             if (isInBounds(tempDestination)) {

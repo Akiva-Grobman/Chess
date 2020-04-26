@@ -16,7 +16,6 @@ public class ChessGame {
 
     public static final int SUM_OF_ROWS = 8;
     public static final int SUM_OF_COLUMNS = 8;
-
     private Player player;
     private Enemy enemy;
     private Player currentPlayer;
@@ -26,17 +25,17 @@ public class ChessGame {
     public ChessGame(PieceColor playersColor, Enemy enemy) {
         backendBoard = new Board();
         setPlayers(playersColor, enemy);
-        onScreenBoard = new GraphicBoard(backendBoard, player);
+        onScreenBoard = new GraphicBoard(backendBoard, this);
         if(player.getPlayersColor() == PieceColor.BLACK) {
             makeEnemyMove();
         }
     }
 
     private void setPlayers(PieceColor playersColor, Enemy enemy) {
+        enemy.setContext(this);
         this.enemy = enemy;
         player = new Player(playersColor);
         player.setContext(this);
-        this.enemy.setContext(this);
         if(player.getPlayersColor() == PieceColor.WHITE) {
             currentPlayer = player;
         } else {
@@ -45,21 +44,19 @@ public class ChessGame {
     }
 
     public void move(Move move, Player player) {
-        if(currentPlayer.equals(player)) {
-            Piece oldPiece = getPiece(move.getDestination());
-            move(move);
-            if(wasLegalMove(move, oldPiece)) {
-                Point destination = move.getDestination();
-                Piece piece = getPiece(destination);
-                onScreenBoard.updateTile(destination, piece.getPieceType(), currentPlayer.getPlayersColor());
-                onScreenBoard.updateTile(move.getOrigin(), null, null);
-                if(move.getPlayersColor() == this.player.getPlayersColor()) {
-                    enemy.sendMove(move);
-                }
-                changeCurrentPlayer();
-                if (player.equals(this.player)) {
-                    makeEnemyMove();
-                }
+        if(isLegalMove(move)) {
+            Piece piece = getPiece(move.getOrigin());
+            backendBoard.updateTile(move.getOrigin(), null);
+            backendBoard.updateTile(move.getDestination(), piece);
+            assert piece != null; // because it wouldn't be legal if it was
+            onScreenBoard.updateTile(move.getDestination(), piece.getPieceType(), piece.getPieceColor());
+            onScreenBoard.updateTile(move.getOrigin(), null, null);
+            if(player.equals(this.player)) {
+                enemy.sendMove(move);
+            }
+            changeCurrentPlayer();
+            if(player.equals(this.player)) {
+                makeEnemyMove();
             }
         }
     }
@@ -68,21 +65,18 @@ public class ChessGame {
         move(enemy.getMove(), enemy);
     }
 
-    private boolean wasLegalMove(Move move, Piece oldPiece) {
-        return getPiece(move.getDestination()) != null && oldPiece != getPiece(move.getDestination()) && !backendBoard.hasPieceInThisPosition(move.getOrigin());
-    }
-
-    private void move(Move currentMove) {
+    private boolean isLegalMove(Move move) {
         try {
             int STARTING_DEPTH = 1;
-            backendBoard.move(currentMove.getOrigin(), currentMove.getDestination(), STARTING_DEPTH);
+            return backendBoard.isLegalMove(move.getOrigin(), move.getDestination(), STARTING_DEPTH);
         } catch (IllegalMoveException | NoPieceFoundException e) {
             String msg = e.getMessage();
             if (msg.contains("can not move piece to original position")) {
                 System.out.println("can not move piece to original position");
-            } else if (msg.contains("no piece found in position x = " + currentMove.getOrigin().x + " y = " + currentMove.getOrigin().y)) {
-                System.out.println("no piece found in position x = " + currentMove.getOrigin().x + " y = " + currentMove.getOrigin().y);
+            } else if (msg.contains("no piece found in position x = " + move.getOrigin().x + " y = " + move.getOrigin().y)) {
+                System.out.println("no piece found in position x = " + move.getOrigin().x + " y = " + move.getOrigin().y);
             }
+            return false;
         }
     }
 
@@ -102,4 +96,13 @@ public class ChessGame {
         }
     }
 
+    public void tileClicked(Point tilePosition) {
+        if(currentPlayer.equals(player)) {
+            player.addPositionToMove(tilePosition);
+        }
+    }
+
+    public PieceColor getPlayersColor() {
+        return player.getPlayersColor();
+    }
 }

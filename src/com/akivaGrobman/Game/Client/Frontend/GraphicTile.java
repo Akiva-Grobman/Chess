@@ -2,28 +2,28 @@ package com.akivaGrobman.Game.Client.Frontend;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceType;
+import com.akivaGrobman.Game.Client.ChessGame;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class GraphicTile extends JPanel implements MouseListener {
+public class GraphicTile extends JPanel {
 
-    private final GraphicBoard board;
+    private final ChessGame game;
     private final Point tilePosition;
     private final Color tileColor;
     private BufferedImage image;
     private PieceType pieceType;
     private PieceColor pieceColor;
 
-    public GraphicTile(Point position, Color color, GraphicBoard graphicBoard) {
+    public GraphicTile(Point position, Color color, ChessGame game) {
         tilePosition = position;
         tileColor = color;
-        board = graphicBoard;
+        this.game = game;
         image = null;
         panelSetUp();
     }
@@ -36,7 +36,6 @@ public class GraphicTile extends JPanel implements MouseListener {
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        System.out.println(tilePosition);
         if(hasPiece())
             g.drawImage(image, 10, 10, GraphicBoard.TILE_SIZE - 20, GraphicBoard.TILE_SIZE - 20, this);
     }
@@ -44,7 +43,7 @@ public class GraphicTile extends JPanel implements MouseListener {
     private void panelSetUp() {
         this.setPreferredSize(new Dimension(GraphicBoard.TILE_SIZE, GraphicBoard.TILE_SIZE));
         this.setBorder(BorderFactory.createLineBorder(Color.darkGray));
-        this.addMouseListener(this);
+        this.addMouseListener(new MouseListener(game, tilePosition));
         this.setBackground(tileColor);
     }
 
@@ -62,31 +61,6 @@ public class GraphicTile extends JPanel implements MouseListener {
 
     private BufferedImage getImageFromFileName(String fileName) throws IOException {
         return ImageIO.read(getClass().getResource(fileName));
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) {
-        board.tileClicked(tilePosition);
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent mouseEvent) {
-
     }
 
 }

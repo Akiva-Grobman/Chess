@@ -14,6 +14,7 @@ public class Board {
     private King whiteKing;
     private King blackKing;
 
+    // todo split board into two classes (one board and one chessBoard)
     public Board() {
         board = BoardBuilder.newBoard();
         try {
@@ -56,24 +57,31 @@ public class Board {
         }
     }
 
-    public void move(Point pieceOriginalPosition, Point destination, int depth) throws IllegalMoveException, NoPieceFoundException {
-        if(pieceOriginalPosition.equals(destination)) throw new IllegalMoveException("can not move piece to original position");
-        Piece piece = board[pieceOriginalPosition.y][pieceOriginalPosition.x].getPiece();
-        Piece pieceAtDestination;
-        try {
-            pieceAtDestination = board[destination.y][destination.x].getPiece();
-        } catch (NoPieceFoundException e) {
-            pieceAtDestination = null;
-        }
+    public boolean isLegalMove(Point origin, Point destination, int depth) throws IllegalMoveException, NoPieceFoundException {
+        if(origin.equals(destination)) throw new IllegalMoveException("can not move piece to original position");
+        Piece piece = board[origin.y][origin.x].getPiece();
         piece.move(destination, this);
-        board[piece.getPiecePosition().y][piece.getPiecePosition().x].setPiece(piece);
-        board[pieceOriginalPosition.y][pieceOriginalPosition.x].setPiece(null);
-       if(getKing(piece.getPieceColor()).isInCheck(this, depth)) {
-            piece.moveBack();
-            board[pieceOriginalPosition.y][pieceOriginalPosition.x].setPiece(piece);
-            board[destination.y][destination.x].setPiece(pieceAtDestination);
+        // todo handle enpassant
+        boolean isInCheck = isInCheck(piece, origin, depth);
+        return !isInCheck;
+    }
+
+    private boolean isInCheck(Piece piece, Point origin, int depth) {
+        boolean isInCheck;
+        Point destination = piece.getPiecePosition();
+        Piece oldPiece;
+        try {
+            oldPiece = board[destination.y][destination.x].getPiece();
+        } catch (NoPieceFoundException e) {
+            oldPiece = null;
         }
-       // todo handle enpassant
+        board[destination.y][destination.x].setPiece(piece);
+        board[origin.y][origin.x].setPiece(null);
+        isInCheck = getKing(piece.getPieceColor()).isInCheck(this, depth);
+        piece.reversMove();
+        board[origin.y][origin.x].setPiece(piece);
+        board[destination.y][destination.x].setPiece(oldPiece);
+        return isInCheck;
     }
 
     public boolean hasPieceInThisPosition(Point position) {
@@ -92,6 +100,10 @@ public class Board {
 
     public King getKing(PieceColor pieceColor) {
         return (pieceColor == PieceColor.BLACK)? blackKing: whiteKing;
+    }
+
+    public void updateTile(Point position, Piece piece) {
+        board[position.y][position.x].setPiece(piece);
     }
 
     private static Point getKingPosition(PieceColor kingColor, Tile[][] board) {
