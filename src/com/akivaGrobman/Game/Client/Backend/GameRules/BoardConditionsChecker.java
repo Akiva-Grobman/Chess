@@ -8,7 +8,7 @@ import com.akivaGrobman.Game.Client.ChessGame;
 
 import java.awt.*;
 
-public class BoardConditionsChecker {
+public abstract class BoardConditionsChecker {
 
     public static boolean isInBounds(Point position) throws IllegalMoveException {
         if(position.x < ChessGame.SUM_OF_COLUMNS && position.x >= 0 && position.y < ChessGame.SUM_OF_ROWS && position.y >= 0) {

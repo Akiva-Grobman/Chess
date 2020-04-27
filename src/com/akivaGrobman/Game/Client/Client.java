@@ -15,6 +15,7 @@ public class Client {
         Socket socket;
         PieceColor playersColor;
         Enemy enemy;
+        //todo public ip
         socket = new Socket("127.0.0.1", Server.PORT);
         ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
         ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());

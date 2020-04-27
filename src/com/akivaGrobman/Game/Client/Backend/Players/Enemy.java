@@ -16,19 +16,19 @@ public class Enemy extends Player {
         this.outputStream = outputStream;
     }
 
-    public void sendMove(Move move) {
+    public void sendMove(Positions positions) {
         try {
-            outputStream.writeObject(move);
+            outputStream.writeObject(positions);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public Move getMove() {
+    public Positions getMove() {
         try {
             Object input = inputStream.readObject();
-            if(input instanceof Move) {
-                return (Move)input;
+            if(input instanceof Positions) {
+                return (Positions)input;
             } throw new Error("wrong cast type " + input.getClass().getSimpleName());
         } catch (IOException | ClassNotFoundException e) {
             throw new Error(e.getMessage());

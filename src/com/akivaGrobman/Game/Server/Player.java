@@ -1,7 +1,7 @@
 package com.akivaGrobman.Game.Server;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Client.Backend.Players.Move;
+import com.akivaGrobman.Game.Client.Backend.Players.Positions;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,16 +19,16 @@ class Player {
         outputStream.writeObject(playersColor.toString());
     }
 
-    public Move getMove() throws IOException, ClassNotFoundException {
+    public Positions getMove() throws IOException, ClassNotFoundException {
         Object input = inputStream.readObject();
-        if(input instanceof Move) {
-            return (Move) input;
+        if(input instanceof Positions) {
+            return (Positions) input;
         }
         throw new Error("wrong cast Type "+ input.getClass().getSimpleName());
     }
 
-    public void sendMove(Move move) throws IOException {
-        outputStream.writeObject(move);
+    public void sendMove(Positions positions) throws IOException {
+        outputStream.writeObject(positions);
     }
 
 }

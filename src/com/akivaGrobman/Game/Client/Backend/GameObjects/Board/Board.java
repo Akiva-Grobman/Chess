@@ -61,7 +61,6 @@ public class Board {
         if(origin.equals(destination)) throw new IllegalMoveException("can not move piece to original position");
         Piece piece = board[origin.y][origin.x].getPiece();
         piece.move(destination, this);
-        // todo handle enpassant
         boolean isInCheck = isInCheck(piece, origin, depth);
         return !isInCheck;
     }

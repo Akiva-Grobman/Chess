@@ -3,10 +3,14 @@ package com.akivaGrobman.Game.Client.Backend.GameObjects;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Rook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -93,6 +97,15 @@ class BoardTest {
         assertFalse(doesNotHavePiece);
     }
 
-    //todo will not put piece in check
+    @Test
+    void willReturnTrueIfIsLegalMove() throws Exception {
+        Rook enemyRook = new Rook(new Point(5, 1), PieceColor.WHITE);
+        board = Board.getConsumeBoard(Collections.singletonList(enemyRook), Collections.singletonList(new Point(3, 1)));
+        King king = (King) board.getPiece(new Point(4, 0));
+        boolean isLegal;
+
+        isLegal = board.isLegalMove(king.getPiecePosition(), new Point(3, 1), 1);
+        assertTrue(isLegal);
+    }
 
 }

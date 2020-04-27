@@ -3,11 +3,9 @@ package com.akivaGrobman.Game.Client.Frontend;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceType;
 import com.akivaGrobman.Game.Client.ChessGame;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -63,4 +61,8 @@ public class GraphicTile extends JPanel {
         return ImageIO.read(getClass().getResource(fileName));
     }
 
+    @Override
+    public String toString() {
+        return (pieceType != null)? " " + pieceType.toString() + " ": "      ";
+    }
 }

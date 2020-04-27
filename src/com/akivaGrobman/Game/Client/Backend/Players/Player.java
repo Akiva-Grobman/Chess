@@ -3,37 +3,31 @@ package com.akivaGrobman.Game.Client.Backend.Players;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.ChessGame;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Player {
 
-    private final List<Move> playersMoves;
     private final PieceColor playersPieceColor;
-    private Move currentMove;
+    private Positions currentPositions;
     protected ChessGame game;
 
     public Player(PieceColor playersPieceColor) {
         this.playersPieceColor = playersPieceColor;
-        playersMoves = new ArrayList<>();
     }
 
     public void addPositionToMove(Point position) {
-       if(currentMove == null) {
-           currentMove = new Move(position, playersPieceColor);
-       } else if(!currentMove.isReadyToBeUsed()) {
-           currentMove.setDestination(position);
-           playersMoves.add(currentMove);
-           game.move(currentMove, this);
+       if(currentPositions == null) {
+           currentPositions = new Positions(position, playersPieceColor);
+       } else if(!currentPositions.isReadyToBeUsed()) {
+           currentPositions.setDestination(position);
+           game.move(currentPositions, this);
        } else {
-           currentMove = new Move(position, playersPieceColor);
+           currentPositions = new Positions(position, playersPieceColor);
        }
     }
 
-    public Move getMove() {
-        if (currentMove == null || !currentMove.isReadyToBeUsed()) throw new Error("Move data is not complete and ready for usage");
-        playersMoves.add(currentMove);
-        return currentMove;
+    public Positions getMove() {
+        if (currentPositions == null || !currentPositions.isReadyToBeUsed()) throw new Error("Move data is not complete and ready for usage");
+        return currentPositions;
     }
 
     public PieceColor getPlayersColor() {

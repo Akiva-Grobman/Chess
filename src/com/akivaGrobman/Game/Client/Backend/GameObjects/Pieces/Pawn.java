@@ -8,13 +8,8 @@ import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChec
 
 public class Pawn extends Piece implements PieceMoves {
 
-    private enum Direction {
-        UP,
-        DOWN
-    }
-
     private final int STARTING_ROW;
-    private Direction direction;
+    private final int direction;
     private boolean isInEnpassantPosition;
     private boolean previousEnpassantStatus;
 
@@ -22,7 +17,7 @@ public class Pawn extends Piece implements PieceMoves {
         super(position, PieceType.PAWN, color);
         STARTING_ROW = position.y;
         board = null;
-        setDirection();
+        direction = getDirection();
         isInEnpassantPosition = false;
     }
 
@@ -31,18 +26,18 @@ public class Pawn extends Piece implements PieceMoves {
         super(position, PieceType.PAWN, color);
         if(color == PieceColor.BLACK) {
             STARTING_ROW = 1;
+            direction = 1;
         } else {
             STARTING_ROW = 6;
+            direction = -1;
         }
         board = null;
-        setDirection();
         this.isInEnpassantPosition = isInEnpassantPosition;
     }
 
     @Override
     public Piece getClone() {
         Pawn pawn = new Pawn((Point) getPiecePosition().clone(), getPieceColor());
-        pawn.direction = direction;
         pawn.isInEnpassantPosition = isInEnpassantPosition;
         return pawn;
     }
@@ -63,18 +58,17 @@ public class Pawn extends Piece implements PieceMoves {
         isInEnpassantPosition = previousEnpassantStatus;
     }
 
-    private void setDirection() {
+    private int getDirection() {
         if (getPieceColor() == PieceColor.BLACK) {
-            direction = Direction.UP;
+            return 1;
         } else {
-            direction = Direction.DOWN;
+            return -1;
         }
     }
 
     @Override
     protected boolean isLegalMove(Point destination) throws IllegalMoveException {
         boolean isLegal = false;
-        int direction = getDirection();
         Point tempDestination = new Point(getPiecePosition());
         tempDestination.y += direction;
         // the tile in front
@@ -120,23 +114,6 @@ public class Pawn extends Piece implements PieceMoves {
                 }
             }
         }
-//        if(!isLegal) {
-//            tempDestination = new Point(getPiecePosition());
-//            tempDestination.y += direction;
-//            tempDestination.x += 1;
-//            if(tempDestination.equals(destination)) {
-//                tempDestination.y -= direction;
-//                isLegal = isEnpassant(tempDestination);
-//            }
-//            if(!isLegal) {
-//                tempDestination.x -= 2;
-//                tempDestination.y -= direction;
-//                if(tempDestination.equals(destination)) {
-//                    tempDestination.y -= direction;
-//                    isLegal = isEnpassant(tempDestination);
-//                }
-//            }
-//        }
         if(isLegal) {
             if(previousEnpassantStatus) {
                 isInEnpassantPosition = false;
@@ -146,14 +123,13 @@ public class Pawn extends Piece implements PieceMoves {
         return isLegal;
     }
 
-    // todo debug
     private boolean isEnpassant(Point tempDestination) {
         try {
             if (isInBounds(tempDestination)) {
                 try {
                     if (board.getPiece(tempDestination) instanceof Pawn) {
                         Pawn pawn = ((Pawn) board.getPiece(tempDestination));
-                        return pawn.isInEnpassantPosition;
+                        return pawn.getPieceColor() != getPieceColor() && pawn.isInEnpassantPosition;
                     }
                 } catch (NoPieceFoundException e) {
                     return false;
@@ -163,14 +139,6 @@ public class Pawn extends Piece implements PieceMoves {
             return false;
         }
         return false;
-    }
-
-    private int getDirection() {
-        if (this.direction == Direction.UP) {
-            return 1;
-        } else {
-            return -1;
-        }
     }
 
 }

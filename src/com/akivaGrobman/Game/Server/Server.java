@@ -1,7 +1,7 @@
 package com.akivaGrobman.Game.Server;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Client.Backend.Players.Move;
+import com.akivaGrobman.Game.Client.Backend.Players.Positions;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -34,8 +34,8 @@ public class Server {
         currentPlayer = players[0];
         otherPlayer = players[1];
         do {
-            Move move = currentPlayer.getMove();
-            otherPlayer.sendMove(move);
+            Positions positions = currentPlayer.getMove();
+            otherPlayer.sendMove(positions);
             updatePlayers();
         } while (run);
     }

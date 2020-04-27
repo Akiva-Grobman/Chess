@@ -4,18 +4,18 @@ import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import java.awt.*;
 import java.io.Serializable;
 
-public class Move implements Serializable {
+public class Positions implements Serializable {
 
     private final Point origin;
     private final PieceColor playersColor;
     private Point destination;
 
-    public Move(Point origin, PieceColor playersColor) {
+    public Positions(Point origin, PieceColor playersColor) {
         this.origin = origin;
         this.playersColor = playersColor;
     }
 
-    void setDestination(Point destination) {
+    public void setDestination(Point destination) {
         this.destination = destination;
     }
 
@@ -42,8 +42,8 @@ public class Move implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof Move)) return false;
-        Move move = (Move) obj;
-        return origin.equals(move.origin) && destination.equals(move.destination);
+        if(!(obj instanceof Positions)) return false;
+        Positions positions = (Positions) obj;
+        return origin.equals(positions.origin) && destination.equals(positions.destination);
     }
 }

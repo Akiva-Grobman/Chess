@@ -2,6 +2,7 @@ package com.akivaGrobman.Game.Client.Frontend;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.BoardBuilder;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Tile;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceType;
 import com.akivaGrobman.Game.Client.ChessGame;
@@ -9,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class GraphicBoard extends JFrame {
 
@@ -90,4 +92,18 @@ public class GraphicBoard extends JFrame {
         this.setIconImage(icon);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder bo = new StringBuilder();
+        String line = "\n----------------------------------------------------------------------------\n";
+        bo.append(line);
+        for (GraphicTile[] tiles: board) {
+            bo.append("|");
+            for (GraphicTile tile: tiles) {
+                bo.append(tile.toString());
+            }
+            bo.append(line);
+        }
+        return bo.toString();
+    }
 }
