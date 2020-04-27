@@ -4,10 +4,9 @@ import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceType;
 import com.akivaGrobman.Game.Client.ChessGame;
-
 import javax.swing.*;
 import java.awt.*;
-
+import java.net.URL;
 import static com.akivaGrobman.Game.Client.Frontend.BoardBuilder.*;
 
 public class GraphicBoard {
@@ -29,7 +28,8 @@ public class GraphicBoard {
     }
 
     private void boardSetUp(Board board) {
-        frame = getChessBoardFrame(getClass().getResource("Images/icon.png"));
+        URL iconUrl = getClass().getResource("Images/icon.png");
+        frame = getChessBoardFrame(iconUrl);
         this.board = getStartingBoard(board, game);
         addTilesToFrame(game.getPlayersColor(), frame, this.board);
     }

@@ -1,16 +1,11 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
 
-import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.*;
 import com.akivaGrobman.Game.Client.ChessGame;
-import com.akivaGrobman.Game.Client.Frontend.GraphicTile;
-
 import java.awt.*;
 import java.util.List;
 
 public abstract class BoardBuilder {
-
-    //todo split into frontend and backend
 
     private static Tile[][] board;
 
@@ -29,17 +24,6 @@ public abstract class BoardBuilder {
         board = oldBoard.board;
         board = getClone(board);
         return board;
-    }
-
-    public static void updateGraphicsBoard(Board board, GraphicTile[][] graphicTiles) {
-        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
-            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
-                try {
-                    Piece piece = board.getPiece(new Point(x,y));
-                    graphicTiles[y][x].update(piece.getPieceType(), piece.getPieceColor());
-                } catch (NoPieceFoundException ignore) {}
-            }
-        }
     }
 
     private static Tile[][] getClone(Tile[][] board) {
