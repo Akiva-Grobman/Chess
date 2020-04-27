@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
 
 import static com.akivaGrobman.Game.Client.ChessGame.SUM_OF_COLUMNS;
 import static com.akivaGrobman.Game.Client.ChessGame.SUM_OF_ROWS;
@@ -31,7 +32,7 @@ public abstract class BoardBuilder {
         }
     }
 
-    public static JFrame getChessBoardFrame(Class cls) {
+    public static JFrame getChessBoardFrame(URL iconUrl) {
         JFrame frame = new JFrame("Akiva's Awesome Chess");
         int windowWidth = TILE_SIZE * SUM_OF_ROWS;
         int windowHeight = TILE_SIZE * SUM_OF_ROWS;
@@ -43,7 +44,7 @@ public abstract class BoardBuilder {
         frame.setResizable(false);
         Image icon = null;
         try {
-            icon = ImageIO.read(cls.getResource("Images/icon.png"));
+            icon = ImageIO.read(iconUrl);
         } catch (IOException e) {
             e.printStackTrace();
         }

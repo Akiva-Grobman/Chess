@@ -29,7 +29,7 @@ public class GraphicBoard {
     }
 
     private void boardSetUp(Board board) {
-        frame = getChessBoardFrame(getClass());
+        frame = getChessBoardFrame(getClass().getResource("Images/icon.png"));
         this.board = getStartingBoard(board, game);
         addTilesToFrame(game.getPlayersColor(), frame, this.board);
     }
