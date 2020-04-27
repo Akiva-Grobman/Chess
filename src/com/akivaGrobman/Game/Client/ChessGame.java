@@ -64,7 +64,7 @@ public class ChessGame {
                 backendBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null);
                 onScreenBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null, null);
             } else if(wasCastling(backendBoard, moves)) {
-                //todo
+                //done
             } else if(wasPromotion(backendBoard, positions.getDestination())) {
                 //done
             }

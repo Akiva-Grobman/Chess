@@ -13,13 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class KingTest {
 
     private King kingStraight;
-    private King kingDiagonal;
     private Board board;
 
     @Test
     void legalMoveWillWork() throws Exception {
         kingStraight = new King(new Point(4,4), PieceColor.WHITE);
-        kingDiagonal = new King(new Point(5,5), PieceColor.BLACK);
+        King kingDiagonal = new King(new Point(5, 5), PieceColor.BLACK);
         Pawn cannonFodder = new Pawn(new Point(4,3), PieceColor.BLACK);
         board = Board.getConsumeBoard(Arrays.asList(kingDiagonal, kingStraight, cannonFodder), List.of(new Point(3,0), new Point(3,7)));
         kingStraight.move(new Point(4,3), board);
@@ -41,7 +40,5 @@ class KingTest {
 
         assertTrue(thrown.getMessage().contains("King can not move from 4,0 to 4,1"));
     }
-
-    //todo add willNotPutItselfInCheck
 
 }

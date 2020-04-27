@@ -1,4 +1,4 @@
-package com.akivaGrobman.Game.Client.Backend.GameObjects;
+package com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.BoardBuilder;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Tile;

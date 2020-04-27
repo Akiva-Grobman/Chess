@@ -8,7 +8,7 @@ import com.akivaGrobman.Game.Client.Frontend.GraphicTile;
 import java.awt.*;
 import java.util.List;
 
-public class BoardBuilder {
+public abstract class BoardBuilder {
 
     //todo split into frontend and backend
 

@@ -63,8 +63,6 @@ class PawnTest {
          assertTrue(thrown.getMessage().contains(String.format("%s can not move from 1,1 to 4,4", pawn1.getClass().getSimpleName())));
     }
 
-    //todo enpassant
-
     @Test
     void willAllowEnpassant() throws Exception{
         pawn1 = new Pawn(new Point(2,3), PieceColor.WHITE);
