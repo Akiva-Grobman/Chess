@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,12 +19,12 @@ class BishopTest {
     @Test
     void legalMoveWorks() throws Exception {
         bishop = new Bishop(new Point(2,2), PieceColor.BLACK);
-        Bishop newPosition = new Bishop(new Point(4,4), PieceColor.BLACK);
-        board = Board.getConsumeBoard(Arrays.asList(bishop), new ArrayList<>());
+        board = Board.getConsumeBoard(Collections.singletonList(bishop), new ArrayList<>());
+        boolean isLegal;
 
-        bishop.move(new Point(4,4), board);
+        isLegal = bishop.isLegalMove(new Point(4,4), board);
 
-        assertEquals(newPosition, bishop);
+        assertTrue(isLegal);
     }
 
     @Test
@@ -32,35 +33,25 @@ class BishopTest {
         Pawn blocking = new Pawn(new Point(3,3), PieceColor.BLACK);
         board = Board.getConsumeBoard(Arrays.asList(secondBishop, blocking), new ArrayList<>());
         bishop = (Bishop) board.getPiece(new Point(2,0));
+        boolean firstMoveIsLegal;
+        boolean secondMoveIsLegal;
 
-        IllegalMoveException thrown1 = assertThrows(
-                IllegalMoveException.class,
-                () -> bishop.move(new Point(0, 3), board),
-                ""
-        );
+        firstMoveIsLegal = bishop.isLegalMove(new Point(0, 3), board);
+        secondMoveIsLegal = secondBishop.isLegalMove(new Point(4,4), board);
 
-        IllegalMoveException thrown2 = assertThrows(
-                IllegalMoveException.class,
-                () -> secondBishop.move(new Point(4,4), board),
-                ""
-        );
-
-        assertTrue(thrown1.getMessage().contains("Bishop can not move from 2,0 to 0,3"));
-        assertTrue(thrown2.getMessage().contains("Bishop can not move from 2,2 to 4,4"));
+        assertFalse(firstMoveIsLegal);
+        assertFalse(secondMoveIsLegal);
     }
 
     @Test
     void willNotKillSameColorPiece() throws Exception {
         board = new Board();
         bishop = (Bishop) board.getPiece(new Point(2,0));
+        boolean isLegal;
 
-        IllegalMoveException thrown = assertThrows(
-                IllegalMoveException.class,
-                () -> bishop.move(new Point(1, 1), board),
-                "Bishop can not move from 2,0 to 1,1"
-        );
+        isLegal = bishop.isLegalMove(new Point(1, 1), board);
 
-        assertTrue(thrown.getMessage().contains("Bishop can not move from 2,0 to 1,1"));
+        assertFalse(isLegal);
     }
 
     @Test
@@ -70,11 +61,10 @@ class BishopTest {
 
         IllegalMoveException thrown = assertThrows (
                 IllegalMoveException.class,
-                () -> bishop.move(new Point(2,1), board),
+                () -> bishop.isLegalMove(new Point(2,1), board),
                 String.format("%s can not move from 2,0 t0 2,1", bishop.getClass().getSimpleName())
         );
-        System.out.println(thrown.getMessage());
-        System.out.println(String.format("%s can not move from 2,0 t0 2,1", bishop.getClass().getSimpleName()));
+
         assertTrue(thrown.getMessage().contains(String.format("%s can not move from 2,0 to 2,1", bishop.getClass().getSimpleName())));
     }
 }

@@ -1,6 +1,8 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
+
 import java.awt.*;
 import java.util.List;
 
@@ -23,7 +25,8 @@ public class Queen extends Piece implements PieceMoves {
     }
 
     @Override
-    protected boolean isLegalMove(Point destination) throws IllegalMoveException {
+    public boolean isLegalMove(Point destination, Board board) throws IllegalMoveException {
+        this.board = board;
         Point tempDestination = new Point(getPiecePosition());
         Point direction = getDirection(destination);
         while (!tempDestination.equals(destination)) {

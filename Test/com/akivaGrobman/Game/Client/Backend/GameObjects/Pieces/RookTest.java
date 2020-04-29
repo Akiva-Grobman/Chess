@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,49 +19,39 @@ class RookTest {
     @Test
     void legalMoveWorks() throws Exception {
          rook = new Rook(new Point(0, 4), PieceColor.BLACK);
-         Rook newPosition = new Rook(new Point(4, 4), PieceColor.BLACK);
-         board = Board.getConsumeBoard(Arrays.asList(rook), new ArrayList<>());
+         board = Board.getConsumeBoard(Collections.singletonList(rook), Collections.singletonList(new Point(0, 1)));
+         boolean isLegal;
 
-         rook.move(newPosition.getPiecePosition(), board);
+         isLegal = rook.isLegalMove(new Point(4, 4), board);
 
-         assertEquals(newPosition, rook);
+         assertTrue(isLegal);
     }
 
     @Test
     void willNotJumpOverPieces() throws Exception {
-        Rook secondRook = new Rook(new Point(4,4), PieceColor.WHITE);
-        Pawn blocking = new Pawn(new Point(5,4), PieceColor.BLACK);
+        Rook secondRook = new Rook(new Point(4, 4), PieceColor.WHITE);
+        Pawn blocking = new Pawn(new Point(5, 4), PieceColor.BLACK);
         board = Board.getConsumeBoard(Arrays.asList(secondRook, blocking), new ArrayList<>());
         rook = (Rook) board.getPiece(new Point(0, 0));
+        boolean firstRookMoveIsLegal;
+        boolean secondRookMoveIsLegal;
 
-        IllegalMoveException one = assertThrows(
-                IllegalMoveException.class,
-                () -> rook.move(new Point(0, 3), board),
-                "Rook can not move from 0,0 to 0,3"
-        );
+        firstRookMoveIsLegal = rook.isLegalMove(new Point(0, 3), board);
+        secondRookMoveIsLegal = secondRook.isLegalMove(new Point(6, 4), board);
 
-        IllegalMoveException two = assertThrows(
-                IllegalMoveException.class,
-                () -> secondRook.move(new Point(6, 4), board),
-                "Rook can not move from 4,4 to 6,4"
-        );
-
-        assertTrue(one.getMessage().contains("Rook can not move from 0,0 to 0,3"));
-        assertTrue(two.getMessage().contains("Rook can not move from 4,4 to 6,4"));
+        assertFalse(firstRookMoveIsLegal);
+        assertFalse(secondRookMoveIsLegal);
     }
 
     @Test
     void willNotKillSameColorPiece() throws Exception {
         board = new Board();
         rook = (Rook) board.getPiece(new Point(0,0));
+        boolean isLegal;
 
-        IllegalMoveException thrown = assertThrows(
-                IllegalMoveException.class,
-                () -> rook.move(new Point(0, 1), board),
-                "Rook can not move from 0,0 to 0,1"
-        );
+        isLegal = rook.isLegalMove(new Point(0, 1), board);
 
-        assertTrue(thrown.getMessage().contains("Rook can not move from 0,0 to 0,1"));
+        assertFalse(isLegal);
     }
 
     @Test
@@ -70,7 +61,7 @@ class RookTest {
 
         IllegalMoveException thrown = assertThrows(
                 IllegalMoveException.class,
-                () -> rook.move(new Point(4,4), board),
+                () -> rook.isLegalMove(new Point(4,4), board),
                 String.format("%s can not move from 0,0 to 4,4", rook.getClass().getSimpleName())
         );
 

@@ -19,7 +19,9 @@ public abstract class ChessBoard {
     public boolean isLegalMove(Point origin, Point destination, int depth) throws IllegalMoveException, NoPieceFoundException {
         if(origin.equals(destination)) throw new IllegalMoveException("can not move piece to original position");
         Piece piece = board[origin.y][origin.x].getPiece();
-        piece.move(destination, backendBoard);
+        if(!piece.isLegalMove(destination, backendBoard)) {
+            throw new IllegalMoveException(getClass().getSimpleName(), origin, destination);
+        }
         boolean isInCheck = isInCheck(piece, origin, depth);
         return !isInCheck;
     }

@@ -1,10 +1,10 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.isInBounds;
 
 public class Knight extends Piece implements PieceMoves{
@@ -27,15 +27,8 @@ public class Knight extends Piece implements PieceMoves{
     }
 
     @Override
-    protected boolean isLegalMove(Point destination) throws IllegalMoveException {
-//        Point tempDestination = null;
-//        for (Point direction: allPossibleDirections) {
-//            tempDestination = new Point(getPiecePosition().x + direction.x, getPiecePosition().y + direction.y);
-//            if(isInBounds(tempDestination)) {
-//
-//            }
-//        }
-//
+    public boolean isLegalMove(Point destination, Board board) throws IllegalMoveException {
+        this.board = board;
         Point tempDestination;
         if(isLegalDistance(destination)) {
             for (Point direction: possibleDirections) {
@@ -53,7 +46,7 @@ public class Knight extends Piece implements PieceMoves{
                 }
             }
         }
-        throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destination);
+        return false;
     }
 
     private boolean isLegalDistance(Point destination) {

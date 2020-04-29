@@ -19,15 +19,11 @@ public abstract class Piece extends PieceMovingMethods implements PieceMoves {
         previousPosition = position;
     }
 
+    //todo split isLegal and move
     @Override
-    public void move(Point destinationsPosition, Board board) throws IllegalMoveException {
-        this.board = board;
-        if (isLegalMove(destinationsPosition)) {
-            previousPosition = new Point(position);
-            setPiecePosition(destinationsPosition);
-        } else {
-            throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
-        }
+    public void move(Point destinationsPosition){
+        previousPosition = new Point(position);
+        setPiecePosition(destinationsPosition);
     }
 
     public Point getPiecePosition() {
@@ -78,6 +74,6 @@ public abstract class Piece extends PieceMovingMethods implements PieceMoves {
 
     public abstract String getPieceInString();
 
-    protected abstract boolean isLegalMove(Point destination) throws IllegalMoveException;
+    public abstract boolean isLegalMove(Point destination, Board board) throws IllegalMoveException;
 
 }

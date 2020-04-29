@@ -34,7 +34,8 @@ public class King extends Piece implements PieceMoves {
     }
 
     @Override
-    protected boolean isLegalMove(Point destination) throws IllegalMoveException {
+    public boolean isLegalMove(Point destination, Board board) throws IllegalMoveException {
+        this.board = board;
         Point tempDestination = new Point(getPiecePosition());
         Point direction = getDirection(destination);
         tempDestination.x += direction.x;

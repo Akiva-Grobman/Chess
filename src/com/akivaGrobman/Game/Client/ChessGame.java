@@ -51,28 +51,34 @@ public class ChessGame {
     }
 
     public void move(Positions positions, Player player) {
-        if(isLegalMove(positions)) {
+        System.out.println(player.getClass().getSimpleName() + " is making a move " + positions);
+        if(player.equals(enemy) || isLegalMove(positions)) {
+            System.out.println("is legal");
             addMove(positions);
             Piece piece = getPiece(positions.getOrigin());
+            assert piece != null; // if piece is null then the move shouldn't be legal
+            piece.move(positions.getDestination());
             backendBoard.updateTile(positions.getOrigin(), null);
             backendBoard.updateTile(positions.getDestination(), piece);
-            assert piece != null; // because it wouldn't be legal if it was
             onScreenBoard.updateTile(positions.getDestination(), piece.getPieceType(), piece.getPieceColor());
             onScreenBoard.updateTile(positions.getOrigin(), null, null);
             if(wasEnpassant(backendBoard, moves)) {
                 System.out.println("enpassant");
                 backendBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null);
                 onScreenBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null, null);
-            } else if(wasCastling(backendBoard, moves)) {
-                //done
-            } else if(wasPromotion(backendBoard, positions.getDestination())) {
-                //done
-            }
+            } // todo
+//             else if(wasCastling(backendBoard, moves)) {
+//                //done
+//            } else if(wasPromotion(backendBoard, positions.getDestination())) {
+//                //done
+//            }
             if(player.equals(this.player)) {
+                System.out.println("sending move");
                 enemy.sendMove(positions);
             }
             changeCurrentPlayer();
             if(player.equals(this.player)) {
+                System.out.println("making enemy move");
                 makeEnemyMove();
             }
         }
@@ -98,11 +104,7 @@ public class ChessGame {
             return backendBoard.isLegalMove(positions.getOrigin(), positions.getDestination(), STARTING_DEPTH);
         } catch (IllegalMoveException | NoPieceFoundException e) {
             String msg = e.getMessage();
-            if (msg.contains("can not move piece to original position")) {
-                System.out.println("can not move piece to original position");
-            } else if (msg.contains("no piece found in position x = " + positions.getOrigin().x + " y = " + positions.getOrigin().y)) {
-                System.out.println("no piece found in position x = " + positions.getOrigin().x + " y = " + positions.getOrigin().y);
-            }
+            System.out.println(msg);
             return false;
         }
     }
