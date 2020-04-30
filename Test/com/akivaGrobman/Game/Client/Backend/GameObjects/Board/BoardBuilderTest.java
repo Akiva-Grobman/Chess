@@ -1,7 +1,5 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
 
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.BoardBuilder;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Tile;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Pawn;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
@@ -13,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BoardBuilderTest {
 
     @Test
-    void initializationOfNewBoardReturnsCorrectBoard() throws Exception{
+    void initializationOfNewBoardReturnsCorrectBoard() {
         Tile[][] board;           //                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 /
         String expectedBoard =  "[[|  ROOK  |, | KNIGHT |, | BISHOP |, |  QUEEN |, |  KING  |, | BISHOP |, | KNIGHT |, |  ROOK  |], [|  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |], [|        |, |        |, |        |, |        |, |        |, |        |, |        |, |        |], [|        |, |        |, |        |, |        |, |        |, |        |, |        |, |        |], [|        |, |        |, |        |, |        |, |        |, |        |, |        |, |        |], [|        |, |        |, |        |, |        |, |        |, |        |, |        |, |        |], [|  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |], [|  ROOK  |, | KNIGHT |, | BISHOP |, |  QUEEN |, |  KING  |, | BISHOP |, | KNIGHT |, |  ROOK  |]]";
 
@@ -23,7 +21,7 @@ class BoardBuilderTest {
     }
 
     @Test
-    void initializationOfCostumeBoardReturnsCorrectBoard() throws Exception {
+    void initializationOfCostumeBoardReturnsCorrectBoard() {
         Tile[][] board;
         String expectedBoard = "[[|  ROOK  |, | KNIGHT |, | BISHOP |, |  QUEEN |, |  KING  |, |        |, | KNIGHT |, |  ROOK  |], [|  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |], [|        |, |        |, |        |, |        |, |        |, |        |, |        |, |        |], [|        |, |        |, |        |, |  KING  |, |        |, |        |, |        |, |        |], [|        |, |        |, |        |, |        |, |  PAWN  |, |        |, |        |, |        |], [|        |, |        |, |        |, |        |, |        |, |        |, |        |, |        |], [|  PAWN  |, |  PAWN  |, |        |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |, |  PAWN  |], [|  ROOK  |, | KNIGHT |, | BISHOP |, |  QUEEN |, |  KING  |, | BISHOP |, | KNIGHT |, |  ROOK  |]]";
         Point erase1 = new Point(5, 0);

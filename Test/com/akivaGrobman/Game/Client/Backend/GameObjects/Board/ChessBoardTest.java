@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,28 +24,11 @@ class ChessBoardTest {
     }
 
     @Test
-    void moveWillMoveAPieceCorrectly() throws Exception {
+    void moveWillReturnTrueIfLegalMove() throws Exception {
         board = new Board();
         Point pawnOrigin = new Point(2, 1);
         Point destination = new Point(2, 3);
         boolean isLegal;
-        String boardAfterMove = "\n----------------------------------------------------------------------------\n" +
-                "||  ROOK  || KNIGHT || BISHOP ||  QUEEN ||  KING  || BISHOP || KNIGHT ||  ROOK  |\n" +
-                "----------------------------------------------------------------------------\n" +
-                "||  PAWN  ||  PAWN  ||        ||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  |\n" +
-                "----------------------------------------------------------------------------\n" +
-                "||        ||        ||        ||        ||        ||        ||        ||        |\n" +
-                "----------------------------------------------------------------------------\n" +
-                "||        ||        ||  PAWN  ||        ||        ||        ||        ||        |\n" +
-                "----------------------------------------------------------------------------\n" +
-                "||        ||        ||        ||        ||        ||        ||        ||        |\n" +
-                "----------------------------------------------------------------------------\n" +
-                "||        ||        ||        ||        ||        ||        ||        ||        |\n" +
-                "----------------------------------------------------------------------------\n" +
-                "||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  ||  PAWN  |\n" +
-                "----------------------------------------------------------------------------\n" +
-                "||  ROOK  || KNIGHT || BISHOP ||  QUEEN ||  KING  || BISHOP || KNIGHT ||  ROOK  |\n" +
-                "----------------------------------------------------------------------------\n";
 
         isLegal = board.isLegalMove(pawnOrigin, destination, 1);
 
@@ -87,12 +71,12 @@ class ChessBoardTest {
 
     @Test
     void willReturnTrueIfIsLegalMove() throws Exception {
-        Rook enemyRook = new Rook(new Point(5, 1), PieceColor.WHITE);
-        board = Board.getConsumeBoard(Collections.singletonList(enemyRook), Collections.singletonList(new Point(3, 1)));
+        board = Board.getConsumeBoard(new ArrayList<>(), Collections.singletonList(new Point(3, 1)));
         King king = (King) board.getPiece(new Point(4, 0));
         boolean isLegal;
 
         isLegal = board.isLegalMove(king.getPiecePosition(), new Point(3, 1), 1);
+
         assertTrue(isLegal);
     }
 

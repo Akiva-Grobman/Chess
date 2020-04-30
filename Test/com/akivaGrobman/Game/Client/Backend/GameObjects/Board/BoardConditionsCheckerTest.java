@@ -1,7 +1,6 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker;
 import org.junit.jupiter.api.Test;
@@ -25,16 +24,18 @@ class BoardConditionsCheckerTest {
     }
 
     @Test
-    void throwsErrorWithCorrectMessageIfOutOfBounds() throws Exception {
+    void throwsErrorWithCorrectMessageIfOutOfBounds() {
         IllegalMoveException thrown = assertThrows(
                 IllegalMoveException.class,
                 () -> BoardConditionsChecker.isInBounds(new Point(10, -1)),
                 String.format("x = %d y = %d out of bounds", 10, -1)
         );
+
+        assertTrue(thrown.getMessage().contains(String.format("x = %d y = %d out of bounds", 10, -1)));
     }
 
     @Test
-    void isVacantPositionTest() throws Exception {
+    void isVacantPositionTest() {
         board = new Board();
         boolean hasPiece;
         boolean doesNotHavePiece;
@@ -47,7 +48,7 @@ class BoardConditionsCheckerTest {
     }
 
     @Test
-    void hasEnemyPieceTest() throws Exception{
+    void hasEnemyPieceTest() {
         board = new Board();
         boolean hasEnemyPiece;
         boolean hasPlayersPiece;

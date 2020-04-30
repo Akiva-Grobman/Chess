@@ -22,7 +22,7 @@ public abstract class ChessBoard {
         if(!piece.isLegalMove(destination, backendBoard)) {
             throw new IllegalMoveException(getClass().getSimpleName(), origin, destination);
         }
-        boolean isInCheck = isInCheck(piece, origin, depth);
+        boolean isInCheck = isInCheck(piece, destination, depth);
         return !isInCheck;
     }
 
@@ -59,9 +59,9 @@ public abstract class ChessBoard {
         }
     }
 
-    protected boolean isInCheck(Piece piece, Point origin, int depth) {
+    protected boolean isInCheck(Piece piece, Point destination, int depth) {
         boolean isInCheck;
-        Point destination = piece.getPiecePosition();
+        Point origin = piece.getPiecePosition();
         Piece oldPiece;
         try {
             oldPiece = board[destination.y][destination.x].getPiece();
