@@ -57,7 +57,7 @@ public class ChessGame {
     }
 
     public void move(Positions positions, Player player) {
-        if(isLocalPlayer(player) || isLegalMove(positions)) {
+        if(!isLocalPlayer(player) || isLegalMove(positions)) {
             addMoveToMoveList(positions);
             updateBoards(positions);
             handleSpecialMoves(positions);
@@ -110,6 +110,7 @@ public class ChessGame {
 
     private boolean isLegalMove(Positions positions) {
         try {
+            if(player.getPlayersColor() != backendBoard.getPiece(positions.getOrigin()).getPieceColor()) return false;
             int STARTING_DEPTH = 1;
             return backendBoard.isLegalMove(positions.getOrigin(), positions.getDestination(), STARTING_DEPTH);
         } catch (IllegalMoveException | NoPieceFoundException e) {
