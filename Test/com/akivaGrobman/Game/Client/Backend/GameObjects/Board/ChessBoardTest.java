@@ -1,6 +1,5 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
 
-import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,13 +49,6 @@ class ChessBoardTest {
         isLegal = board.isLegalMove(new Point(4,4), new Point(4, 4), 1);
 
         assertFalse(isLegal);
-//        IllegalMoveException thrown = assertThrows(
-//                IllegalMoveException.class,
-//                () -> board.isLegalMove(new Point(0,0), new Point(0,0), 1),
-//                "can not move piece to original position"
-//        );
-//
-//        assertTrue(thrown.getMessage().contains("can not move piece to original position"));
     }
 
     @Test
