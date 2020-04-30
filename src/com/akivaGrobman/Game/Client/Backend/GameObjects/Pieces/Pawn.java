@@ -24,9 +24,9 @@ public class Pawn extends Piece implements PieceMoves {
     }
 
     // this is for testing only (that's why it's protected)
-    protected Pawn(Point position, PieceColor color, boolean isInEnpassantPosition) {
-        super(position, PieceType.PAWN, color);
-        if(color == PieceColor.BLACK) {
+    protected Pawn(Point position, boolean isInEnpassantPosition) {
+        super(position, PieceType.PAWN, PieceColor.BLACK);
+        if(PieceColor.BLACK == PieceColor.BLACK) {
             STARTING_ROW = 1;
             direction = 1;
         } else {

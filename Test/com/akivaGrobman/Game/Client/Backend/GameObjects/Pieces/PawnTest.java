@@ -59,7 +59,7 @@ class PawnTest {
     @Test
     void willAllowEnpassant() throws Exception{
         pawn1 = new Pawn(new Point(2,3), PieceColor.WHITE);
-        pawn2 = new Pawn(new Point(1, 3), PieceColor.BLACK, true);
+        pawn2 = new Pawn(new Point(1, 3), true);
         board = Board.getConsumeBoard(List.of(pawn1, pawn2), new ArrayList<>());
         boolean isLegal;
 

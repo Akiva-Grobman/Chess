@@ -1,16 +1,10 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
 
-import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
-import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Rook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.awt.*;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 

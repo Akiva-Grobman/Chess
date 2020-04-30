@@ -3,11 +3,8 @@ package com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Rook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,14 +44,19 @@ class ChessBoardTest {
     }
 
     @Test
-    void willNotAllowMoveToSamePosition() {
-        IllegalMoveException thrown = assertThrows(
-                IllegalMoveException.class,
-                () -> board.isLegalMove(new Point(0,0), new Point(0,0), 1),
-                "can not move piece to original position"
-        );
+    void willNotAllowMoveToSamePosition() throws Exception {
+        boolean isLegal;
 
-        assertTrue(thrown.getMessage().contains("can not move piece to original position"));
+        isLegal = board.isLegalMove(new Point(4,4), new Point(4, 4), 1);
+
+        assertFalse(isLegal);
+//        IllegalMoveException thrown = assertThrows(
+//                IllegalMoveException.class,
+//                () -> board.isLegalMove(new Point(0,0), new Point(0,0), 1),
+//                "can not move piece to original position"
+//        );
+//
+//        assertTrue(thrown.getMessage().contains("can not move piece to original position"));
     }
 
     @Test
