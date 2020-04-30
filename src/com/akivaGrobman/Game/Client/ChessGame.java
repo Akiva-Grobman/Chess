@@ -67,19 +67,18 @@ public class ChessGame {
                 backendBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null);
                 onScreenBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null, null);
             } // todo
-//             else if(wasCastling(backendBoard, moves)) {
-//                //done
-//            } else if(wasPromotion(backendBoard, positions.getDestination())) {
-//                //done
-//            }
+             else if(wasCastling(backendBoard, moves)) {
+                //done
+            } else if(wasPromotion(backendBoard, positions.getDestination())) {
+                //done
+            }
             if(player.equals(this.player)) {
-                System.out.println("sending move");
                 enemy.sendMove(positions);
             }
             changeCurrentPlayer();
             if(player.equals(this.player)) {
-                System.out.println("making enemy move");
-                makeEnemyMove();
+                Thread sendMessage = new Thread(this::makeEnemyMove);
+                sendMessage.start();
             }
         }
     }
