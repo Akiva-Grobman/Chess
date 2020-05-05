@@ -84,33 +84,25 @@ public class Rook extends Piece implements PieceMoves{
         Point temp;
         for (int x = getPiecePosition().x + 1; x < ChessGame.SUM_OF_COLUMNS; x++) {
             temp = new Point(x, getPiecePosition().y);
-            if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
-                legalMoves.add(temp);
-            } else {
+            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
                 break;
             }
         }
         for (int x = getPiecePosition().x - 1; x >= 0; x--) {
             temp = new Point(x, getPiecePosition().y);
-            if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
-                legalMoves.add(temp);
-            } else {
+            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
                 break;
             }
         }
         for (int y = getPiecePosition().y + 1; y < ChessGame.SUM_OF_ROWS; y++) {
             temp = new Point(getPiecePosition().x, y);
-            if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
-                legalMoves.add(temp);
-            } else {
+            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
                 break;
             }
         }
         for (int y = getPiecePosition().y - 1; y >= 0; y--) {
             temp = new Point(getPiecePosition().x, y);
-            if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
-                legalMoves.add(temp);
-            } else {
+            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
                 break;
             }
         }

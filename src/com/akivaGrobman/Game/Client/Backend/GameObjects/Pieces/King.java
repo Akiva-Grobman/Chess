@@ -5,6 +5,7 @@ import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameRules.CheckChecker;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.*;
 
@@ -63,7 +64,19 @@ public class King extends Piece implements PieceMoves {
 
     @Override
     public List<Point> getLegalMoves(Board board) {
-        return null;
+        this.board = board;
+        List<Point> legalMoves = new ArrayList<>();
+        Point temp;
+        for (int y = -1; y <= 1; y++) {
+            for (int x = -1; x <= 1; x++) {
+                if(y == 0 && x == 0) continue;// king original position
+                temp = new Point(getPiecePosition().x + x, getPiecePosition().y + y);
+                if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+                    legalMoves.add(temp);
+                }
+            }
+        }
+        return legalMoves;
     }
 
 }

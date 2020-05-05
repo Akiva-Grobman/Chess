@@ -4,6 +4,7 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.*;
@@ -59,6 +60,35 @@ public class Bishop extends Piece implements PieceMoves {
 
     @Override
     public List<Point> getLegalMoves(Board board) {
-        return null;
+        this.board = board;
+        final int SUM_OF_LEGAL_MOVES = 13;
+        List<Point> legalMoves = new ArrayList<>();
+        Point temp;
+        for (int i = 1; i <= 4; i++) {
+            temp = new Point(getPiecePosition().x + i, getPiecePosition().y + i);
+            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+                break;
+            }
+        }
+        for (int i = 1; i <= 4; i++) {
+            temp = new Point(getPiecePosition().x - i, getPiecePosition().y + i);
+            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+                break;
+            }
+        }
+        for (int i = 1; i <= 4; i++) {
+            temp = new Point(getPiecePosition().x + i, getPiecePosition().y - i);
+            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+                break;
+            }
+        }
+        for (int i = 1; i <= 4; i++) {
+            if (legalMoves.size() >= SUM_OF_LEGAL_MOVES) break;
+            temp = new Point(getPiecePosition().x - i, getPiecePosition().y - i);
+            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+                break;
+            }
+        }
+        return legalMoves;
     }
 }

@@ -5,6 +5,7 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.*;
 
@@ -51,7 +52,27 @@ public class Pawn extends Piece implements PieceMoves {
 
     @Override
     public List<Point> getLegalMoves(Board board) {
-        return null;
+        this.board = board;
+        List<Point> legalMoves = new ArrayList<>();
+        Point temp;
+        temp = new Point(getPiecePosition().x, getPiecePosition().y + direction);
+        if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+            legalMoves.add(temp);
+            temp = new Point(getPiecePosition().x, getPiecePosition().y + (2 * direction));
+            if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+                legalMoves.add(temp);
+            }
+        }
+        // these two will handle enpassant as well
+        temp = new Point(getPiecePosition().x + 1, getPiecePosition().y);
+        if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+            legalMoves.add(temp);
+        }
+        temp = new Point(getPiecePosition().x - 1, getPiecePosition().y);
+        if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+            legalMoves.add(temp);
+        }
+        return legalMoves;
     }
 
     @Override

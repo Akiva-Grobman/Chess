@@ -5,6 +5,7 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 
 import java.awt.*;
+import java.util.List;
 
 import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.*;
 
@@ -18,6 +19,14 @@ abstract class PieceMovingMethods {
 
     protected boolean hasPieceInPathToDestination(Point destination, Point tempDestination) {
         return !destination.equals(tempDestination) && !isVacantPosition(tempDestination, board);
+    }
+
+    protected boolean addedDestinationToLegalMovesList(List<Point> legalMoves, Point origin, Point destination) {
+        if(shouldAddPositionToLegalMovesList(origin, destination)) {
+            legalMoves.add(destination);
+            return true;
+        }
+        return false;
     }
 
     protected boolean shouldAddPositionToLegalMovesList(Point origin, Point destination) {
