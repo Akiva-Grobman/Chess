@@ -18,7 +18,6 @@ import static com.akivaGrobman.Game.Client.Backend.GameRules.SpecialMoves.*;
 
 public class ChessGame {
 
-
     public static final int SUM_OF_ROWS = 8;
     public static final int SUM_OF_COLUMNS = 8;
     private final Board backendBoard;
@@ -53,6 +52,13 @@ public class ChessGame {
     public void tileClicked(Point tilePosition) {
         if(isLocalPlayer(currentPlayer)) {
             player.addPositionToMove(tilePosition);
+            try {
+                if(player.isFirstClick() || backendBoard.getPiece(tilePosition).getPieceColor() == currentPlayer.getPlayersColor()) {
+                    onScreenBoard.drawLegalTiles(backendBoard.getPiece(tilePosition).getLegalMoves(backendBoard));
+                } else {
+                    onScreenBoard.resetTilesColor();
+                }
+            } catch (NoPieceFoundException ignore) {}
         }
     }
 
@@ -104,7 +110,7 @@ public class ChessGame {
         }
     }
 
-    public void makeEnemyMove() {
+    private void makeEnemyMove() {
         move(enemy.getMove(), enemy);
     }
 

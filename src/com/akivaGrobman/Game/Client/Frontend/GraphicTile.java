@@ -32,6 +32,14 @@ public class GraphicTile extends JPanel {
         image = getPieceImage();
     }
 
+    public void resetColor() {
+        setBackground(tileColor);
+    }
+
+    public void drawAsLegalTile() {
+        setBackground(Color.cyan);
+    }
+
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         if(hasPiece())
@@ -65,4 +73,5 @@ public class GraphicTile extends JPanel {
     public String toString() {
         return (pieceType != null)? " " + pieceType.toString() + " ": "      ";
     }
+
 }

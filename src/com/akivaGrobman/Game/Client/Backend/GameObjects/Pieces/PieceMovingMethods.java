@@ -1,11 +1,12 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
+import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
+import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 
 import java.awt.*;
 
-import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.hasEnemyPiece;
-import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.isVacantPosition;
+import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.*;
 
 abstract class PieceMovingMethods {
 
@@ -19,5 +20,15 @@ abstract class PieceMovingMethods {
         return !destination.equals(tempDestination) && !isVacantPosition(tempDestination, board);
     }
 
+    protected boolean shouldAddPositionToLegalMovesList(Point origin, Point destination) {
+        try {
+            if (isInBounds(destination)) {
+                return board.isLegalMove(origin, destination, 1);
+            }
+        } catch (IllegalMoveException | NoPieceFoundException e) {
+            return false;
+        }
+        return false;
+    }
 
 }

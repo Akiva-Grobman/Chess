@@ -2,7 +2,6 @@ package com.akivaGrobman.Game.Server;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.Players.Positions;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

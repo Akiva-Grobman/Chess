@@ -2,8 +2,9 @@ package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
-
+import com.akivaGrobman.Game.Client.ChessGame;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.*;
@@ -77,7 +78,43 @@ public class Rook extends Piece implements PieceMoves{
     }
 
     @Override
-    public List<Point> getLegalMoves() {
-        return null;
+    public List<Point> getLegalMoves(Board board) {
+        this.board = board;
+        List<Point> legalMoves = new ArrayList<>();
+        Point temp;
+        for (int x = getPiecePosition().x + 1; x < ChessGame.SUM_OF_COLUMNS; x++) {
+            temp = new Point(x, getPiecePosition().y);
+            if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+                legalMoves.add(temp);
+            } else {
+                break;
+            }
+        }
+        for (int x = getPiecePosition().x - 1; x >= 0; x--) {
+            temp = new Point(x, getPiecePosition().y);
+            if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+                legalMoves.add(temp);
+            } else {
+                break;
+            }
+        }
+        for (int y = getPiecePosition().y + 1; y < ChessGame.SUM_OF_ROWS; y++) {
+            temp = new Point(getPiecePosition().x, y);
+            if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+                legalMoves.add(temp);
+            } else {
+                break;
+            }
+        }
+        for (int y = getPiecePosition().y - 1; y >= 0; y--) {
+            temp = new Point(getPiecePosition().x, y);
+            if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+                legalMoves.add(temp);
+            } else {
+                break;
+            }
+        }
+        return legalMoves;
     }
+
 }

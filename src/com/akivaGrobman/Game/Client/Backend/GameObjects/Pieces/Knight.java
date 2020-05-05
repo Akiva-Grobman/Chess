@@ -67,7 +67,7 @@ public class Knight extends Piece implements PieceMoves{
     }
 
     @Override
-    public List<Point> getLegalMoves() {
+    public List<Point> getLegalMoves(Board board) {
         return null;
     }
 

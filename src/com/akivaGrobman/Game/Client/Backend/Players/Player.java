@@ -46,4 +46,8 @@ public class Player {
         Player player = (Player) obj;
         return this.playersPieceColor == player.playersPieceColor;
     }
+
+    public boolean isFirstClick() {
+        return currentPositions.getDestination() == null;
+    }
 }
