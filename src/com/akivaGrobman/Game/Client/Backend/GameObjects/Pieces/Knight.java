@@ -9,7 +9,7 @@ import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChec
 
 public class Knight extends Piece implements PieceMoves{
 
-    private List<Point> possibleDirections;
+    private final List<Point> possibleDirections;
 
     public Knight(Point position, PieceColor color) {
         super(position, PieceType.KNIGHT, color);
@@ -29,7 +29,6 @@ public class Knight extends Piece implements PieceMoves{
     @Override
     public boolean isLegalMove(Point destination, Board board) throws IllegalMoveException {
         this.board = board;
-        possibleDirections = getPossibleDirections();
         Point tempDestination;
         if(isLegalDistance(destination)) {
             for (Point direction: possibleDirections) {
@@ -71,11 +70,12 @@ public class Knight extends Piece implements PieceMoves{
     public List<Point> getLegalMoves(Board board) {
         this.board = board;
         List<Point> legalMoves = new ArrayList<>();
-        possibleDirections = getPossibleDirections();
         Point temp;
+        int x = getPiecePosition().x;
+        int y = getPiecePosition().y;
         for (Point possibleDirection: possibleDirections) {
-            temp = new Point(getPiecePosition().x + possibleDirection.x, getPiecePosition().y + possibleDirection.y);
-            if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+            temp = new Point(x + possibleDirection.x, y + possibleDirection.y);
+            if(shouldAddPositionToLegalMovesList(new Point(x, y), temp)) {
                 legalMoves.add(temp);
             }
         }

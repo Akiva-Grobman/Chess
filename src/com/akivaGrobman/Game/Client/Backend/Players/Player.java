@@ -17,7 +17,9 @@ public class Player {
     public void addPositionToMove(Point position) {
        if(currentPositions == null) {
            currentPositions = new Positions(position, playersPieceColor);
-       } else if(!currentPositions.isReadyToBeUsed()) {
+       } else if(game.getPiece(position) != null && game.getPiece(position).getPieceColor() == playersPieceColor){
+           currentPositions = new Positions(position, playersPieceColor);
+       }  else if(!currentPositions.isReadyToBeUsed()) {
            currentPositions.setDestination(position);
            game.move(currentPositions, this);
        } else {
@@ -48,6 +50,6 @@ public class Player {
     }
 
     public boolean isFirstClick() {
-        return currentPositions.getDestination() == null;
+        return currentPositions != null && currentPositions.getDestination() == null;
     }
 }

@@ -64,11 +64,11 @@ public class Pawn extends Piece implements PieceMoves {
             }
         }
         // these two will handle enpassant as well
-        temp = new Point(getPiecePosition().x + 1, getPiecePosition().y);
+        temp = new Point(getPiecePosition().x + 1, getPiecePosition().y + direction);
         if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
             legalMoves.add(temp);
         }
-        temp = new Point(getPiecePosition().x - 1, getPiecePosition().y);
+        temp = new Point(getPiecePosition().x - 1, getPiecePosition().y + direction);
         if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
             legalMoves.add(temp);
         }

@@ -33,10 +33,8 @@ public class GraphicBoard {
     }
 
     public void drawLegalTiles(List<Point> legalMoves) {
-        if(legalMoves != null) {
-            for (Point position : legalMoves) {
-                board[position.y][position.x].drawAsLegalTile();
-            }
+        for (Point position : legalMoves) {
+            board[position.y][position.x].drawAsLegalTile();
         }
     }
 

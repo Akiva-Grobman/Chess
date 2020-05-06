@@ -69,6 +69,7 @@ public abstract class ChessBoard {
         } catch (NoPieceFoundException e) {
             oldPiece = null;
         }
+        piece.move(destination);
         board[destination.y][destination.x].setPiece(piece);
         board[origin.y][origin.x].setPiece(null);
         isInCheck = getKing(piece.getPieceColor()).isInCheck(backendBoard, depth);

@@ -53,12 +53,15 @@ public class ChessGame {
         if(isLocalPlayer(currentPlayer)) {
             player.addPositionToMove(tilePosition);
             try {
-                if(player.isFirstClick() || backendBoard.getPiece(tilePosition).getPieceColor() == currentPlayer.getPlayersColor()) {
+                if(backendBoard.getPiece(tilePosition).getPieceColor() == currentPlayer.getPlayersColor()) {
+                    onScreenBoard.resetTilesColor();
                     onScreenBoard.drawLegalTiles(backendBoard.getPiece(tilePosition).getLegalMoves(backendBoard));
                 } else {
                     onScreenBoard.resetTilesColor();
                 }
-            } catch (NoPieceFoundException ignore) {}
+            } catch (NoPieceFoundException e) {
+                onScreenBoard.resetTilesColor();
+            }
         }
     }
 
@@ -126,7 +129,7 @@ public class ChessGame {
         }
     }
 
-    private Piece getPiece(Point position) {
+    public Piece getPiece(Point position) {
         try {
             return backendBoard.getPiece(position);
         } catch (NoPieceFoundException e) {

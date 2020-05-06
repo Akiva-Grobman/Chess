@@ -40,13 +40,9 @@ public class Server {
     }
 
     private static void updatePlayers() {
-        if(currentPlayer == players[0]) {
-            currentPlayer = players[1];
-            otherPlayer = players[0];
-        } else {
-            currentPlayer = players[0];
-            otherPlayer = players[1];
-        }
+        Player temp = currentPlayer;
+        currentPlayer = otherPlayer;
+        otherPlayer = temp;
     }
 
     private void stop() {
