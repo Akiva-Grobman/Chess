@@ -42,6 +42,14 @@ public abstract class Piece extends PieceMovingMethods implements PieceMoves {
         return color;
     }
 
+    protected Point getPreviousPosition() {
+        return previousPosition;
+    }
+
+    protected void setPreviousPosition(Point previousPosition) {
+        this.previousPosition = previousPosition;
+    }
+
     public void reversMove() {
         position = new Point(previousPosition);
     }

@@ -103,12 +103,13 @@ public class ChessGame {
 
     private void handleSpecialMoves(Positions positions) {
         if(wasEnpassant(backendBoard, moves)) {
-            System.out.println("enpassant");
             backendBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null);
             onScreenBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null, null);
         } else if(wasCastling(backendBoard, moves)) {
+            // todo
             System.out.println("castling");
         } else if(wasPromotion(backendBoard, positions.getDestination())) {
+            // todo
             System.out.println("promotion");
         }
     }

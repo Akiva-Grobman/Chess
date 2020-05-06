@@ -14,7 +14,6 @@ public class Pawn extends Piece implements PieceMoves {
     private final int STARTING_ROW;
     private final int direction;
     private boolean isInEnpassantPosition;
-    private boolean previousEnpassantStatus;
 
     public Pawn(Point position, PieceColor color) {
         super(position, PieceType.PAWN, color);
@@ -25,17 +24,20 @@ public class Pawn extends Piece implements PieceMoves {
     }
 
     // this is for testing only (that's why it's protected)
-    protected Pawn(Point position, boolean isInEnpassantPosition) {
-        super(position, PieceType.PAWN, PieceColor.BLACK);
-        if(PieceColor.BLACK == PieceColor.BLACK) {
+    protected Pawn(Point position, PieceColor pieceColor, boolean isInEnpassantPosition) {
+        super(position, PieceType.PAWN, pieceColor);
+        if(pieceColor == PieceColor.BLACK) {
             STARTING_ROW = 1;
             direction = 1;
         } else {
             STARTING_ROW = 6;
             direction = -1;
         }
+        if(isInEnpassantPosition) {
+            setPreviousPosition(new Point(getPiecePosition().x, STARTING_ROW));
+        }
         board = null;
-        this.isInEnpassantPosition = isInEnpassantPosition;
+
     }
 
     @Override
@@ -75,12 +77,6 @@ public class Pawn extends Piece implements PieceMoves {
         return legalMoves;
     }
 
-    @Override
-    public void reversMove() {
-        super.reversMove();
-        isInEnpassantPosition = previousEnpassantStatus;
-    }
-
     private int getDirection() {
         if (getPieceColor() == PieceColor.BLACK) {
             return 1;
@@ -99,50 +95,33 @@ public class Pawn extends Piece implements PieceMoves {
         if (tempDestination.equals(destination)) {
             isLegal = isInBounds(tempDestination) && isVacantPosition(tempDestination, this.board);
         }
-
         // then one to the left
-        if(!isLegal) {
-            tempDestination.x -= 1;
-            if (tempDestination.equals(destination)) {
-                isLegal = isInBounds(tempDestination) && hasEnemyPiece(getPieceColor(), tempDestination, this.board);
-                // enpassant to the left
-                if(!isLegal) {
-                    tempDestination.y -= direction;
-                    isLegal = isEnpassant(tempDestination);
-                    tempDestination.y += direction;
-                }
+        tempDestination.x -= 1;
+        if (tempDestination.equals(destination)) {
+            isLegal = isInBounds(tempDestination) && hasEnemyPiece(getPieceColor(), tempDestination, this.board);
+            // enpassant to the left
+            if(!isLegal) {
+                isLegal = isEnpassant(tempDestination);
             }
         }
         // then the one on the right
-        if(!isLegal) {
-            tempDestination.x += 2;
+        tempDestination.x += 2;
+        if (tempDestination.equals(destination)) {
+            isLegal = isInBounds(tempDestination) && hasEnemyPiece(getPieceColor(), tempDestination, this.board);
+            // enpassant to the right
+            if(!isLegal) {
+                isLegal = isEnpassant(tempDestination);
+            }
+        }
+        // then the tile two to the front
+        if (getPiecePosition().y == STARTING_ROW) {
+            int oldY = tempDestination.y;
+            tempDestination.y += direction;
+            tempDestination.x = getPiecePosition().x;
             if (tempDestination.equals(destination)) {
-                isLegal = isInBounds(tempDestination) && hasEnemyPiece(getPieceColor(), tempDestination, this.board);
-                // enpassant to the right
-                if(!isLegal) {
-                    tempDestination.y -= direction;
-                    isLegal = isEnpassant(tempDestination);
-                    tempDestination.y += direction;
-                }
+                isLegal = isInBounds(tempDestination) && isVacantPosition(tempDestination, this.board) && isVacantPosition(new Point(tempDestination.x, oldY), this.board);
+                isInEnpassantPosition = isLegal;
             }
-        }
-        if(!isLegal) {
-            if (getPiecePosition().y == STARTING_ROW) {
-                int oldY = tempDestination.y;
-                tempDestination.y += direction;
-                tempDestination.x = getPiecePosition().x;
-                // then the tile two to the front
-                if (tempDestination.equals(destination)) {
-                    isLegal = isInBounds(tempDestination) && isVacantPosition(tempDestination, this.board) && isVacantPosition(new Point(tempDestination.x, oldY), this.board);
-                    isInEnpassantPosition = isLegal;
-                }
-            }
-        }
-        if(isLegal) {
-            if(previousEnpassantStatus) {
-                isInEnpassantPosition = false;
-            }
-            previousEnpassantStatus = isInEnpassantPosition;
         }
         return isLegal;
     }
@@ -151,9 +130,9 @@ public class Pawn extends Piece implements PieceMoves {
         try {
             if (isInBounds(tempDestination)) {
                 try {
-                    if (board.getPiece(tempDestination) instanceof Pawn) {
-                        Pawn pawn = ((Pawn) board.getPiece(tempDestination));
-                        return pawn.getPieceColor() != getPieceColor() && pawn.isInEnpassantPosition;
+                    if (board.getPiece(new Point(tempDestination.x, tempDestination.y - direction)) instanceof Pawn) {
+                        Pawn pawn = ((Pawn) board.getPiece(new Point(tempDestination.x, tempDestination.y - direction)));
+                        return pawn.getPieceColor() != getPieceColor() && pawn.isInEnpassantPosition();
                     }
                 } catch (NoPieceFoundException e) {
                     return false;
@@ -163,6 +142,10 @@ public class Pawn extends Piece implements PieceMoves {
             return false;
         }
         return false;
+    }
+
+    private boolean isInEnpassantPosition() {
+        return getPreviousPosition().y == STARTING_ROW && Math.abs(getPiecePosition().y - getPreviousPosition().y) == 2;
     }
 
 }
