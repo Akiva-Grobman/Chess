@@ -1,8 +1,10 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
+import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameRules.CheckChecker;
+import com.akivaGrobman.Game.Client.ChessGame;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -11,11 +13,13 @@ import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChec
 
 public class King extends Piece implements PieceMoves {
 
+    private final int STARTING_COLUMN;
     private boolean wasInCheck;
 
     public King(Point position, PieceColor color) {
         super(position, PieceType.KING, color);
         wasInCheck = false;
+        STARTING_COLUMN = position.x;
     }
 
     @Override
@@ -44,7 +48,7 @@ public class King extends Piece implements PieceMoves {
         if(!isInBounds(tempDestination)) {
             return false;
         }
-        return destination.equals(tempDestination) && canMoveThere(tempDestination, getPieceColor());
+        return destination.equals(tempDestination) && canMoveThere(tempDestination, getPieceColor()) || isCastlingMove(destination);
     }
 
     private Point getDirection(Point destination) {
@@ -62,6 +66,56 @@ public class King extends Piece implements PieceMoves {
         return direction;
     }
 
+    private boolean isCastlingMove(Point destination) {
+        if (!wasInCheck || getPiecePosition().x != STARTING_COLUMN || destination.x != 6 && destination.x != 1) return false;
+        int rookX;
+        if(destination.x < getPiecePosition().x) {
+            rookX = 0;
+        } else {
+            rookX = 7;
+        }
+        try {
+            Piece piece = board.getPiece(new Point(rookX, getPiecePosition().y));
+            if(piece instanceof Rook) {
+                if (!(piece.getPieceColor() == getPieceColor())) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } catch (NoPieceFoundException e) {
+            return false;
+        }
+        Board isInCheckTesterBoard;
+        switch (destination.x) {
+            case 1:
+                for (int x = getPiecePosition().x; x > 0; x--) {
+                    move(new Point(x, getPiecePosition().y));
+                    isInCheckTesterBoard = Board.getConsumeBoard(List.of(this), List.of(getPreviousPosition()));
+                    if(board.hasPieceInThisPosition(new Point(x, getPiecePosition().y)) && isInCheck(isInCheckTesterBoard, 1)) {
+                        reversMove();
+                        return false;
+                    }
+                    reversMove();
+                }
+                break;
+            case 6:
+                for (int x = getPiecePosition().x; x < ChessGame.SUM_OF_COLUMNS; x++) {
+                    move(new Point(x, getPiecePosition().y));
+                    isInCheckTesterBoard = Board.getConsumeBoard(List.of(this), List.of(getPreviousPosition()));
+                    if(board.hasPieceInThisPosition(new Point(x, getPiecePosition().y)) && isInCheck(isInCheckTesterBoard, 1)) {
+                        reversMove();
+                        return false;
+                    }
+                    reversMove();
+                }
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
     @Override
     public List<Point> getLegalMoves(Board board) {
         this.board = board;
@@ -76,7 +130,13 @@ public class King extends Piece implements PieceMoves {
                 }
             }
         }
+        // todo add castling
         return legalMoves;
     }
 
+    public void setToIsInCheck() {
+        wasInCheck = true;
+    }
+
 }
+

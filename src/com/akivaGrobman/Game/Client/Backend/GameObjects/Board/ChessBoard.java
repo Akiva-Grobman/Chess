@@ -41,7 +41,7 @@ public abstract class ChessBoard {
         return board[position.y][position.x].getPiece();
     }
 
-    King getKing(PieceColor pieceColor) {
+    public King getKing(PieceColor pieceColor) {
         return (pieceColor == PieceColor.BLACK)? blackKing: whiteKing;
     }
 

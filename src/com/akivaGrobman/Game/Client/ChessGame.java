@@ -4,6 +4,7 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Move;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.Players.Enemy;
@@ -74,11 +75,27 @@ public class ChessGame {
                 enemy.sendMove(positions);
             }
             changeCurrentPlayer();
+            if(enemyKingIsInCheck(positions.getDestination())) {
+                putKingInCheck(currentPlayer);
+            }
             if(isLocalPlayer(player)) {
                 Thread sendMessage = new Thread(this::makeEnemyMove);
                 sendMessage.start();
             }
         }
+    }
+
+    private boolean enemyKingIsInCheck(Point movedPiecePosition) {
+        try {
+            return backendBoard.isLegalMove(movedPiecePosition, backendBoard.getKing(backendBoard.getPiece(movedPiecePosition).getPieceColor()).getPiecePosition(), 1);
+        } catch (IllegalMoveException | NoPieceFoundException e) {
+            return false;
+        }
+    }
+
+    private void putKingInCheck(Player currentPlayer) {
+        King playersKing = backendBoard.getKing(currentPlayer.getPlayersColor());
+        playersKing.setToIsInCheck();
     }
 
     private void addMoveToMoveList(Positions positions) {
