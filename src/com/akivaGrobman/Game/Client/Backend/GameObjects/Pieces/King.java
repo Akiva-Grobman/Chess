@@ -91,9 +91,11 @@ public class King extends Piece implements PieceMoves {
         Board isInCheckTesterBoard;
         switch (destination.x) {
             case 1:
-                for (int x = getPiecePosition().x; x > 0; x--) {
+                for (int x = getPiecePosition().x - 1; x > 0; x--) {
+                    isInCheckTesterBoard = Board.getClone(board);
                     move(new Point(x, getPiecePosition().y));
-                    isInCheckTesterBoard = Board.getConsumeBoard(List.of(this), List.of(getPreviousPosition()));
+                    isInCheckTesterBoard.updateTile(new Point(x, destination.y), this);
+                    isInCheckTesterBoard.updateTile(getPreviousPosition(), null);
                     if(board.hasPieceInThisPosition(new Point(x, getPiecePosition().y)) || isInCheck(isInCheckTesterBoard, 1)) {
                         reversMove();
                         return false;
@@ -102,9 +104,11 @@ public class King extends Piece implements PieceMoves {
                 }
                 break;
             case 6:
-                for (int x = getPiecePosition().x; x < ChessGame.SUM_OF_COLUMNS; x++) {
+                for (int x = getPiecePosition().x + 1; x < ChessGame.SUM_OF_COLUMNS - 1; x++) {
+                    isInCheckTesterBoard = Board.getClone(board);
                     move(new Point(x, getPiecePosition().y));
-                    isInCheckTesterBoard = Board.getConsumeBoard(List.of(this), List.of(getPreviousPosition()));
+                    isInCheckTesterBoard.updateTile(new Point(x, destination.y), this);
+                    isInCheckTesterBoard.updateTile(getPreviousPosition(), null);
                     if(board.hasPieceInThisPosition(new Point(x, getPiecePosition().y)) || isInCheck(isInCheckTesterBoard, 1)) {
                         reversMove();
                         return false;
@@ -132,7 +136,12 @@ public class King extends Piece implements PieceMoves {
                 }
             }
         }
-        // todo add castling
+        if(shouldAddPositionToLegalMovesList(getPiecePosition(), new Point(1, getPiecePosition().y))) {
+            legalMoves.add(new Point(1, getPiecePosition().y));
+        }
+        if(shouldAddPositionToLegalMovesList(getPiecePosition(), new Point(6, getPiecePosition().y))) {
+            legalMoves.add(new Point(6, getPiecePosition().y));
+        }
         return legalMoves;
     }
 

@@ -44,7 +44,7 @@ class SpecialMovesTest {
         moves.add(new Move(positions, king));
         boolean wasCastlingMove;
 
-        wasCastlingMove = wasCastling(board, moves);
+        wasCastlingMove = wasCastling(board, moves.get(moves.size() - 1).getPositions());
 
         assertTrue(wasCastlingMove);
     }

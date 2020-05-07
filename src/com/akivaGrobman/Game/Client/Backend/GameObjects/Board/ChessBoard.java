@@ -85,7 +85,7 @@ public abstract class ChessBoard {
                 if(column.hasPiece()) {
                     try {
                         Piece piece = column.getPiece();
-                        if(piece.getPieceType() == PieceType.KING) {
+                        if(piece instanceof King) {
                             if(piece.getPieceColor() == kingColor) {
                                 return piece.getPiecePosition();
                             }
