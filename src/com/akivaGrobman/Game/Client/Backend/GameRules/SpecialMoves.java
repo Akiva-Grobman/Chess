@@ -7,6 +7,8 @@ import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Pawn;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
+import com.akivaGrobman.Game.Client.Backend.Players.Positions;
+
 import java.awt.*;
 import java.util.List;
 
@@ -29,9 +31,9 @@ public abstract class SpecialMoves {
         return false;
     }
 
-    public static boolean wasCastling(Board backendBoard, List<Move> moves) {
-        Point destination = moves.get(moves.size() - 1).getPositions().getDestination();
-        Point origin = moves.get(moves.size() - 1).getPositions().getOrigin();
+    public static boolean wasCastling(Board backendBoard, Positions move) {
+        Point destination = move.getDestination();
+        Point origin = move.getOrigin();
         try {
             if(backendBoard.getPiece(destination) instanceof King) {
                 if(isRightColor(backendBoard.getPiece(destination).getPieceColor(), destination.y)) {
@@ -45,10 +47,13 @@ public abstract class SpecialMoves {
     }
 
     private static boolean isRightColor(PieceColor pieceColor, int y) {
-        if(y == 0 && pieceColor == PieceColor.BLACK) {
-            return true;
+        if(y == 0) {
+            return pieceColor == PieceColor.BLACK;
+        } else if (y == 7) {
+            return pieceColor == PieceColor.WHITE;
+        } else {
+            return false;
         }
-        return y == 7 && pieceColor == PieceColor.WHITE;
     }
 
     public static boolean wasPromotion(Board backendBoard, Point destination) {

@@ -15,10 +15,12 @@ public class King extends Piece implements PieceMoves {
 
     private final int STARTING_COLUMN;
     private boolean wasInCheck;
+    private boolean moved;
 
     public King(Point position, PieceColor color) {
         super(position, PieceType.KING, color);
         wasInCheck = false;
+        moved = false;
         STARTING_COLUMN = position.x;
     }
 
@@ -48,7 +50,7 @@ public class King extends Piece implements PieceMoves {
         if(!isInBounds(tempDestination)) {
             return false;
         }
-        return destination.equals(tempDestination) && canMoveThere(tempDestination, getPieceColor()) || isCastlingMove(destination);
+        return (destination.equals(tempDestination) && canMoveThere(tempDestination, getPieceColor())) || isCastlingMove(destination);
     }
 
     private Point getDirection(Point destination) {
@@ -67,7 +69,7 @@ public class King extends Piece implements PieceMoves {
     }
 
     private boolean isCastlingMove(Point destination) {
-        if (!wasInCheck || getPiecePosition().x != STARTING_COLUMN || destination.x != 6 && destination.x != 1) return false;
+        if (moved || wasInCheck || getPiecePosition().x != STARTING_COLUMN || destination.x != 6 && destination.x != 1) return false;
         int rookX;
         if(destination.x < getPiecePosition().x) {
             rookX = 0;
@@ -77,7 +79,7 @@ public class King extends Piece implements PieceMoves {
         try {
             Piece piece = board.getPiece(new Point(rookX, getPiecePosition().y));
             if(piece instanceof Rook) {
-                if (!(piece.getPieceColor() == getPieceColor())) {
+                if (piece.getPieceColor() != getPieceColor() || ((Rook) piece).getHasMoved()) {
                     return false;
                 }
             } else {
@@ -92,7 +94,7 @@ public class King extends Piece implements PieceMoves {
                 for (int x = getPiecePosition().x; x > 0; x--) {
                     move(new Point(x, getPiecePosition().y));
                     isInCheckTesterBoard = Board.getConsumeBoard(List.of(this), List.of(getPreviousPosition()));
-                    if(board.hasPieceInThisPosition(new Point(x, getPiecePosition().y)) && isInCheck(isInCheckTesterBoard, 1)) {
+                    if(board.hasPieceInThisPosition(new Point(x, getPiecePosition().y)) || isInCheck(isInCheckTesterBoard, 1)) {
                         reversMove();
                         return false;
                     }
@@ -103,7 +105,7 @@ public class King extends Piece implements PieceMoves {
                 for (int x = getPiecePosition().x; x < ChessGame.SUM_OF_COLUMNS; x++) {
                     move(new Point(x, getPiecePosition().y));
                     isInCheckTesterBoard = Board.getConsumeBoard(List.of(this), List.of(getPreviousPosition()));
-                    if(board.hasPieceInThisPosition(new Point(x, getPiecePosition().y)) && isInCheck(isInCheckTesterBoard, 1)) {
+                    if(board.hasPieceInThisPosition(new Point(x, getPiecePosition().y)) || isInCheck(isInCheckTesterBoard, 1)) {
                         reversMove();
                         return false;
                     }
@@ -132,6 +134,10 @@ public class King extends Piece implements PieceMoves {
         }
         // todo add castling
         return legalMoves;
+    }
+
+    public void moved() {
+        moved = true;
     }
 
     public void setToIsInCheck() {

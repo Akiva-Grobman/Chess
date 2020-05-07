@@ -7,6 +7,7 @@ import com.akivaGrobman.Game.Client.Backend.GameObjects.Move;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Rook;
 import com.akivaGrobman.Game.Client.Backend.Players.Enemy;
 import com.akivaGrobman.Game.Client.Backend.Players.Positions;
 import com.akivaGrobman.Game.Client.Backend.Players.Player;
@@ -112,6 +113,12 @@ public class ChessGame {
         Piece piece = getPiece(positions.getOrigin());
         assert piece != null; // if piece is null then the move shouldn't be legal
         piece.move(positions.getDestination());
+        // for castling
+        if(piece instanceof King) {
+            ((King) piece).moved();
+        } else if(piece instanceof Rook) {
+            ((Rook) piece).moved();
+        }
         backendBoard.updateTile(positions.getOrigin(), null);
         backendBoard.updateTile(positions.getDestination(), piece);
         onScreenBoard.updateTile(positions.getDestination(), piece.getPieceType(), piece.getPieceColor());
@@ -122,8 +129,21 @@ public class ChessGame {
         if(wasEnpassant(backendBoard, moves)) {
             backendBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null);
             onScreenBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null, null);
-        } else if(wasCastling(backendBoard, moves)) {
-            // todo
+        } else if(wasCastling(backendBoard, positions)) {
+            Piece rook;
+            if(positions.getDestination().x == 1) {
+                rook = getPiece(new Point(0, positions.getDestination().y));
+                assert rook != null; // will not be a castling move if piece is null
+                backendBoard.updateTile(new Point(2, positions.getDestination().y), rook);
+                backendBoard.updateTile(new Point(0, positions.getDestination().y), null);
+            } else {
+                rook = getPiece(new Point(7, positions.getDestination().y));
+                assert rook != null; // will not be a castling move if piece is null
+                backendBoard.updateTile(new Point(5, positions.getDestination().y), rook);
+                backendBoard.updateTile(new Point(7, positions.getDestination().y), null);
+            }
+            onScreenBoard.updateTile(positions.getDestination(), rook.getPieceType(), rook.getPieceColor());
+            onScreenBoard.updateTile(positions.getOrigin(), null, null);
             System.out.println("castling");
         } else if(wasPromotion(backendBoard, positions.getDestination())) {
             // todo

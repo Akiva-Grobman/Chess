@@ -11,8 +11,11 @@ import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChec
 
 public class Rook extends Piece implements PieceMoves{
 
+    private boolean moved;
+
     public Rook(Point position, PieceColor color) {
         super(position, PieceType.ROOK, color);
+        moved = false;
     }
 
     @Override
@@ -109,4 +112,11 @@ public class Rook extends Piece implements PieceMoves{
         return legalMoves;
     }
 
+    public boolean getHasMoved() {
+        return moved;
+    }
+
+    public void moved() {
+        moved = true;
+    }
 }
