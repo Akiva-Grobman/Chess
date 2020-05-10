@@ -29,8 +29,8 @@ public class Queen extends Piece implements PieceMoves {
     @Override
     public boolean isLegalMove(Point origin, Point destination, Board board) throws IllegalMoveException {
         this.board = board;
-        Point tempDestination = new Point(getPiecePosition());
-        Point direction = getDirection(destination);
+        Point tempDestination = new Point(origin);
+        Point direction = getDirection(origin, destination);
         while (!tempDestination.equals(destination)) {
             tempDestination.x += direction.x;
             tempDestination.y += direction.y;
@@ -47,17 +47,17 @@ public class Queen extends Piece implements PieceMoves {
         return false;
     }
 
-    private Point getDirection(Point destination) {
+    private Point getDirection(Point origin, Point destination) {
         Point direction = new Point();
-        if(getPiecePosition().x == destination.x) {
+        if(origin.x == destination.x) {
             direction.x = 0;
         } else {
-            direction.x = (Math.min(getPiecePosition().x, destination.x) == getPiecePosition().x)? 1 : -1;
+            direction.x = (Math.min(origin.x, destination.x) == origin.x)? 1 : -1;
         }
-        if (getPiecePosition().y == destination.y) {
+        if (origin.y == destination.y) {
             direction.y = 0;
         } else {
-            direction.y = (Math.min(getPiecePosition().y, destination.y) == getPiecePosition().y)? 1 : -1;
+            direction.y = (Math.min(origin.y, destination.y) == origin.y)? 1 : -1;
         }
         return direction;
     }
@@ -69,53 +69,53 @@ public class Queen extends Piece implements PieceMoves {
         List<Point> legalMoves = new ArrayList<>();
         Point temp;
         // straight
-        for (int x = getPiecePosition().x + 1; x < ChessGame.SUM_OF_COLUMNS; x++) {
-            temp = new Point(x, getPiecePosition().y);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+        for (int x = piecePosition.x + 1; x < ChessGame.SUM_OF_COLUMNS; x++) {
+            temp = new Point(x, piecePosition.y);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
-        for (int x = getPiecePosition().x - 1; x >= 0; x--) {
-            temp = new Point(x, getPiecePosition().y);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+        for (int x = piecePosition.x - 1; x >= 0; x--) {
+            temp = new Point(x, piecePosition.y);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
-        for (int y = getPiecePosition().y + 1; y < ChessGame.SUM_OF_ROWS; y++) {
-            temp = new Point(getPiecePosition().x, y);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+        for (int y = piecePosition.y + 1; y < ChessGame.SUM_OF_ROWS; y++) {
+            temp = new Point(piecePosition.x, y);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
-        for (int y = getPiecePosition().y - 1; y >= 0; y--) {
-            temp = new Point(getPiecePosition().x, y);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+        for (int y = piecePosition.y - 1; y >= 0; y--) {
+            temp = new Point(piecePosition.x, y);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
         // diagonal
         for (int i = 1; i <= 4; i++) {
-            temp = new Point(getPiecePosition().x + i, getPiecePosition().y + i);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+            temp = new Point(piecePosition.x + i, piecePosition.y + i);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
         for (int i = 1; i <= 4; i++) {
-            temp = new Point(getPiecePosition().x - i, getPiecePosition().y + i);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+            temp = new Point(piecePosition.x - i, piecePosition.y + i);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
         for (int i = 1; i <= 4; i++) {
-            temp = new Point(getPiecePosition().x + i, getPiecePosition().y - i);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+            temp = new Point(piecePosition.x + i, piecePosition.y - i);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
         for (int i = 1; i <= 4; i++) {
             if (legalMoves.size() >= SUM_OF_LEGAL_MOVES) break;
-            temp = new Point(getPiecePosition().x - i, getPiecePosition().y - i);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+            temp = new Point(piecePosition.x - i, piecePosition.y - i);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
