@@ -26,8 +26,8 @@ class KnightTest {
         boolean upIsLegal;
         boolean downIsLegal;
 
-        upIsLegal = xDownYUpBlack.isLegalMove(new Point(1, 7), newPositionBlack, board);
-        downIsLegal = xUpYDownWhite.isLegalMove(new Point(6,0), newPositionWhite, board);
+        upIsLegal = xDownYUpBlack.isLegalMove(new Point(6, 0), newPositionBlack, board);
+        downIsLegal = xUpYDownWhite.isLegalMove(new Point(1,7), newPositionWhite, board);
 
         assertTrue(upIsLegal);
         assertTrue(downIsLegal);

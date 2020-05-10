@@ -30,9 +30,9 @@ public class Knight extends Piece implements PieceMoves{
     public boolean isLegalMove(Point origin, Point destination, Board board) throws IllegalMoveException {
         this.board = board;
         Point tempDestination;
-        if(isLegalDistance(destination)) {
+        if(isLegalDistance(origin, destination)) {
             for (Point direction: possibleDirections) {
-                tempDestination = new Point(getPiecePosition());
+                tempDestination = new Point(origin);
                 tempDestination.x += direction.x;
                 tempDestination.y += direction.y;
                 try {
@@ -49,8 +49,8 @@ public class Knight extends Piece implements PieceMoves{
         return false;
     }
 
-    private boolean isLegalDistance(Point destination) {
-        return (Math.abs(destination.x - getPiecePosition().x) == 1 && Math.abs(destination.y - getPiecePosition().y) == 2) || (Math.abs(destination.x - getPiecePosition().x) == 2 && Math.abs(destination.y - getPiecePosition().y) == 1);
+    private boolean isLegalDistance(Point origin, Point destination) {
+        return (Math.abs(destination.x - origin.x) == 1 && Math.abs(destination.y - origin.y) == 2) || (Math.abs(destination.x - origin.x) == 2 && Math.abs(destination.y - origin.y) == 1);
     }
 
     private List<Point> getPossibleDirections() {
@@ -71,8 +71,8 @@ public class Knight extends Piece implements PieceMoves{
         this.board = board;
         List<Point> legalMoves = new ArrayList<>();
         Point temp;
-        int x = getPiecePosition().x;
-        int y = getPiecePosition().y;
+        int x = piecePosition.x;
+        int y = piecePosition.y;
         for (Point possibleDirection: possibleDirections) {
             temp = new Point(x + possibleDirection.x, y + possibleDirection.y);
             if(shouldAddPositionToLegalMovesList(new Point(x, y), temp)) {
