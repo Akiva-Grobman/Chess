@@ -27,10 +27,10 @@ public class Bishop extends Piece implements PieceMoves {
 
     @Override
     public boolean isLegalMove(Point origin, Point destinationsPosition, Board board) throws IllegalMoveException {
-        if(movingInStraightLine(destinationsPosition)) throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
+        if(movingInStraightLine(origin, destinationsPosition)) return false;
         this.board = board;
-        Point tempDestination = new Point(getPiecePosition());
-        Point direction = getDirection(destinationsPosition);
+        Point tempDestination = new Point(origin);
+        Point direction = getDirection(origin, destinationsPosition);
         while (!tempDestination.equals(destinationsPosition)) {
             tempDestination.x += direction.x;
             tempDestination.y += direction.y;
@@ -47,14 +47,14 @@ public class Bishop extends Piece implements PieceMoves {
         return false;
     }
 
-    private boolean movingInStraightLine(Point destination) {
-        return getPiecePosition().x == destination.x || getPiecePosition().y == destination.y;
+    private boolean movingInStraightLine(Point origin, Point destination) {
+        return origin.x == destination.x || origin.y == destination.y;
     }
 
-    private Point getDirection(Point destination) {
+    private Point getDirection(Point origin, Point destination) {
         Point direction = new Point();
-        direction.x = (Math.min(getPiecePosition().x, destination.x) == getPiecePosition().x)? 1 : -1;
-        direction.y = (Math.min(getPiecePosition().y, destination.y) == getPiecePosition().y)? 1 : -1;
+        direction.x = (Math.min(origin.x, destination.x) == origin.x)? 1 : -1;
+        direction.y = (Math.min(origin.y, destination.y) == origin.y)? 1 : -1;
         return direction;
     }
 
@@ -65,27 +65,27 @@ public class Bishop extends Piece implements PieceMoves {
         List<Point> legalMoves = new ArrayList<>();
         Point temp;
         for (int i = 1; i <= 4; i++) {
-            temp = new Point(getPiecePosition().x + i, getPiecePosition().y + i);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+            temp = new Point(piecePosition.x + i, piecePosition.y + i);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
         for (int i = 1; i <= 4; i++) {
-            temp = new Point(getPiecePosition().x - i, getPiecePosition().y + i);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+            temp = new Point(piecePosition.x - i, piecePosition.y + i);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
         for (int i = 1; i <= 4; i++) {
-            temp = new Point(getPiecePosition().x + i, getPiecePosition().y - i);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+            temp = new Point(piecePosition.x + i, piecePosition.y - i);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
         for (int i = 1; i <= 4; i++) {
             if (legalMoves.size() >= SUM_OF_LEGAL_MOVES) break;
-            temp = new Point(getPiecePosition().x - i, getPiecePosition().y - i);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+            temp = new Point(piecePosition.x - i, piecePosition.y - i);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }

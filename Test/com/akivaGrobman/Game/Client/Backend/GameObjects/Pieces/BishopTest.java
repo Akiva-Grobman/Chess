@@ -58,13 +58,11 @@ class BishopTest {
     void willNotMoveStraight() throws Exception {
         board = new Board();
         bishop = (Bishop) board.getPiece(new Point(2,0));
+        boolean isLegal;
 
-        IllegalMoveException thrown = assertThrows (
-                IllegalMoveException.class,
-                () -> bishop.isLegalMove(new Point(2,0), new Point(2,1), board),
-                String.format("%s can not move from 2,0 t0 2,1", bishop.getClass().getSimpleName())
-        );
+        isLegal = bishop.isLegalMove(new Point(2,0), new Point(2,1), board);
 
-        assertTrue(thrown.getMessage().contains(String.format("%s can not move from 2,0 to 2,1", bishop.getClass().getSimpleName())));
+        assertFalse(isLegal);
     }
+
 }
