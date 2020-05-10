@@ -30,12 +30,12 @@ public class Rook extends Piece implements PieceMoves{
 
     @Override
     public boolean isLegalMove(Point origin, Point destinationsPosition, Board board) throws IllegalMoveException {
-        if(destinationsPosition.x != getPiecePosition().x && destinationsPosition.y != getPiecePosition().y) throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
+        if(destinationsPosition.x != origin.x && destinationsPosition.y != origin.y) return false;
         this.board = board;
-        Point tempDestination = new Point(getPiecePosition());
+        Point tempDestination = new Point(origin);
         int direction;
-        if(destinationsPosition.x == getPiecePosition().x) {
-            direction = getDirection(getPiecePosition().y, destinationsPosition.y);
+        if(destinationsPosition.x == origin.x) {
+            direction = getDirection(origin.y, destinationsPosition.y);
             while (tempDestination.y != destinationsPosition.y) {
                 tempDestination.y += direction;
                 if(!isInBounds(tempDestination)) {
@@ -49,8 +49,8 @@ public class Rook extends Piece implements PieceMoves{
                 }
             }
         }
-        if(destinationsPosition.y == getPiecePosition().y) {
-            direction = getDirection(getPiecePosition().x, destinationsPosition.x);
+        if(destinationsPosition.y == origin.y) {
+            direction = getDirection(origin.x, destinationsPosition.x);
             while (tempDestination.x != destinationsPosition.x) {
                 tempDestination.x += direction;
                 try {
@@ -85,27 +85,27 @@ public class Rook extends Piece implements PieceMoves{
         this.board = board;
         List<Point> legalMoves = new ArrayList<>();
         Point temp;
-        for (int x = getPiecePosition().x + 1; x < ChessGame.SUM_OF_COLUMNS; x++) {
-            temp = new Point(x, getPiecePosition().y);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+        for (int x = piecePosition.x + 1; x < ChessGame.SUM_OF_COLUMNS; x++) {
+            temp = new Point(x, piecePosition.y);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
-        for (int x = getPiecePosition().x - 1; x >= 0; x--) {
-            temp = new Point(x, getPiecePosition().y);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+        for (int x = piecePosition.x - 1; x >= 0; x--) {
+            temp = new Point(x, piecePosition.y);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
-        for (int y = getPiecePosition().y + 1; y < ChessGame.SUM_OF_ROWS; y++) {
-            temp = new Point(getPiecePosition().x, y);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+        for (int y = piecePosition.y + 1; y < ChessGame.SUM_OF_ROWS; y++) {
+            temp = new Point(piecePosition.x, y);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
-        for (int y = getPiecePosition().y - 1; y >= 0; y--) {
-            temp = new Point(getPiecePosition().x, y);
-            if(!addedDestinationToLegalMovesList(legalMoves, getPiecePosition(), temp)) {
+        for (int y = piecePosition.y - 1; y >= 0; y--) {
+            temp = new Point(piecePosition.x, y);
+            if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }

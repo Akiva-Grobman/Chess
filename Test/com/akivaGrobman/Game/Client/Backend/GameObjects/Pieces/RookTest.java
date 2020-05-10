@@ -58,13 +58,11 @@ class RookTest {
     void willNotMoveDiagonal() throws Exception {
         board = new Board();
         rook = (Rook) board.getPiece(new Point(0,0));
+        boolean isLegal;
 
-        IllegalMoveException thrown = assertThrows(
-                IllegalMoveException.class,
-                () -> rook.isLegalMove(new Point(0,0), new Point(4,4), board),
-                String.format("%s can not move from 0,0 to 4,4", rook.getClass().getSimpleName())
-        );
+        isLegal = rook.isLegalMove(new Point(0,0), new Point(4,4), board);
 
-        assertTrue(thrown.getMessage().contains(String.format("%s can not move from 0,0 to 4,4", rook.getClass().getSimpleName())));
+        assertFalse(isLegal);
     }
+
 }
