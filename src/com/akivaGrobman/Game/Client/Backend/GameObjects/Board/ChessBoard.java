@@ -32,7 +32,7 @@ public abstract class ChessBoard {
             // throw new IllegalMoveException(getClass().getSimpleName(), origin, destination);
             return false;
         }
-        boolean isInCheck = isInCheck(piece, destination, depth);
+        boolean isInCheck = isInCheck(piece, origin, destination, depth);
         return !isInCheck;
     }
 
@@ -89,9 +89,8 @@ public abstract class ChessBoard {
         }
     }
 
-    protected boolean isInCheck(Piece piece, Point destination, int depth) {
+    protected boolean isInCheck(Piece piece, Point origin, Point destination, int depth) {
         boolean isInCheck;
-        Point origin = piece.getPiecePosition();
         Piece oldPiece;
         try {
             oldPiece = board[destination.y][destination.x].getPiece();
@@ -109,15 +108,13 @@ public abstract class ChessBoard {
     }
 
     protected static Point getKingPosition(PieceColor kingColor, Tile[][] board) {
-        for (Tile[] row: board) {
-            for (Tile column: row) {
-                if(column.hasPiece()) {
+        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
+            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
+                if(board[y][x].hasPiece()) {
                     try {
-                        Piece piece = column.getPiece();
-                        if(piece instanceof King) {
-                            if(piece.getPieceColor() == kingColor) {
-                                return piece.getPiecePosition();
-                            }
+                        Piece piece = board[y][x].getPiece();
+                        if(piece instanceof King && piece.getPieceColor() == kingColor) {
+                            return new Point(x,y);
                         }
                     } catch (NoPieceFoundException e) {
                         e.printStackTrace();
