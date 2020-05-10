@@ -43,41 +43,41 @@ public class King extends Piece implements PieceMoves {
     @Override
     public boolean isLegalMove(Point origin, Point destination, Board board) throws IllegalMoveException {
         this.board = board;
-        Point tempDestination = new Point(getPiecePosition());
-        Point direction = getDirection(destination);
+        Point tempDestination = new Point(origin);
+        Point direction = getDirection(origin, destination);
         tempDestination.x += direction.x;
         tempDestination.y += direction.y;
         if(!isInBounds(tempDestination)) {
             return false;
         }
-        return (destination.equals(tempDestination) && canMoveThere(tempDestination, getPieceColor())) || isCastlingMove(destination);
+        return (destination.equals(tempDestination) && canMoveThere(tempDestination, getPieceColor())) || isCastlingMove(origin, destination);
     }
 
-    private Point getDirection(Point destination) {
+    private Point getDirection(Point origin, Point destination) {
         Point direction = new Point();
-        if(getPiecePosition().x == destination.x) {
+        if(origin.x == destination.x) {
             direction.x = 0;
         } else {
-            direction.x = (Math.min(getPiecePosition().x, destination.x) == getPiecePosition().x)? 1 : -1;
+            direction.x = (Math.min(origin.x, destination.x) == origin.x)? 1 : -1;
         }
-        if (getPiecePosition().y == destination.y) {
+        if (origin.y == destination.y) {
             direction.y = 0;
         } else {
-            direction.y = (Math.min(getPiecePosition().y, destination.y) == getPiecePosition().y)? 1 : -1;
+            direction.y = (Math.min(origin.y, destination.y) == origin.y)? 1 : -1;
         }
         return direction;
     }
 
-    private boolean isCastlingMove(Point destination) {
-        if (moved || wasInCheck || getPiecePosition().x != STARTING_COLUMN || destination.x != 6 && destination.x != 1) return false;
+    private boolean isCastlingMove(Point origin, Point destination) {
+        if (moved || wasInCheck || origin.x != STARTING_COLUMN || destination.x != 6 && destination.x != 1) return false;
         int rookX;
-        if(destination.x < getPiecePosition().x) {
+        if(destination.x < origin.x) {
             rookX = 0;
         } else {
             rookX = 7;
         }
         try {
-            Piece piece = board.getPiece(new Point(rookX, getPiecePosition().y));
+            Piece piece = board.getPiece(new Point(rookX, origin.y));
             if(piece instanceof Rook) {
                 if (piece.getPieceColor() != getPieceColor() || ((Rook) piece).getHasMoved()) {
                     return false;
@@ -91,12 +91,12 @@ public class King extends Piece implements PieceMoves {
         Board isInCheckTesterBoard;
         switch (destination.x) {
             case 1:
-                for (int x = getPiecePosition().x - 1; x > 0; x--) {
+                for (int x = origin.x - 1; x > 0; x--) {
                     isInCheckTesterBoard = Board.getClone(board);
-                    move(new Point(x, getPiecePosition().y));
+                    move(new Point(x, origin.y));
                     isInCheckTesterBoard.updateTile(new Point(x, destination.y), this);
                     isInCheckTesterBoard.updateTile(getPreviousPosition(), null);
-                    if(board.hasPieceInThisPosition(new Point(x, getPiecePosition().y)) || isInCheck(isInCheckTesterBoard, 1)) {
+                    if(board.hasPieceInThisPosition(new Point(x, origin.y)) || isInCheck(isInCheckTesterBoard, 1)) {
                         reversMove();
                         return false;
                     }
@@ -104,12 +104,12 @@ public class King extends Piece implements PieceMoves {
                 }
                 break;
             case 6:
-                for (int x = getPiecePosition().x + 1; x < ChessGame.SUM_OF_COLUMNS - 1; x++) {
+                for (int x = origin.x + 1; x < ChessGame.SUM_OF_COLUMNS - 1; x++) {
                     isInCheckTesterBoard = Board.getClone(board);
-                    move(new Point(x, getPiecePosition().y));
+                    move(new Point(x, origin.y));
                     isInCheckTesterBoard.updateTile(new Point(x, destination.y), this);
                     isInCheckTesterBoard.updateTile(getPreviousPosition(), null);
-                    if(board.hasPieceInThisPosition(new Point(x, getPiecePosition().y)) || isInCheck(isInCheckTesterBoard, 1)) {
+                    if(board.hasPieceInThisPosition(new Point(x, origin.y)) || isInCheck(isInCheckTesterBoard, 1)) {
                         reversMove();
                         return false;
                     }
@@ -130,17 +130,17 @@ public class King extends Piece implements PieceMoves {
         for (int y = -1; y <= 1; y++) {
             for (int x = -1; x <= 1; x++) {
                 if(y == 0 && x == 0) continue;// king original position
-                temp = new Point(getPiecePosition().x + x, getPiecePosition().y + y);
-                if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+                temp = new Point(piecePosition.x + x, piecePosition.y + y);
+                if(shouldAddPositionToLegalMovesList(piecePosition, temp)) {
                     legalMoves.add(temp);
                 }
             }
         }
-        if(shouldAddPositionToLegalMovesList(getPiecePosition(), new Point(1, getPiecePosition().y))) {
-            legalMoves.add(new Point(1, getPiecePosition().y));
+        if(shouldAddPositionToLegalMovesList(piecePosition, new Point(1, piecePosition.y))) {
+            legalMoves.add(new Point(1, piecePosition.y));
         }
-        if(shouldAddPositionToLegalMovesList(getPiecePosition(), new Point(6, getPiecePosition().y))) {
-            legalMoves.add(new Point(6, getPiecePosition().y));
+        if(shouldAddPositionToLegalMovesList(piecePosition, new Point(6, piecePosition.y))) {
+            legalMoves.add(new Point(6, piecePosition.y));
         }
         return legalMoves;
     }
