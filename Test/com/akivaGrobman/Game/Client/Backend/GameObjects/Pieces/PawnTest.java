@@ -1,6 +1,7 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
+import com.akivaGrobman.Game.Client.Backend.Players.Player;
 import org.junit.jupiter.api.Test;
 import java.awt.*;
 import java.util.ArrayList;
@@ -23,23 +24,23 @@ class PawnTest {
         boolean firsMoveIsLegal;
         boolean secondMoveIsLegal;
 
-        firsMoveIsLegal = pawn1.isLegalMove(new Point(1, 2), board);
-        secondMoveIsLegal = pawn2.isLegalMove(new Point(2, 3), board);
+        firsMoveIsLegal = pawn1.isLegalMove(new Point(1,1), new Point(1, 2), board);
+        secondMoveIsLegal = pawn2.isLegalMove(new Point(2, 1), new Point(2, 3), board);
 
         assertTrue(firsMoveIsLegal);
         assertTrue(secondMoveIsLegal);
     }
 
     @Test
-    void LegalMoveWithKillingWorks() throws Exception {
+    void legalMoveWithKillingWorks() throws Exception {
         pawn1 = new Pawn(new Point(2, 5), PieceColor.BLACK);
         pawn2 = new Pawn(new Point(6, 5), PieceColor.BLACK);
         board = Board.getConsumeBoard(Arrays.asList(pawn1, pawn2), new ArrayList<>());
         boolean firstMoveIsLegal;
         boolean secondMoveIsLegal;
 
-        firstMoveIsLegal = pawn1.isLegalMove(new Point(3, 6), board);
-        secondMoveIsLegal = pawn2.isLegalMove(new Point(5, 6), board);
+        firstMoveIsLegal = pawn1.isLegalMove(new Point(2, 5), new Point(3, 6), board);
+        secondMoveIsLegal = pawn2.isLegalMove(new Point(6, 5), new Point(5, 6), board);
 
         assertTrue(firstMoveIsLegal);
         assertTrue(secondMoveIsLegal);
@@ -51,19 +52,21 @@ class PawnTest {
         pawn1 = new Pawn(new Point(1,1), PieceColor.BLACK);
         boolean isLegal;
 
-        isLegal = pawn1.isLegalMove(new Point(4, 4), board);
+        isLegal = pawn1.isLegalMove(new Point(1,1), new Point(4, 4), board);
 
         assertFalse(isLegal);
     }
 
     @Test
-    void willAllowEnpassant() throws Exception{
+    void willAllowEnpassant() throws Exception {
+        //todo change test might need to move to chess game test
         pawn1 = new Pawn(new Point(2,3), PieceColor.WHITE);
         pawn2 = new Pawn(new Point(1, 3), PieceColor.BLACK, true);
         board = Board.getConsumeBoard(List.of(pawn1, pawn2), new ArrayList<>());
         boolean isLegal;
+        board.setEnpassant(PieceColor.BLACK, 1);
 
-        isLegal = pawn1.isLegalMove(new Point(1, 2), board);
+        isLegal = pawn1.isLegalMove(new Point(2,3), new Point(1, 2), board);
 
         assertTrue(isLegal);
     }

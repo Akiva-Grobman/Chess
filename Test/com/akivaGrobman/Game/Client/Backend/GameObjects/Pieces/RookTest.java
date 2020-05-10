@@ -22,7 +22,7 @@ class RookTest {
          board = Board.getConsumeBoard(Collections.singletonList(rook), Collections.singletonList(new Point(0, 1)));
          boolean isLegal;
 
-         isLegal = rook.isLegalMove(new Point(4, 4), board);
+         isLegal = rook.isLegalMove(new Point(0, 4), new Point(4, 4), board);
 
          assertTrue(isLegal);
     }
@@ -36,8 +36,8 @@ class RookTest {
         boolean firstRookMoveIsLegal;
         boolean secondRookMoveIsLegal;
 
-        firstRookMoveIsLegal = rook.isLegalMove(new Point(0, 3), board);
-        secondRookMoveIsLegal = secondRook.isLegalMove(new Point(6, 4), board);
+        firstRookMoveIsLegal = rook.isLegalMove(new Point(0, 0), new Point(0, 3), board);
+        secondRookMoveIsLegal = secondRook.isLegalMove(new Point(4, 4), new Point(6, 4), board);
 
         assertFalse(firstRookMoveIsLegal);
         assertFalse(secondRookMoveIsLegal);
@@ -49,7 +49,7 @@ class RookTest {
         rook = (Rook) board.getPiece(new Point(0,0));
         boolean isLegal;
 
-        isLegal = rook.isLegalMove(new Point(0, 1), board);
+        isLegal = rook.isLegalMove(new Point(0,0), new Point(0, 1), board);
 
         assertFalse(isLegal);
     }
@@ -61,7 +61,7 @@ class RookTest {
 
         IllegalMoveException thrown = assertThrows(
                 IllegalMoveException.class,
-                () -> rook.isLegalMove(new Point(4,4), board),
+                () -> rook.isLegalMove(new Point(0,0), new Point(4,4), board),
                 String.format("%s can not move from 0,0 to 4,4", rook.getClass().getSimpleName())
         );
 

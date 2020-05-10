@@ -27,7 +27,7 @@ public class Queen extends Piece implements PieceMoves {
     }
 
     @Override
-    public boolean isLegalMove(Point destination, Board board) throws IllegalMoveException {
+    public boolean isLegalMove(Point origin, Point destination, Board board) throws IllegalMoveException {
         this.board = board;
         Point tempDestination = new Point(getPiecePosition());
         Point direction = getDirection(destination);
@@ -63,7 +63,7 @@ public class Queen extends Piece implements PieceMoves {
     }
 
     @Override
-    public List<Point> getLegalMoves(Board board) {
+    public List<Point> getLegalMoves(Board board, Point piecePosition) {
         this.board = board;
         final int SUM_OF_LEGAL_MOVES = 27;
         List<Point> legalMoves = new ArrayList<>();

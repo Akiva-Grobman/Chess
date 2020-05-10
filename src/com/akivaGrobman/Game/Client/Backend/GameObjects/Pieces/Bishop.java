@@ -26,7 +26,7 @@ public class Bishop extends Piece implements PieceMoves {
     }
 
     @Override
-    public boolean isLegalMove(Point destinationsPosition, Board board) throws IllegalMoveException {
+    public boolean isLegalMove(Point origin, Point destinationsPosition, Board board) throws IllegalMoveException {
         if(movingInStraightLine(destinationsPosition)) throw new IllegalMoveException(getClass().getSimpleName(), getPiecePosition(), destinationsPosition);
         this.board = board;
         Point tempDestination = new Point(getPiecePosition());
@@ -59,7 +59,7 @@ public class Bishop extends Piece implements PieceMoves {
     }
 
     @Override
-    public List<Point> getLegalMoves(Board board) {
+    public List<Point> getLegalMoves(Board board, Point piecePosition) {
         this.board = board;
         final int SUM_OF_LEGAL_MOVES = 13;
         List<Point> legalMoves = new ArrayList<>();

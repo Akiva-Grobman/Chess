@@ -13,14 +13,12 @@ public class Pawn extends Piece implements PieceMoves {
 
     private final int STARTING_ROW;
     private final int direction;
-    private boolean isInEnpassantPosition;
 
     public Pawn(Point position, PieceColor color) {
         super(position, PieceType.PAWN, color);
         STARTING_ROW = position.y;
         board = null;
         direction = getDirection();
-        isInEnpassantPosition = false;
     }
 
     // this is for testing only (that's why it's protected)
@@ -37,14 +35,11 @@ public class Pawn extends Piece implements PieceMoves {
             setPreviousPosition(new Point(getPiecePosition().x, STARTING_ROW));
         }
         board = null;
-
     }
 
     @Override
     public Piece getClone() {
-        Pawn pawn = new Pawn((Point) getPiecePosition().clone(), getPieceColor());
-        pawn.isInEnpassantPosition = isInEnpassantPosition;
-        return pawn;
+        return new Pawn((Point) getPiecePosition().clone(), getPieceColor());
     }
 
     @Override
@@ -53,25 +48,25 @@ public class Pawn extends Piece implements PieceMoves {
     }
 
     @Override
-    public List<Point> getLegalMoves(Board board) {
+    public List<Point> getLegalMoves(Board board, Point piecePosition) {
         this.board = board;
         List<Point> legalMoves = new ArrayList<>();
         Point temp;
-        temp = new Point(getPiecePosition().x, getPiecePosition().y + direction);
-        if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+        temp = new Point(piecePosition.x, piecePosition.y + direction);
+        if(shouldAddPositionToLegalMovesList(piecePosition, temp)) {
             legalMoves.add(temp);
-            temp = new Point(getPiecePosition().x, getPiecePosition().y + (2 * direction));
-            if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+            temp = new Point(piecePosition.x, piecePosition.y + (2 * direction));
+            if(shouldAddPositionToLegalMovesList(piecePosition, temp)) {
                 legalMoves.add(temp);
             }
         }
         // these two will handle enpassant as well
-        temp = new Point(getPiecePosition().x + 1, getPiecePosition().y + direction);
-        if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+        temp = new Point(piecePosition.x + 1, piecePosition.y + direction);
+        if(shouldAddPositionToLegalMovesList(piecePosition, temp)) {
             legalMoves.add(temp);
         }
-        temp = new Point(getPiecePosition().x - 1, getPiecePosition().y + direction);
-        if(shouldAddPositionToLegalMovesList(getPiecePosition(), temp)) {
+        temp = new Point(piecePosition.x - 1, piecePosition.y + direction);
+        if(shouldAddPositionToLegalMovesList(piecePosition, temp)) {
             legalMoves.add(temp);
         }
         return legalMoves;
@@ -86,10 +81,10 @@ public class Pawn extends Piece implements PieceMoves {
     }
 
     @Override
-    public boolean isLegalMove(Point destination, Board board) throws IllegalMoveException {
+    public boolean isLegalMove(Point origin, Point destination, Board board) throws IllegalMoveException {
         this.board = board;
         boolean isLegal = false;
-        Point tempDestination = new Point(getPiecePosition());
+        Point tempDestination = new Point(origin);
         tempDestination.y += direction;
         // the tile in front
         if (tempDestination.equals(destination)) {
@@ -114,13 +109,12 @@ public class Pawn extends Piece implements PieceMoves {
             }
         }
         // then the tile two to the front
-        if (getPiecePosition().y == STARTING_ROW) {
+        if (origin.y == STARTING_ROW) {
             int oldY = tempDestination.y;
             tempDestination.y += direction;
-            tempDestination.x = getPiecePosition().x;
+            tempDestination.x = origin.x;
             if (tempDestination.equals(destination)) {
                 isLegal = isInBounds(tempDestination) && isVacantPosition(tempDestination, this.board) && isVacantPosition(new Point(tempDestination.x, oldY), this.board);
-                isInEnpassantPosition = isLegal;
             }
         }
         return isLegal;
@@ -132,7 +126,7 @@ public class Pawn extends Piece implements PieceMoves {
                 try {
                     if (board.getPiece(new Point(tempDestination.x, tempDestination.y - direction)) instanceof Pawn) {
                         Pawn pawn = ((Pawn) board.getPiece(new Point(tempDestination.x, tempDestination.y - direction)));
-                        return pawn.getPieceColor() != getPieceColor() && pawn.isInEnpassantPosition();
+                        return pawn.getPieceColor() != getPieceColor() && board.getEnpassant(pawn.getPieceColor(), tempDestination.x);
                     }
                 } catch (NoPieceFoundException e) {
                     return false;
@@ -142,10 +136,6 @@ public class Pawn extends Piece implements PieceMoves {
             return false;
         }
         return false;
-    }
-
-    private boolean isInEnpassantPosition() {
-        return getPreviousPosition().y == STARTING_ROW && Math.abs(getPiecePosition().y - getPreviousPosition().y) == 2;
     }
 
 }

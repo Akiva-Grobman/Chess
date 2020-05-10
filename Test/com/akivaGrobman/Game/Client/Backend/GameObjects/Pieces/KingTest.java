@@ -23,8 +23,8 @@ class KingTest {
         boolean straightIsLegal;
         boolean diagonalIsLegal;
 
-        straightIsLegal = kingStraight.isLegalMove(new Point(4, 3), board);
-        diagonalIsLegal = kingDiagonal.isLegalMove(new Point(4, 6), board);
+        straightIsLegal = kingStraight.isLegalMove(new Point(4,4), new Point(4, 3), board);
+        diagonalIsLegal = kingDiagonal.isLegalMove(new Point(4,3), new Point(4, 6), board);
 
         assertTrue(straightIsLegal);
         assertTrue(diagonalIsLegal);
@@ -36,7 +36,7 @@ class KingTest {
         kingStraight = (King) board.getPiece(new Point(4, 0));
         boolean isLegal;
 
-        isLegal = kingStraight.isLegalMove(new Point(4, 1), board);
+        isLegal = kingStraight.isLegalMove(new Point(4, 0), new Point(4, 1), board);
 
         assertFalse(isLegal);
     }

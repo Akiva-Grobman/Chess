@@ -54,7 +54,7 @@ public class ChessGame {
             try {
                 if(backendBoard.getPiece(tilePosition).getPieceColor() == currentPlayer.getPlayersColor()) {
                     onScreenBoard.resetTilesColor();
-                    onScreenBoard.drawLegalTiles(backendBoard.getPiece(tilePosition).getLegalMoves(backendBoard));
+                    onScreenBoard.drawLegalTiles(backendBoard.getPiece(tilePosition).getLegalMoves(backendBoard, tilePosition));
                 } else {
                     onScreenBoard.resetTilesColor();
                 }
@@ -123,6 +123,7 @@ public class ChessGame {
     }
 
     private void handleSpecialMoves(Positions positions) {
+        updateEnpassantData(positions);
         if(wasEnpassant(backendBoard, moves)) {
             backendBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null);
             onScreenBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null, null);
@@ -148,6 +149,20 @@ public class ChessGame {
         } else if(wasPromotion(backendBoard, positions.getDestination())) {
             // todo
             System.out.println("promotion");
+        }
+    }
+
+    private void updateEnpassantData(Positions positions) {
+        try {
+            Piece piece = backendBoard.getPiece(positions.getDestination());
+            if(piece instanceof Pawn) {
+                if(Math.abs(positions.getOrigin().y - positions.getDestination().y) == 2) {
+                    backendBoard.setEnpassant(piece.getPieceColor(), positions.getDestination().x);
+                }
+            }
+            backendBoard.resetOpponentsEnpassant(piece.getPieceColor());
+        } catch (NoPieceFoundException e) {
+            e.printStackTrace();
         }
     }
 

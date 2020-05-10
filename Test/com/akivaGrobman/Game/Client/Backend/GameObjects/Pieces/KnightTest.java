@@ -26,8 +26,8 @@ class KnightTest {
         boolean upIsLegal;
         boolean downIsLegal;
 
-        upIsLegal = xDownYUpBlack.isLegalMove(newPositionBlack, board);
-        downIsLegal = xUpYDownWhite.isLegalMove(newPositionWhite, board);
+        upIsLegal = xDownYUpBlack.isLegalMove(new Point(1, 7), newPositionBlack, board);
+        downIsLegal = xUpYDownWhite.isLegalMove(new Point(6,0), newPositionWhite, board);
 
         assertTrue(upIsLegal);
         assertTrue(downIsLegal);
@@ -38,8 +38,8 @@ class KnightTest {
         boolean blackKnightMoveIsLegal;
         boolean whiteKnightMoveIsLegal;
 
-        blackKnightMoveIsLegal = xUpYDownWhite.isLegalMove(new Point(3,6), board);
-        whiteKnightMoveIsLegal = xDownYUpBlack.isLegalMove(new Point(4,1), board);
+        blackKnightMoveIsLegal = xUpYDownWhite.isLegalMove(new Point(1, 7), new Point(3,6), board);
+        whiteKnightMoveIsLegal = xDownYUpBlack.isLegalMove(new Point(6,0), new Point(4,1), board);
 
         assertFalse(blackKnightMoveIsLegal);
         assertFalse(whiteKnightMoveIsLegal);
@@ -52,8 +52,8 @@ class KnightTest {
         boolean whiteKnightMoveIsLegal;
         boolean blackKnightMoveIsLegal;
 
-        blackKnightMoveIsLegal = xDownYUpBlack.isLegalMove(newPositionBlack, board);
-        whiteKnightMoveIsLegal = xUpYDownWhite.isLegalMove(newPositionWhite, board);
+        blackKnightMoveIsLegal = xDownYUpBlack.isLegalMove(new Point(1, 7), newPositionBlack, board);
+        whiteKnightMoveIsLegal = xUpYDownWhite.isLegalMove(new Point(6,0), newPositionWhite, board);
 
         assertFalse(blackKnightMoveIsLegal);
         assertFalse(whiteKnightMoveIsLegal);

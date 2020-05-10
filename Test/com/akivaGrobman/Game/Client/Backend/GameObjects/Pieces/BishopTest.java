@@ -22,7 +22,7 @@ class BishopTest {
         board = Board.getConsumeBoard(Collections.singletonList(bishop), new ArrayList<>());
         boolean isLegal;
 
-        isLegal = bishop.isLegalMove(new Point(4,4), board);
+        isLegal = bishop.isLegalMove(new Point(2,2), new Point(4,4), board);
 
         assertTrue(isLegal);
     }
@@ -36,8 +36,8 @@ class BishopTest {
         boolean firstMoveIsLegal;
         boolean secondMoveIsLegal;
 
-        firstMoveIsLegal = bishop.isLegalMove(new Point(0, 3), board);
-        secondMoveIsLegal = secondBishop.isLegalMove(new Point(4,4), board);
+        firstMoveIsLegal = bishop.isLegalMove(new Point(2,0), new Point(0, 3), board);
+        secondMoveIsLegal = secondBishop.isLegalMove(new Point(2,2), new Point(4,4), board);
 
         assertFalse(firstMoveIsLegal);
         assertFalse(secondMoveIsLegal);
@@ -49,7 +49,7 @@ class BishopTest {
         bishop = (Bishop) board.getPiece(new Point(2,0));
         boolean isLegal;
 
-        isLegal = bishop.isLegalMove(new Point(1, 1), board);
+        isLegal = bishop.isLegalMove(new Point(2,0), new Point(1, 1), board);
 
         assertFalse(isLegal);
     }
@@ -61,7 +61,7 @@ class BishopTest {
 
         IllegalMoveException thrown = assertThrows (
                 IllegalMoveException.class,
-                () -> bishop.isLegalMove(new Point(2,1), board),
+                () -> bishop.isLegalMove(new Point(2,0), new Point(2,1), board),
                 String.format("%s can not move from 2,0 t0 2,1", bishop.getClass().getSimpleName())
         );
 

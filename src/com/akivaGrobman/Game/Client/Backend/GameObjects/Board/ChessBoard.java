@@ -5,8 +5,10 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceType;
+import com.akivaGrobman.Game.Client.ChessGame;
+
 import java.awt.*;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public abstract class ChessBoard {
@@ -15,11 +17,18 @@ public abstract class ChessBoard {
     protected King whiteKing;
     protected King blackKing;
     private Board backendBoard;
+    private final boolean[] whiteEnpassant;
+    private final boolean[] blackEnpassant;
+
+    public ChessBoard() {
+        whiteEnpassant = new boolean[ChessGame.SUM_OF_COLUMNS];
+        blackEnpassant = new boolean[ChessGame.SUM_OF_COLUMNS];
+    }
 
     public boolean isLegalMove(Point origin, Point destination, int depth) throws IllegalMoveException, NoPieceFoundException {
         if(origin.equals(destination)) return false; //throw new IllegalMoveException("can not move piece to original position");
         Piece piece = board[origin.y][origin.x].getPiece();
-        if(!piece.isLegalMove(destination, backendBoard)) {
+        if(!piece.isLegalMove(origin, destination, backendBoard)) {
             // throw new IllegalMoveException(getClass().getSimpleName(), origin, destination);
             return false;
         }
@@ -43,6 +52,26 @@ public abstract class ChessBoard {
 
     public King getKing(PieceColor pieceColor) {
         return (pieceColor == PieceColor.BLACK)? blackKing: whiteKing;
+    }
+
+    public boolean getEnpassant(PieceColor playersColor, int index) {
+        return (playersColor == PieceColor.BLACK)? blackEnpassant[index]: whiteEnpassant[index];
+    }
+
+    public void setEnpassant(PieceColor playersColor, int index) {
+        if(playersColor == PieceColor.BLACK) {
+            blackEnpassant[index] = true;
+        } else {
+            whiteEnpassant[index] = true;
+        }
+    }
+
+    public void resetOpponentsEnpassant(PieceColor pieceColor) {
+        if(pieceColor == PieceColor.WHITE) {
+            Arrays.fill(blackEnpassant, false);
+        } else {
+            Arrays.fill(whiteEnpassant, false);
+        }
     }
 
     protected static void setKings(Board board) {

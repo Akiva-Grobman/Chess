@@ -8,6 +8,6 @@ interface PieceMoves {
 
     void move(Point destinationsPosition);
 
-    List<Point> getLegalMoves(Board board);
+    List<Point> getLegalMoves(Board board, Point piecePosition);
 
 }
