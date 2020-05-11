@@ -23,8 +23,6 @@ public class GraphicBoard {
         this.game = game;
         boardSetUp(board);
         frame.setVisible(true);
-        // todo check other toasts
-//        toast("ready");
     }
 
     public void updateTile(Point tilePosition, PieceType pieceType, PieceColor pieceColor) {
@@ -51,10 +49,6 @@ public class GraphicBoard {
         frame = getChessBoardFrame(iconUrl);
         this.board = getStartingBoard(board, game);
         addTilesToFrame(game.getPlayersColor(), frame, this.board);
-    }
-
-    public void toast(String message) {
-        Toast.showToast((JComponent) frame.getContentPane().getComponents()[60], message);
     }
 
     @Override
