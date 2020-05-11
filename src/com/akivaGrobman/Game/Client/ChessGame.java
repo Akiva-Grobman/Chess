@@ -9,6 +9,8 @@ import com.akivaGrobman.Game.Client.Backend.Players.Enemy;
 import com.akivaGrobman.Game.Client.Backend.Players.Positions;
 import com.akivaGrobman.Game.Client.Backend.Players.Player;
 import com.akivaGrobman.Game.Client.Frontend.GraphicBoard;
+import com.akivaGrobman.Game.Client.Frontend.PawnPromotionWindow;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ public class ChessGame {
     private Player player;
     private Enemy enemy;
     private Player currentPlayer;
+    private PieceType promotedPiece;
 
     public ChessGame(PieceColor playersColor, Enemy enemy) {
         backendBoard = new Board();
@@ -145,8 +148,32 @@ public class ChessGame {
             onScreenBoard.updateTile(new Point(newX, y), PieceType.ROOK, positions.getPlayersColor());
             onScreenBoard.updateTile(new Point(originalX, y), null, null);
         } else if(wasPromotion(backendBoard, positions.getDestination())) {
-            // todo
+            promotedPiece = null;
             System.out.println("promotion");
+            Piece piece = null;
+            new PawnPromotionWindow(this, positions.getPlayersColor(), onScreenBoard.getFrame());
+            assert promotedPiece != null;
+            try {
+                switch (promotedPiece) {
+                    case ROOK:
+                        piece = new Rook(backendBoard.getPiece(positions.getDestination()).getPieceColor());
+                        break;
+                    case QUEEN:
+                        piece = new Queen(backendBoard.getPiece(positions.getDestination()).getPieceColor());
+                        break;
+                    case BISHOP:
+                        piece = new Bishop(backendBoard.getPiece(positions.getDestination()).getPieceColor());
+                        break;
+                    case KNIGHT:
+                        piece = new Knight(backendBoard.getPiece(positions.getDestination()).getPieceColor());
+                        break;
+                    default:
+                        throw new Error("wrong type " + promotedPiece);
+                }
+            } catch (NoPieceFoundException ignored) {}
+            assert piece != null;
+            backendBoard.updateTile(positions.getDestination(), piece);
+            onScreenBoard.updateTile(positions.getDestination(), promotedPiece, piece.getPieceColor());
         }
     }
 
@@ -204,5 +231,8 @@ public class ChessGame {
         return player.getPlayersColor();
     }
 
+    public void promotionClick(PieceType pieceType) {
+        promotedPiece = pieceType;
+    }
 }
 

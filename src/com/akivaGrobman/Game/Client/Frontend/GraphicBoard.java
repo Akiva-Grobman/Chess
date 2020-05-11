@@ -51,6 +51,10 @@ public class GraphicBoard {
         addTilesToFrame(game.getPlayersColor(), frame, this.board);
     }
 
+    public JFrame getFrame() {
+        return frame;
+    }
+
     @Override
     public String toString() {
         StringBuilder bo = new StringBuilder();
@@ -65,4 +69,5 @@ public class GraphicBoard {
         }
         return bo.toString();
     }
+
 }
