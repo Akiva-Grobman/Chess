@@ -15,42 +15,39 @@ public abstract class CheckChecker {
 
     private static final int MAX_DEPTH = 3;
     private static Board board;
-    private static List<Piece> enemyPieces;
+    private static List<Point> enemyPiecePositions;
     private static PieceColor playersColor;
     
     public static boolean kingIsInCheck(PieceColor playersColor, Board board, int depth) {
         CheckChecker.board = Board.getClone(board);
         CheckChecker.playersColor = playersColor;
-        enemyPieces = getEnemyPieces();
+        enemyPiecePositions = getEnemyPiecePositions();
         return isInCheck(depth);
     }
 
     private static boolean isInCheck(int depth) {
         // in this method we ignore the NoSuchElementException because when depth == 2.  because one of the players doesn't have a king
-        King playersKing = getKing(playersColor);
-        for (Piece enemyPiece: enemyPieces) {
-            if(enemyPiece instanceof King)
-                continue;
+        Point kingPosition = getKingPosition(playersColor);
+        for (Point enemyPiecePosition: enemyPiecePositions) {
             try {
+                Piece piece = board.getPiece(enemyPiecePosition);
+                assert piece != null;
+                if(piece instanceof King) continue;
                 if(depth < MAX_DEPTH) {
-                    if(board.isLegalMove(enemyPiece.getPiecePosition(), playersKing.getPiecePosition(), depth)){
-                        return true;
-                    }
+                    return board.isLegalMove(enemyPiecePosition, kingPosition, depth);
                 }
-            } catch (IllegalMoveException | NoPieceFoundException ignore) {}
+            } catch (NoPieceFoundException | IllegalMoveException ignored) {}
         }
         return false;
     }
 
-    private static King getKing(PieceColor playersColor) {
+    private static Point getKingPosition(PieceColor kingColor) {
         for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
             for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
                 try {
                     Piece piece = board.getPiece(new Point(x, y));
-                    if (piece.getPieceType() == PieceType.KING) {
-                        if (piece.getPieceColor() == playersColor) {
-                            return (King) piece;
-                        }
+                    if(piece instanceof King && piece.getPieceColor() == kingColor) {
+                        return new Point(x, y);
                     }
                 } catch (NoPieceFoundException ignored) {}
             }
@@ -58,19 +55,19 @@ public abstract class CheckChecker {
         throw new NoSuchElementException(playersColor.toString());
     }
 
-    private static List<Piece> getEnemyPieces() {
-        List<Piece> enemyPieces = new ArrayList<>();
+    private static List<Point> getEnemyPiecePositions() {
+        List<Point> positions = new ArrayList<>();
         for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
             for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
                 try {
-                    Piece piece = board.getPiece(new Point(x,y));
+                    Piece piece = board.getPiece(new Point(x, y));
                     if(piece.getPieceColor() != playersColor) {
-                        enemyPieces.add(piece);
+                        positions.add(new Point(x, y));
                     }
-                } catch (NoPieceFoundException ignore) {}
+                } catch (NoPieceFoundException ignored) {}
             }
         }
-        return enemyPieces;
+        return positions;
     }
 
 }

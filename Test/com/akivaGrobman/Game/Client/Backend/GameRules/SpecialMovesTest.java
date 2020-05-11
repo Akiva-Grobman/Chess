@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.akivaGrobman.Game.Client.Backend.GameRules.SpecialMoves.*;
@@ -22,9 +23,9 @@ class SpecialMovesTest {
         boolean wasEnpassant;
         Board board;
         List<Move> moves = new ArrayList<>();
-        Pawn pawn1 = new Pawn(new Point(1, 2), PieceColor.WHITE);
-        Pawn pawn2 = new Pawn(new Point(1, 3), PieceColor.BLACK);
-        board = Board.getConsumeBoard(List.of(pawn1, pawn2), new ArrayList<>());
+        Pawn pawn1 = new Pawn(PieceColor.WHITE);
+        Pawn pawn2 = new Pawn(PieceColor.BLACK);
+        board = Board.getConsumeBoard(List.of(pawn1, pawn2), List.of(new Point(1, 2), new Point(1, 3)), new ArrayList<>());
         Positions positions = new Positions(new Point(2, 3), PieceColor.WHITE);
         positions.setDestination(new Point(1, 2));
         moves.add(new Move(positions, null));
@@ -36,8 +37,8 @@ class SpecialMovesTest {
 
     @Test
     void willDetectACastlingMove() {
-        King king = new King(new Point(1, 0), PieceColor.BLACK);
-        Board board = Board.getConsumeBoard(List.of(king), List.of(new Point(4, 0), new Point(3, 0), new Point(2, 0)));
+        King king = new King(1, PieceColor.BLACK);
+        Board board = Board.getConsumeBoard(Collections.singletonList(king), Collections.singletonList(new Point(1, 0)), List.of(new Point(4, 0), new Point(3, 0), new Point(2, 0)));
         List<Move> moves = new ArrayList<>();
         Positions positions = new Positions(new Point(4, 0), PieceColor.BLACK);
         positions.setDestination(new Point(1, 0));
@@ -53,9 +54,9 @@ class SpecialMovesTest {
     void willDetectAPawnPromotion() {
         boolean wasPromotionForPawnOne;
         boolean wasPromotionForPawnTwo;
-        Pawn promotedPawn = new Pawn(new Point(2, 0), PieceColor.WHITE);
-        Pawn misplacedPawn = new Pawn(new Point(1, 0), PieceColor.BLACK);
-        Board board = Board.getConsumeBoard(List.of(promotedPawn, misplacedPawn), List.of(new Point(2,1), new Point(2, 6)));
+        Pawn promotedPawn = new Pawn(PieceColor.WHITE);
+        Pawn misplacedPawn = new Pawn(PieceColor.BLACK);
+        Board board = Board.getConsumeBoard(List.of(promotedPawn, misplacedPawn), List.of(new Point(2, 0), new Point(1, 0)), List.of(new Point(2,1), new Point(2, 6)));
 
         wasPromotionForPawnOne = wasPromotion(board, new Point(2, 0));
         wasPromotionForPawnTwo = wasPromotion(board, new Point(1, 0));

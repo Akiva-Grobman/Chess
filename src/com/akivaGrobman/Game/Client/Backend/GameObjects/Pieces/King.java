@@ -17,16 +17,16 @@ public class King extends Piece implements PieceMoves {
     private boolean wasInCheck;
     private boolean moved;
 
-    public King(Point position, PieceColor color) {
-        super(position, PieceType.KING, color);
+    public King(int startingX, PieceColor color) {
+        super(PieceType.KING, color);
         wasInCheck = false;
         moved = false;
-        STARTING_COLUMN = position.x;
+        STARTING_COLUMN = startingX;
     }
 
     @Override
     public Piece getClone() {
-        King king = new King((Point) getPiecePosition().clone(), getPieceColor());
+        King king = new King(STARTING_COLUMN, getPieceColor());
         king.wasInCheck = this.wasInCheck;
         return king;
     }
@@ -93,27 +93,21 @@ public class King extends Piece implements PieceMoves {
             case 1:
                 for (int x = origin.x - 1; x > 0; x--) {
                     isInCheckTesterBoard = Board.getClone(board);
-                    move(new Point(x, origin.y));
                     isInCheckTesterBoard.updateTile(new Point(x, destination.y), this);
-                    isInCheckTesterBoard.updateTile(getPreviousPosition(), null);
+                    isInCheckTesterBoard.updateTile(origin, null);
                     if(board.hasPieceInThisPosition(new Point(x, origin.y)) || isInCheck(isInCheckTesterBoard, 1)) {
-                        reversMove();
                         return false;
                     }
-                    reversMove();
                 }
                 break;
             case 6:
                 for (int x = origin.x + 1; x < ChessGame.SUM_OF_COLUMNS - 1; x++) {
                     isInCheckTesterBoard = Board.getClone(board);
-                    move(new Point(x, origin.y));
                     isInCheckTesterBoard.updateTile(new Point(x, destination.y), this);
-                    isInCheckTesterBoard.updateTile(getPreviousPosition(), null);
+                    isInCheckTesterBoard.updateTile(origin, null);
                     if(board.hasPieceInThisPosition(new Point(x, origin.y)) || isInCheck(isInCheckTesterBoard, 1)) {
-                        reversMove();
                         return false;
                     }
-                    reversMove();
                 }
                 break;
             default:

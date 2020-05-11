@@ -12,13 +12,13 @@ import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChec
 
 public class Queen extends Piece implements PieceMoves {
 
-    public Queen(Point position, PieceColor color) {
-        super(position, PieceType.QUEEN, color);
+    public Queen(PieceColor color) {
+        super(PieceType.QUEEN, color);
     }
 
     @Override
     public Piece getClone() {
-        return new Queen((Point) getPiecePosition().clone(), getPieceColor());
+        return new Queen(getPieceColor());
     }
 
     @Override

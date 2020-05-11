@@ -11,14 +11,14 @@ public class Knight extends Piece implements PieceMoves{
 
     private final List<Point> possibleDirections;
 
-    public Knight(Point position, PieceColor color) {
-        super(position, PieceType.KNIGHT, color);
+    public Knight(PieceColor color) {
+        super(PieceType.KNIGHT, color);
         possibleDirections = getPossibleDirections();
     }
 
     @Override
     public Piece getClone() {
-        return new Knight((Point) getPiecePosition().clone(), getPieceColor());
+        return new Knight(getPieceColor());
     }
 
     @Override

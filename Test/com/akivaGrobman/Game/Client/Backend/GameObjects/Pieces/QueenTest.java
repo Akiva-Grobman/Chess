@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,9 +18,9 @@ class QueenTest {
 
     @Test
     void legalMoveWorks() throws Exception {
-        queenStraight = new Queen(new Point(2,2), PieceColor.BLACK);
-        queenDiagonal = new Queen(new Point(5,4), PieceColor.WHITE);
-        board = Board.getConsumeBoard(Arrays.asList(queenDiagonal, queenStraight), new ArrayList<>());
+        queenStraight = new Queen(PieceColor.BLACK);
+        queenDiagonal = new Queen(PieceColor.WHITE);
+        board = Board.getConsumeBoard(Arrays.asList(queenDiagonal, queenStraight), List.of(new Point(5, 4), new Point(2, 2)), new ArrayList<>());
         boolean straightIsLegal;
         boolean diagonalIsLegal;
 
@@ -32,9 +33,9 @@ class QueenTest {
 
     @Test
     void willNotJumpOverPieces() throws Exception {
-        queenDiagonal = new Queen(new Point(3,3), PieceColor.WHITE);
-        Pawn diagonalBlock = new Pawn(new Point(4,4), PieceColor.BLACK);
-        board = Board.getConsumeBoard(Arrays.asList(queenDiagonal, diagonalBlock), new ArrayList<>());
+        queenDiagonal = new Queen(PieceColor.WHITE);
+        Pawn diagonalBlock = new Pawn(PieceColor.BLACK);
+        board = Board.getConsumeBoard(Arrays.asList(queenDiagonal, diagonalBlock), List.of(new Point(3, 3), new Point(4, 4)), new ArrayList<>());
         queenStraight = (Queen) board.getPiece(new Point(3,0));
         boolean straightIsLegal;
         boolean diagonalIsLegal;
@@ -48,8 +49,8 @@ class QueenTest {
 
     @Test
     void willNotKillSameColorPiece() throws Exception {
-        queenDiagonal = new Queen(new Point(0, 3), PieceColor.BLACK);
-        board = Board.getConsumeBoard(Collections.singletonList(queenDiagonal), new ArrayList<>());
+        queenDiagonal = new Queen(PieceColor.BLACK);
+        board = Board.getConsumeBoard(Collections.singletonList(queenDiagonal), Collections.singletonList(new Point(0, 3)), new ArrayList<>());
         queenStraight = (Queen) board.getPiece(new Point(3,0));
         boolean straightIsLegal;
         boolean diagonalIsLegal;

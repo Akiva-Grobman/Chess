@@ -8,6 +8,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,8 +19,8 @@ class BishopTest {
 
     @Test
     void legalMoveWorks() throws Exception {
-        bishop = new Bishop(new Point(2,2), PieceColor.BLACK);
-        board = Board.getConsumeBoard(Collections.singletonList(bishop), new ArrayList<>());
+        bishop = new Bishop(PieceColor.BLACK);
+        board = Board.getConsumeBoard(Collections.singletonList(bishop), Collections.singletonList(new Point(2, 2)), new ArrayList<>());
         boolean isLegal;
 
         isLegal = bishop.isLegalMove(new Point(2,2), new Point(4,4), board);
@@ -29,9 +30,9 @@ class BishopTest {
 
     @Test
     void willNotJumpOverPieces() throws Exception {
-        Bishop secondBishop = new Bishop(new Point(2,2), PieceColor.WHITE);
-        Pawn blocking = new Pawn(new Point(3,3), PieceColor.BLACK);
-        board = Board.getConsumeBoard(Arrays.asList(secondBishop, blocking), new ArrayList<>());
+        Bishop secondBishop = new Bishop(PieceColor.WHITE);
+        Pawn blocking = new Pawn(PieceColor.BLACK);
+        board = Board.getConsumeBoard(Arrays.asList(secondBishop, blocking), List.of(new Point(2, 2), new Point(3, 3)), new ArrayList<>());
         bishop = (Bishop) board.getPiece(new Point(2,0));
         boolean firstMoveIsLegal;
         boolean secondMoveIsLegal;

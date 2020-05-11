@@ -14,9 +14,9 @@ public abstract class BoardBuilder {
         return board;
     }
 
-    public static Tile[][] costumeBoard(List<Piece> newPiecePositions, List<Point> emptyTiles) {
+    public static Tile[][] costumeBoard(List<Piece> pieces, List<Point> piecePositions, List<Point> emptyTiles) {
         setBoard();
-        initializeCostumeBoard(emptyTiles, newPiecePositions);
+        initializeCostumeBoard(emptyTiles, piecePositions, pieces);
         return board;
     }
 
@@ -52,10 +52,10 @@ public abstract class BoardBuilder {
         }
     }
 
-    private static void initializeCostumeBoard(List<Point> emptyTiles, List<Piece> newPiecePositions) {
+    private static void initializeCostumeBoard(List<Point> emptyTiles, List<Point> piecePositions, List<Piece> pieces) {
         initializeNewBoard();
         removeEmptyTiles(emptyTiles);
-        addNewPiece(newPiecePositions);
+        addNewPiece(pieces, piecePositions);
     }
 
     private static void removeEmptyTiles(List<Point> emptyTiles) {
@@ -70,9 +70,10 @@ public abstract class BoardBuilder {
         }
     }
 
-    private static void addNewPiece(List<Piece> pieces) {
-        for (Piece piece: pieces) {
-            board[piece.getPiecePosition().y][piece.getPiecePosition().x].setPiece(piece);
+    private static void addNewPiece(List<Piece> pieces, List<Point> piecePositions) {
+        assert pieces.size() == piecePositions.size();
+        for (int i = 0; i < pieces.size(); i++) {
+            board[piecePositions.get(i).y][piecePositions.get(i).x].setPiece(pieces.get(i));
         }
     }
 
@@ -90,22 +91,22 @@ public abstract class BoardBuilder {
 
     private static Piece getPieceForNewBoard(Point position, PieceColor color) {
         if(position.y == 1 || position.y == 6) {
-            return new Pawn(position, color);
+            return new Pawn(color);
         } else {
             switch (position.x) {
                 case 0:
                 case 7:
-                    return new Rook(position, color);
+                    return new Rook(color);
                 case 1:
                 case 6:
-                    return new Knight(position, color);
+                    return new Knight(color);
                 case 2:
                 case 5:
-                    return new Bishop(position, color);
+                    return new Bishop(color);
                 case 3:
-                    return new Queen(position, color);
+                    return new Queen(color);
                 case 4:
-                    return new King(position, color);
+                    return new King(position.x, color);
                 default:
                     throw new Error("no piece matches row " + position.y + " column " + position.x);
             }

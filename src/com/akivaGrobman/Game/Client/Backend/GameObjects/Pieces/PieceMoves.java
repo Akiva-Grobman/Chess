@@ -6,8 +6,6 @@ import java.util.List;
 
 interface PieceMoves {
 
-    void move(Point destinationsPosition);
-
     List<Point> getLegalMoves(Board board, Point piecePosition);
 
 }

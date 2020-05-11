@@ -14,32 +14,21 @@ public class Pawn extends Piece implements PieceMoves {
     private final int STARTING_ROW;
     private final int direction;
 
-    public Pawn(Point position, PieceColor color) {
-        super(position, PieceType.PAWN, color);
-        STARTING_ROW = position.y;
-        board = null;
-        direction = getDirection();
-    }
-
-    // this is for testing only (that's why it's protected)
-    protected Pawn(Point position, PieceColor pieceColor, boolean isInEnpassantPosition) {
-        super(position, PieceType.PAWN, pieceColor);
-        if(pieceColor == PieceColor.BLACK) {
+    public Pawn(PieceColor color) {
+        super(PieceType.PAWN, color);
+        if(color == PieceColor.BLACK) {
             STARTING_ROW = 1;
             direction = 1;
         } else {
             STARTING_ROW = 6;
             direction = -1;
         }
-        if(isInEnpassantPosition) {
-            setPreviousPosition(new Point(getPiecePosition().x, STARTING_ROW));
-        }
         board = null;
     }
 
     @Override
     public Piece getClone() {
-        return new Pawn((Point) getPiecePosition().clone(), getPieceColor());
+        return new Pawn(getPieceColor());
     }
 
     @Override
@@ -70,14 +59,6 @@ public class Pawn extends Piece implements PieceMoves {
             legalMoves.add(temp);
         }
         return legalMoves;
-    }
-
-    private int getDirection() {
-        if (getPieceColor() == PieceColor.BLACK) {
-            return 1;
-        } else {
-            return -1;
-        }
     }
 
     @Override

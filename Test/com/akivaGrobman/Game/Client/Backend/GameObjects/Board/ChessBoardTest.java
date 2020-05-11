@@ -65,11 +65,11 @@ class ChessBoardTest {
 
     @Test
     void willReturnTrueIfIsLegalMove() throws Exception {
-        board = Board.getConsumeBoard(new ArrayList<>(), Collections.singletonList(new Point(3, 1)));
+        board = Board.getConsumeBoard(new ArrayList<>(), new ArrayList<>(), Collections.singletonList(new Point(3, 1)));
         King king = (King) board.getPiece(new Point(4, 0));
         boolean isLegal;
 
-        isLegal = board.isLegalMove(king.getPiecePosition(), new Point(3, 1), 1);
+        isLegal = board.isLegalMove(new Point(4, 0), new Point(3, 1), 1);
 
         assertTrue(isLegal);
     }

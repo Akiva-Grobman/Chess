@@ -85,7 +85,7 @@ public class ChessGame {
 
     private boolean enemyKingIsInCheck(Point movedPiecePosition) {
         try {
-            return backendBoard.isLegalMove(movedPiecePosition, backendBoard.getKing(backendBoard.getPiece(movedPiecePosition).getPieceColor()).getPiecePosition(), 1);
+            return backendBoard.isLegalMove(movedPiecePosition, backendBoard.getKingPosition(backendBoard.getPiece(movedPiecePosition).getPieceColor()), 1);
         } catch (IllegalMoveException | NoPieceFoundException e) {
             return false;
         }
@@ -109,7 +109,6 @@ public class ChessGame {
     private void updateBoards(Positions positions) {
         Piece piece = getPiece(positions.getOrigin());
         assert piece != null; // if piece is null then the move shouldn't be legal
-        piece.move(positions.getDestination());
         // for castling
         if(piece instanceof King) {
             ((King) piece).moved();
@@ -141,7 +140,6 @@ public class ChessGame {
             }
             rook = getPiece(new Point(originalX, positions.getDestination().y));
             assert rook != null; // will not be a castling move if piece is null
-            rook.move(new Point(newX, y));
             backendBoard.updateTile(new Point(newX, y), rook);
             backendBoard.updateTile(new Point(originalX, y), null);
             onScreenBoard.updateTile(new Point(newX, y), PieceType.ROOK, positions.getPlayersColor());

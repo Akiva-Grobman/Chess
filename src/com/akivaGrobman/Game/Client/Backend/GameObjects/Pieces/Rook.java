@@ -13,14 +13,14 @@ public class Rook extends Piece implements PieceMoves{
 
     private boolean moved;
 
-    public Rook(Point position, PieceColor color) {
-        super(position, PieceType.ROOK, color);
+    public Rook(PieceColor color) {
+        super(PieceType.ROOK, color);
         moved = false;
     }
 
     @Override
     public Piece getClone() {
-        return new Rook((Point) getPiecePosition().clone(), getPieceColor());
+        return new Rook(getPieceColor());
     }
 
     @Override

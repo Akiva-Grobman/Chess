@@ -24,8 +24,8 @@ public class Board extends ChessBoard {
         setContext(this);
     }
 
-    public static Board getConsumeBoard(List<Piece> piecesChanged, List<Point> emptyTiles) {
-        Board board = new Board(BoardBuilder.costumeBoard(piecesChanged, emptyTiles));
+    public static Board getConsumeBoard(List<Piece> piecesChanged, List<Point> piecePositions, List<Point> emptyTiles) {
+        Board board = new Board(BoardBuilder.costumeBoard(piecesChanged, piecePositions, emptyTiles));
         setKings(board);
         return board;
     }

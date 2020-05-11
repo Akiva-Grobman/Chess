@@ -54,6 +54,20 @@ public abstract class ChessBoard {
         return (pieceColor == PieceColor.BLACK)? blackKing: whiteKing;
     }
 
+    public Point getKingPosition(PieceColor kingColor) {
+        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
+            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
+                try {
+                    Piece piece = getPiece(new Point(x, y));
+                    if(piece.equals(getKing(kingColor))) {
+                        return new Point(x, y);
+                    }
+                } catch (NoPieceFoundException ignored) {}
+            }
+        }
+        throw new NoSuchElementException(kingColor.toString());
+    }
+
     public boolean getEnpassant(PieceColor playersColor, int index) {
         return (playersColor == PieceColor.BLACK)? blackEnpassant[index]: whiteEnpassant[index];
     }
@@ -97,11 +111,9 @@ public abstract class ChessBoard {
         } catch (NoPieceFoundException e) {
             oldPiece = null;
         }
-        piece.move(destination);
         board[destination.y][destination.x].setPiece(piece);
         board[origin.y][origin.x].setPiece(null);
         isInCheck = getKing(piece.getPieceColor()).isInCheck(backendBoard, depth);
-        piece.reversMove();
         board[origin.y][origin.x].setPiece(piece);
         board[destination.y][destination.x].setPiece(oldPiece);
         return isInCheck;

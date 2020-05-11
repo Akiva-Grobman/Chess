@@ -1,7 +1,6 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
-import com.akivaGrobman.Game.Client.Backend.Players.Player;
 import org.junit.jupiter.api.Test;
 import java.awt.*;
 import java.util.ArrayList;
@@ -33,9 +32,9 @@ class PawnTest {
 
     @Test
     void legalMoveWithKillingWorks() throws Exception {
-        pawn1 = new Pawn(new Point(2, 5), PieceColor.BLACK);
-        pawn2 = new Pawn(new Point(6, 5), PieceColor.BLACK);
-        board = Board.getConsumeBoard(Arrays.asList(pawn1, pawn2), new ArrayList<>());
+        pawn1 = new Pawn(PieceColor.BLACK);
+        pawn2 = new Pawn(PieceColor.BLACK);
+        board = Board.getConsumeBoard(Arrays.asList(pawn1, pawn2), List.of(new Point(2, 5), new Point(6, 5)), new ArrayList<>());
         boolean firstMoveIsLegal;
         boolean secondMoveIsLegal;
 
@@ -49,7 +48,7 @@ class PawnTest {
     @Test
     void illegalPositionWillNotWork() throws Exception {
         board = new Board();
-        pawn1 = new Pawn(new Point(1,1), PieceColor.BLACK);
+        pawn1 = new Pawn(PieceColor.BLACK);
         boolean isLegal;
 
         isLegal = pawn1.isLegalMove(new Point(1,1), new Point(4, 4), board);
@@ -59,10 +58,9 @@ class PawnTest {
 
     @Test
     void willAllowEnpassant() throws Exception {
-        //todo change test might need to move to chess game test
-        pawn1 = new Pawn(new Point(2,3), PieceColor.WHITE);
-        pawn2 = new Pawn(new Point(1, 3), PieceColor.BLACK, true);
-        board = Board.getConsumeBoard(List.of(pawn1, pawn2), new ArrayList<>());
+        pawn1 = new Pawn(PieceColor.WHITE);
+        pawn2 = new Pawn(PieceColor.BLACK);
+        board = Board.getConsumeBoard(List.of(pawn1, pawn2), List.of(new Point(2, 3), new Point(new Point(1, 3))), new ArrayList<>());
         boolean isLegal;
         board.setEnpassant(PieceColor.BLACK, 1);
 

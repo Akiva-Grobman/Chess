@@ -11,13 +11,13 @@ import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChec
 
 public class Bishop extends Piece implements PieceMoves {
 
-    public Bishop(Point position, PieceColor color) {
-        super(position, PieceType.BISHOP, color);
+    public Bishop(PieceColor color) {
+        super(PieceType.BISHOP, color);
     }
 
     @Override
     public Piece getClone() {
-        return new Bishop((Point) getPiecePosition().clone(), getPieceColor());
+        return new Bishop(getPieceColor());
     }
 
     @Override
