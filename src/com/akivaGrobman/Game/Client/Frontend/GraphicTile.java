@@ -17,12 +17,14 @@ public class GraphicTile extends JPanel {
     private BufferedImage image;
     private PieceType pieceType;
     private PieceColor pieceColor;
+    private boolean drawAsLegalTile;
 
     public GraphicTile(Point position, Color color, ChessGame game) {
         tilePosition = position;
         tileColor = color;
         this.game = game;
         image = null;
+        drawAsLegalTile = false;
         panelSetUp();
     }
 
@@ -33,17 +35,26 @@ public class GraphicTile extends JPanel {
     }
 
     public void resetColor() {
-        setBackground(tileColor);
+        drawAsLegalTile = false;
+        repaint();
     }
 
     public void drawAsLegalTile() {
-        setBackground(Color.cyan);
+        drawAsLegalTile = true;
+        repaint();
     }
 
+    @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        if(hasPiece())
+        if(hasPiece()) {
             g.drawImage(image, 10, 10, GraphicBoard.TILE_SIZE - 20, GraphicBoard.TILE_SIZE - 20, this);
+        }
+        if(drawAsLegalTile) {
+            g.setColor(new Color(56, 255, 56, 107));
+            g.fillOval(getWidth() / 4, getHeight() / 4, getWidth() / 2, getHeight() / 2);
+            g.drawOval(getWidth() / 4, getHeight() / 4, getWidth() / 2, getHeight() / 2);
+        }
     }
 
     private void panelSetUp() {

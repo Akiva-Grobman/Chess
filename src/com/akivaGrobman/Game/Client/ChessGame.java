@@ -5,6 +5,7 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Move;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.*;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.PromotionMessage;
 import com.akivaGrobman.Game.Client.Backend.Players.Enemy;
 import com.akivaGrobman.Game.Client.Backend.Players.Positions;
 import com.akivaGrobman.Game.Client.Backend.Players.Player;
@@ -27,7 +28,8 @@ public class ChessGame {
     private Player player;
     private Enemy enemy;
     private Player currentPlayer;
-    private PieceType promotedPiece;
+    private PieceType promotedPieceType;
+    private boolean isPromoting;
 
     public ChessGame(PieceColor playersColor, Enemy enemy) {
         backendBoard = new Board();
@@ -72,7 +74,7 @@ public class ChessGame {
             addMoveToMoveList(positions);
             updateBoards(positions);
             handleSpecialMoves(positions);
-            if(isLocalPlayer(player)) {
+            if(isLocalPlayer(player) && !isPromoting) { // if it was a promoting move the message is sent iמ handleSpacialMoves
                 enemy.sendMove(positions);
             }
             changeCurrentPlayer();
@@ -126,6 +128,7 @@ public class ChessGame {
 
     private void handleSpecialMoves(Positions positions) {
         updateEnpassantData(positions);
+        isPromoting = false;
         if(wasEnpassant(backendBoard, moves)) {
             backendBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null);
             onScreenBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null, null);
@@ -148,32 +151,40 @@ public class ChessGame {
             onScreenBoard.updateTile(new Point(newX, y), PieceType.ROOK, positions.getPlayersColor());
             onScreenBoard.updateTile(new Point(originalX, y), null, null);
         } else if(wasPromotion(backendBoard, positions.getDestination())) {
-            promotedPiece = null;
-            System.out.println("promotion");
-            Piece piece = null;
-            new PawnPromotionWindow(this, positions.getPlayersColor(), onScreenBoard.getFrame());
-            assert promotedPiece != null;
-            try {
-                switch (promotedPiece) {
+            Piece piece;
+            Point promotionPosition;
+            if(isLocalPlayer(currentPlayer)) {
+                promotedPieceType = null;
+                promotionPosition = positions.getDestination();
+                new PawnPromotionWindow(this, positions.getPlayersColor(), onScreenBoard.getFrame());
+                assert promotedPieceType != null; // will be set by the popup window
+                switch (promotedPieceType) {
                     case ROOK:
-                        piece = new Rook(backendBoard.getPiece(positions.getDestination()).getPieceColor());
+                        piece = new Rook(positions.getPlayersColor());
                         break;
                     case QUEEN:
-                        piece = new Queen(backendBoard.getPiece(positions.getDestination()).getPieceColor());
+                        piece = new Queen(positions.getPlayersColor());
                         break;
                     case BISHOP:
-                        piece = new Bishop(backendBoard.getPiece(positions.getDestination()).getPieceColor());
+                        piece = new Bishop(positions.getPlayersColor());
                         break;
                     case KNIGHT:
-                        piece = new Knight(backendBoard.getPiece(positions.getDestination()).getPieceColor());
+                        piece = new Knight(positions.getPlayersColor());
                         break;
                     default:
-                        throw new Error("wrong type " + promotedPiece);
+                        throw new Error("wrong type " + promotedPieceType);
                 }
-            } catch (NoPieceFoundException ignored) {}
+                enemy.sendPromotionMessage(piece, promotionPosition);
+                enemy.sendMove(positions);
+                isPromoting = true;
+            } else {
+                PromotionMessage msg = enemy.getPromotion();
+                piece = msg.getPiece();
+                promotionPosition = msg.getPosition();
+            }
             assert piece != null;
-            backendBoard.updateTile(positions.getDestination(), piece);
-            onScreenBoard.updateTile(positions.getDestination(), promotedPiece, piece.getPieceColor());
+            backendBoard.updateTile(promotionPosition, piece);
+            onScreenBoard.updateTile(promotionPosition, piece.getPieceType(), piece.getPieceColor());
         }
     }
 
@@ -232,7 +243,8 @@ public class ChessGame {
     }
 
     public void promotionClick(PieceType pieceType) {
-        promotedPiece = pieceType;
+        promotedPieceType = pieceType;
     }
+
 }
 

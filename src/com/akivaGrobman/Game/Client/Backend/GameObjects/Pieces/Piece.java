@@ -3,9 +3,10 @@ package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class Piece extends PieceMovingMethods implements PieceMoves {
+public abstract class Piece extends PieceMovingMethods implements PieceMoves, Serializable {
 
     private final PieceType type;
     private final PieceColor color;

@@ -1,6 +1,7 @@
 package com.akivaGrobman.Game.Server;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.PromotionMessage;
 import com.akivaGrobman.Game.Client.Backend.Players.Positions;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -33,8 +34,11 @@ public class Server {
         currentPlayer = players[0];
         otherPlayer = players[1];
         do {
-            Positions positions = currentPlayer.getMove();
-            otherPlayer.sendMove(positions);
+            Object msg = currentPlayer.getMove();
+            if(msg instanceof PromotionMessage) { // when promotion a pawn we will receive the promotion message first and then the move and we will send it to the client in the reverse order
+                otherPlayer.sendMove(currentPlayer.getMove());
+            }
+            otherPlayer.sendMove(msg);
             updatePlayers();
         } while (run);
     }
