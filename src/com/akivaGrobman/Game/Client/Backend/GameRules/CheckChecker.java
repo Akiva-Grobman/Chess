@@ -3,65 +3,69 @@ package com.akivaGrobman.Game.Client.Backend.GameRules;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
-import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.*;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.ChessGame;
-
 import java.awt.*;
+import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public abstract class CheckChecker {
+public class CheckChecker {
 
     private static final int MAX_DEPTH = 3;
-    private static Board board;
-    private static List<Point> enemyPiecePositions;
-    private static PieceColor playersColor;
-    
-    public static boolean kingIsInCheck(PieceColor playersColor, Board board, int depth) {
-        CheckChecker.board = Board.getClone(board);
-        CheckChecker.playersColor = playersColor;
-        enemyPiecePositions = getEnemyPiecePositions();
-        return isInCheck(depth);
+    private final int DEPTH;
+    private final PieceColor PLAYERS_COLOR;
+    private final Board BOARD;
+
+    public CheckChecker(int depth, PieceColor playersColor, Board board) {
+        this.DEPTH = depth;
+        this.PLAYERS_COLOR = playersColor;
+        this.BOARD = Board.getClone(board);
     }
 
-    private static boolean isInCheck(int depth) {
+    public boolean isInCheck() {
+        List<Point> enemyPiecePositions = getEnemyPiecePositions();
         // in this method we ignore the NoSuchElementException because when depth == 2.  because one of the players doesn't have a king
-        Point kingPosition = getKingPosition(playersColor);
+        Point kingPosition = getKingPosition(PLAYERS_COLOR);
         for (Point enemyPiecePosition: enemyPiecePositions) {
             try {
-                Piece piece = board.getPiece(enemyPiecePosition);
+                Piece piece = BOARD.getPiece(enemyPiecePosition);
                 assert piece != null;
                 if(piece instanceof King) continue;
-                if(depth < MAX_DEPTH) {
-                    return board.isLegalMove(enemyPiecePosition, kingPosition, depth);
+                if(DEPTH < MAX_DEPTH) {
+                    if(BOARD.isLegalMove(enemyPiecePosition, kingPosition, DEPTH + 1)) {
+                        return true;
+                    }
                 }
             } catch (NoPieceFoundException | IllegalMoveException ignored) {}
         }
         return false;
     }
 
-    private static Point getKingPosition(PieceColor kingColor) {
+    private Point getKingPosition(PieceColor kingColor) {
         for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
             for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
                 try {
-                    Piece piece = board.getPiece(new Point(x, y));
+                    Piece piece = BOARD.getPiece(new Point(x, y));
                     if(piece instanceof King && piece.getPieceColor() == kingColor) {
                         return new Point(x, y);
                     }
                 } catch (NoPieceFoundException ignored) {}
             }
         }
-        throw new NoSuchElementException(playersColor.toString());
+        throw new NoSuchElementException(PLAYERS_COLOR.toString());
     }
 
-    private static List<Point> getEnemyPiecePositions() {
+    private List<Point> getEnemyPiecePositions() {
         List<Point> positions = new ArrayList<>();
         for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
             for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
                 try {
-                    Piece piece = board.getPiece(new Point(x, y));
-                    if(piece.getPieceColor() != playersColor) {
+                    Piece piece = BOARD.getPiece(new Point(x, y));
+                    if(piece.getPieceColor() != PLAYERS_COLOR) {
                         positions.add(new Point(x, y));
                     }
                 } catch (NoPieceFoundException ignored) {}

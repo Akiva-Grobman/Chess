@@ -48,7 +48,7 @@ public class GraphicTile extends JPanel {
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         if(hasPiece()) {
-            g.drawImage(image, 10, 10, GraphicBoard.TILE_SIZE - 20, GraphicBoard.TILE_SIZE - 20, this);
+            g.drawImage(image, 8, 10, GraphicBoard.TILE_SIZE - 20, GraphicBoard.TILE_SIZE - 20, this);
         }
         if(drawAsLegalTile) {
             g.setColor(new Color(56, 255, 56, 107));

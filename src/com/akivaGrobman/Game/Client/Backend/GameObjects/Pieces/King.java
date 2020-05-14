@@ -28,6 +28,7 @@ public class King extends Piece implements PieceMoves {
     public Piece getClone() {
         King king = new King(STARTING_COLUMN, getPieceColor());
         king.wasInCheck = this.wasInCheck;
+        king.moved = this.moved;
         return king;
     }
 
@@ -37,7 +38,8 @@ public class King extends Piece implements PieceMoves {
     }
 
     public boolean isInCheck(Board board, int depth) {
-        return CheckChecker.kingIsInCheck(getPieceColor(), board, depth);
+        CheckChecker checkChecker = new CheckChecker(depth, getPieceColor(), board);
+        return checkChecker.isInCheck();
     }
 
     @Override
