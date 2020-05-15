@@ -49,7 +49,4 @@ public class Player {
         return this.playersPieceColor == player.playersPieceColor;
     }
 
-    public boolean isFirstClick() {
-        return currentPositions != null && currentPositions.getDestination() == null;
-    }
 }
