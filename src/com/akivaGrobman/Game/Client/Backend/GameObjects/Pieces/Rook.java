@@ -2,12 +2,14 @@ package com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
-import com.akivaGrobman.Game.Client.ChessGame;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.*;
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_ROWS;
 
 public class Rook extends Piece implements PieceMoves{
 
@@ -85,7 +87,7 @@ public class Rook extends Piece implements PieceMoves{
         this.board = board;
         List<Point> legalMoves = new ArrayList<>();
         Point temp;
-        for (int x = piecePosition.x + 1; x < ChessGame.SUM_OF_COLUMNS; x++) {
+        for (int x = piecePosition.x + 1; x < SUM_OF_COLUMNS; x++) {
             temp = new Point(x, piecePosition.y);
             if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
@@ -97,7 +99,7 @@ public class Rook extends Piece implements PieceMoves{
                 break;
             }
         }
-        for (int y = piecePosition.y + 1; y < ChessGame.SUM_OF_ROWS; y++) {
+        for (int y = piecePosition.y + 1; y < SUM_OF_ROWS; y++) {
             temp = new Point(piecePosition.x, y);
             if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;

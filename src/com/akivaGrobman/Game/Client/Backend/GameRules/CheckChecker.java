@@ -6,12 +6,14 @@ import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Client.ChessGame;
+
 import java.awt.*;
-import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_ROWS;
 
 public class CheckChecker {
 
@@ -46,8 +48,8 @@ public class CheckChecker {
     }
 
     private Point getKingPosition(PieceColor kingColor) {
-        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
-            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
+        for (int y = 0; y < SUM_OF_ROWS; y++) {
+            for (int x = 0; x < SUM_OF_COLUMNS; x++) {
                 try {
                     Piece piece = BOARD.getPiece(new Point(x, y));
                     if(piece instanceof King && piece.getPieceColor() == kingColor) {
@@ -61,8 +63,8 @@ public class CheckChecker {
 
     private List<Point> getEnemyPiecePositions() {
         List<Point> positions = new ArrayList<>();
-        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
-            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
+        for (int y = 0; y < SUM_OF_ROWS; y++) {
+            for (int x = 0; x < SUM_OF_COLUMNS; x++) {
                 try {
                     Piece piece = BOARD.getPiece(new Point(x, y));
                     if(piece.getPieceColor() != PLAYERS_COLOR) {

@@ -2,7 +2,8 @@ package com.akivaGrobman.Game.Client.Frontend;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceType;
-import com.akivaGrobman.Game.Client.ChessGame;
+import com.akivaGrobman.Game.Client.GameManagers.Parent;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,7 @@ import java.io.IOException;
 
 public class GraphicTile extends JPanel {
 
-    private final ChessGame game;
+    private final Parent game;
     private final Point tilePosition;
     private final Color tileColor;
     private BufferedImage image;
@@ -19,7 +20,7 @@ public class GraphicTile extends JPanel {
     private PieceColor pieceColor;
     private boolean drawAsLegalTile;
 
-    public GraphicTile(Point position, Color color, ChessGame game) {
+    public GraphicTile(Point position, Color color, Parent game) {
         tilePosition = position;
         tileColor = color;
         this.game = game;

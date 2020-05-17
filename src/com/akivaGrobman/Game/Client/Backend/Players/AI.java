@@ -4,13 +4,15 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Client.ChessGame;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AI {
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_ROWS;
+
+public class AI implements ChessPlayer{
 
     private final PieceColor aiColor;
     private final int MAX_DEPTH;
@@ -116,8 +118,8 @@ public class AI {
         final int MAX_PIECES = 16;
         int pieceCount = 0;
         List<Piece> pieces = new ArrayList<>();
-        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
-            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
+        for (int y = 0; y < SUM_OF_ROWS; y++) {
+            for (int x = 0; x < SUM_OF_COLUMNS; x++) {
                 if(pieceCount >= MAX_PIECES) return pieces;
                 try {
                     Piece piece = board.getPiece(new Point(x, y));

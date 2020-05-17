@@ -4,14 +4,16 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Client.ChessGame;
 
 import java.awt.*;
+
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_ROWS;
 
 public abstract class BoardConditionsChecker {
 
     public static boolean isInBounds(Point position) throws IllegalMoveException {
-        if(position.x < ChessGame.SUM_OF_COLUMNS && position.x >= 0 && position.y < ChessGame.SUM_OF_ROWS && position.y >= 0) {
+        if(position.x < SUM_OF_COLUMNS && position.x >= 0 && position.y < SUM_OF_ROWS && position.y >= 0) {
             return true;
         }
         throw new IllegalMoveException(String.format("x = %d y = %d out of bounds", position.x, position.y));

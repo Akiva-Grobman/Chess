@@ -1,14 +1,15 @@
 package com.akivaGrobman.Game.Client.Backend.Players;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Client.ChessGame;
+import com.akivaGrobman.Game.Client.GameManagers.Parent;
+
 import java.awt.*;
 
-public class Player {
+public class Player implements ChessPlayer{
 
     private final PieceColor playersPieceColor;
     private Positions currentPositions;
-    protected ChessGame game;
+    protected Parent game;
 
     public Player(PieceColor playersPieceColor) {
         this.playersPieceColor = playersPieceColor;
@@ -36,7 +37,7 @@ public class Player {
         return playersPieceColor;
     }
 
-    public void setContext(ChessGame game) {
+    public void setContext(Parent game) {
         if(this.game == null) {
             this.game = game;
         }

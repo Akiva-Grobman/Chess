@@ -2,7 +2,8 @@ package com.akivaGrobman.Game.Client.Frontend;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceType;
-import com.akivaGrobman.Game.Client.ChessGame;
+import com.akivaGrobman.Game.Client.GameManagers.Parent;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -15,9 +16,9 @@ public class PawnPromotionWindow {
     private final int KNIGHT_POSITION = 2;
     private final int BISHOP_POSITION = 3;
     private final JDialog dialog;
-    private final ChessGame game;
+    private final Parent game;
 
-    public PawnPromotionWindow(ChessGame game, PieceColor playersColor, JFrame frame) {
+    public PawnPromotionWindow(Parent game, PieceColor playersColor, JFrame frame) {
         this.game = game;
         JOptionPane promotionWindow = new JOptionPane();
         JButton[] buttons = getButtons(playersColor);

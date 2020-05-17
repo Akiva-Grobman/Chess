@@ -4,12 +4,12 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.IllegalMoveException;
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameRules.CheckChecker;
-import com.akivaGrobman.Game.Client.ChessGame;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.*;
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
 
 public class King extends Piece implements PieceMoves {
 
@@ -103,7 +103,7 @@ public class King extends Piece implements PieceMoves {
                 }
                 break;
             case 6:
-                for (int x = origin.x + 1; x < ChessGame.SUM_OF_COLUMNS - 1; x++) {
+                for (int x = origin.x + 1; x < SUM_OF_COLUMNS - 1; x++) {
                     isInCheckTesterBoard = Board.getClone(board);
                     isInCheckTesterBoard.updateTile(new Point(x, destination.y), this);
                     isInCheckTesterBoard.updateTile(origin, null);

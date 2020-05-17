@@ -1,9 +1,12 @@
 package com.akivaGrobman.Game.Client.Backend.GameObjects.Board;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.*;
-import com.akivaGrobman.Game.Client.ChessGame;
+
 import java.awt.*;
 import java.util.List;
+
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_ROWS;
 
 public abstract class BoardBuilder {
 
@@ -27,9 +30,9 @@ public abstract class BoardBuilder {
     }
 
     private static Tile[][] getClone(Tile[][] board) {
-        Tile[][] tempBoard = new Tile[ChessGame.SUM_OF_ROWS][ChessGame.SUM_OF_COLUMNS];
-        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
-            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
+        Tile[][] tempBoard = new Tile[SUM_OF_ROWS][SUM_OF_COLUMNS];
+        for (int y = 0; y < SUM_OF_ROWS; y++) {
+            for (int x = 0; x < SUM_OF_COLUMNS; x++) {
                 tempBoard[y][x] = board[y][x].getClone();
             }
         }
@@ -78,7 +81,7 @@ public abstract class BoardBuilder {
     }
 
     private static void setBoard() {
-        board = new Tile[ChessGame.SUM_OF_ROWS][ChessGame.SUM_OF_COLUMNS];
+        board = new Tile[SUM_OF_ROWS][SUM_OF_COLUMNS];
     }
 
     private static boolean isAddingAPieceToNewBoard(int row) {

@@ -5,11 +5,12 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Client.ChessGame;
-
 import java.awt.*;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_ROWS;
 
 public abstract class ChessBoard {
 
@@ -21,8 +22,8 @@ public abstract class ChessBoard {
     private final boolean[] blackEnpassant;
 
     public ChessBoard() {
-        whiteEnpassant = new boolean[ChessGame.SUM_OF_COLUMNS];
-        blackEnpassant = new boolean[ChessGame.SUM_OF_COLUMNS];
+        whiteEnpassant = new boolean[SUM_OF_COLUMNS];
+        blackEnpassant = new boolean[SUM_OF_COLUMNS];
     }
 
     public boolean isLegalMove(Point origin, Point destination, int depth) throws IllegalMoveException, NoPieceFoundException {
@@ -54,8 +55,8 @@ public abstract class ChessBoard {
     }
 
     public Point getKingPosition(PieceColor kingColor) {
-        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
-            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
+        for (int y = 0; y < SUM_OF_ROWS; y++) {
+            for (int x = 0; x < SUM_OF_COLUMNS; x++) {
                 try {
                     Piece piece = getPiece(new Point(x, y));
                     if(piece.equals(getKing(kingColor))) {
@@ -119,8 +120,8 @@ public abstract class ChessBoard {
     }
 
     protected static Point getKingPosition(PieceColor kingColor, Tile[][] board) {
-        for (int y = 0; y < ChessGame.SUM_OF_ROWS; y++) {
-            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
+        for (int y = 0; y < SUM_OF_ROWS; y++) {
+            for (int x = 0; x < SUM_OF_COLUMNS; x++) {
                 if(board[y][x].hasPiece()) {
                     try {
                         Piece piece = board[y][x].getPiece();

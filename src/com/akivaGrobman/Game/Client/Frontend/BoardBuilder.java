@@ -4,17 +4,16 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Client.ChessGame;
+import com.akivaGrobman.Game.Client.GameManagers.Parent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
-
-import static com.akivaGrobman.Game.Client.ChessGame.SUM_OF_COLUMNS;
-import static com.akivaGrobman.Game.Client.ChessGame.SUM_OF_ROWS;
 import static com.akivaGrobman.Game.Client.Frontend.GraphicBoard.TILE_SIZE;
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_ROWS;
+import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
 
 public abstract class BoardBuilder {
 
@@ -23,7 +22,7 @@ public abstract class BoardBuilder {
 
     public static void updateGraphicsBoard(Board board, GraphicTile[][] graphicTiles) {
         for (int y = 0; y < SUM_OF_ROWS; y++) {
-            for (int x = 0; x < ChessGame.SUM_OF_COLUMNS; x++) {
+            for (int x = 0; x < SUM_OF_COLUMNS; x++) {
                 try {
                     Piece piece = board.getPiece(new Point(x,y));
                     graphicTiles[y][x].update(piece.getPieceType(), piece.getPieceColor());
@@ -36,7 +35,7 @@ public abstract class BoardBuilder {
         JFrame frame = new JFrame("Akiva's Awesome Chess");
         int windowWidth = TILE_SIZE * SUM_OF_ROWS;
         int windowHeight = TILE_SIZE * SUM_OF_ROWS;
-        frame.setLayout(new GridLayout(SUM_OF_ROWS, ChessGame.SUM_OF_COLUMNS));
+        frame.setLayout(new GridLayout(SUM_OF_ROWS, SUM_OF_COLUMNS));
         frame.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         frame.setSize(windowWidth, windowHeight);
         frame.setLocationRelativeTo(null);
@@ -52,8 +51,8 @@ public abstract class BoardBuilder {
         return frame;
     }
 
-    public static GraphicTile[][] getStartingBoard(Board board, ChessGame game) {
-        GraphicTile[][] startingBoard = new GraphicTile[SUM_OF_ROWS][ChessGame.SUM_OF_COLUMNS];
+    public static GraphicTile[][] getStartingBoard(Board board, Parent game) {
+        GraphicTile[][] startingBoard = new GraphicTile[SUM_OF_ROWS][SUM_OF_COLUMNS];
         GraphicTile tile;
         Color color;
         for (int y = 0; y < SUM_OF_ROWS; y++) {
