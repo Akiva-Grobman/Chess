@@ -33,6 +33,8 @@ public class Enemy extends Player {
             Object input = inputStream.readObject();
             if(input instanceof Positions) {
                 return (Positions)input;
+            } else if(input instanceof String) {
+                game.gameOver(PieceColor.valueOf((String) input));
             } throw new Error("wrong cast type " + input.getClass().getSimpleName());
         } catch (IOException | ClassNotFoundException e) {
             throw new Error(e.getMessage());
@@ -58,4 +60,11 @@ public class Enemy extends Player {
         }
     }
 
+    public void sendGameOver(PieceColor playersColor) {
+        try {
+            outputStream.writeObject(playersColor.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

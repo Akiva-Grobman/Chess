@@ -41,7 +41,11 @@ public class AI extends Player {
             Point tempOrigin = piecePositions.get(i);
             for (Point tempDestination: pieces.get(i).getLegalMoves(board, tempOrigin)) {
                 Piece pieceAtDestination = getPiece(board, tempDestination);
-                if(isEnemyKing(pieceAtDestination)) break;
+                if(isEnemyKing(pieceAtDestination)) {
+                    Positions bestMove = new Positions(origin, getPlayersColor());
+                    bestMove.setDestination(tempDestination);
+                    return bestMove;
+                }
                 board.updateTile(tempOrigin, null);
                 board.updateTile(tempDestination, pieces.get(i));
                 int score = getMinMax(board, getPlayersColor(), 1, Integer.MIN_VALUE, Integer.MAX_VALUE);

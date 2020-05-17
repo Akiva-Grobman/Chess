@@ -104,6 +104,21 @@ public abstract class ChessGame {
         }
     }
 
+    protected boolean gameIsWon(Point destination) {
+        try {
+            // no need to check for color(seeing as the move is legal)
+            return backendBoard.getPiece(destination) instanceof King;
+        } catch (NoPieceFoundException e) {
+            return false;
+        }
+    }
+
+    public void gameOver(PieceColor playersColor) {
+        //todo make popup window
+        System.out.println("Game Over\n" + playersColor.toString().toLowerCase() + " Won!!!!!!!");
+        System.exit(0);
+    }
+
     public Piece getPiece(Point position) {
         try {
             return backendBoard.getPiece(position);

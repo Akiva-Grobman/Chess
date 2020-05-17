@@ -43,6 +43,9 @@ public class SinglePlayerChessGame extends ChessGame {
     @Override
     public void move(Positions positions, Player player) {
         assert currentPlayer.equals(player);
+        if(gameIsWon(positions.getDestination())) {
+            gameOver(positions.getPlayersColor());
+        }
         addMoveToMoveList(positions);
         updateBoards(positions);
         handleSpecialMoves(positions);
