@@ -50,6 +50,11 @@ public class SinglePlayerChessGame extends ChessGame {
         if(enemyKingIsInCheck(positions.getDestination())) {
             putKingInCheck(currentPlayer);
         }
+        Thread aiMove = new Thread(this::makeAiMove);
+        aiMove.start();
+    }
+
+    private void makeAiMove() {
         if(currentPlayer.equals(ai)) {
             ai.makeAMove(backendBoard);
         }

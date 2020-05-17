@@ -2,11 +2,13 @@ package com.akivaGrobman.Game.Client.Backend.Players;
 
 import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.GameManagers.ChessGame;
 
 import java.awt.*;
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +17,11 @@ import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_ROWS;
 
 public class AI extends Player {
 
-    private final PieceColor aiColor;
     private final int MAX_DEPTH;
 
     public AI(PieceColor color, ChessGame chessGame) {
         super(color);
-        this.aiColor = color;
-        MAX_DEPTH = 2;
+        MAX_DEPTH = 3;
         setContext(chessGame);
     }
 
@@ -30,24 +30,26 @@ public class AI extends Player {
     }
 
     private Positions getMove(Board board) {
-        return getBestMoveForAI(Board.getClone(board));
+        return getBestMoveForAi(Board.getClone(board));
     }
 
-    private Positions getBestMoveForAI(Board board) {
+    private Positions getBestMoveForAi(Board board) {
         List<Point> piecePositions = new ArrayList<>();
-        List<Piece> pieces = getPieces(board, aiColor, piecePositions);
+        List<Piece> pieces = getPieces(board, getPlayersColor(), piecePositions);
         int highestScore = Integer.MIN_VALUE;
         Point origin = null;
         Point destination = null;
-
         for (int i = 0; i < pieces.size(); i++) {
             Point tempOrigin = piecePositions.get(i);
             for (Point tempDestination: pieces.get(i).getLegalMoves(board, tempOrigin)) {
+                Piece pieceAtDestination = getPiece(board, tempDestination);
+                if(isEnemyKing(pieceAtDestination)) break;
                 board.updateTile(tempOrigin, null);
                 board.updateTile(tempDestination, pieces.get(i));
-                int score = getMinMax(board, aiColor, 1);
+                int score = getMinMax(board, getPlayersColor(), 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                System.out.println(tempOrigin + " -> " + tempDestination + " score:" + score);
                 board.updateTile(tempOrigin, pieces.get(i));
-                board.updateTile(tempDestination, null);
+                board.updateTile(tempDestination, pieceAtDestination);
                 if(highestScore < score) {
                     highestScore = score;
                     origin = new Point(tempOrigin);
@@ -55,62 +57,85 @@ public class AI extends Player {
                 }
             }
         }
-
-        Positions bestMove = new Positions(origin, aiColor);
+        System.out.println("---------------------------------------------------");
+        Positions bestMove = new Positions(origin, getPlayersColor());
         bestMove.setDestination(destination);
         return bestMove;
     }
 
-    private int getMinMax(Board board, PieceColor playersColor, int depth) {
+    private boolean isEnemyKing(Piece piece) {
+        if (piece instanceof King) {
+            return piece.getPieceColor() != getPlayersColor();
+        }
+        return false;
+    }
+
+    private int getMinMax(Board board, PieceColor playersColor, int depth, int alpha, int beta) {
         if(depth >= MAX_DEPTH) {
             return getBoardScore(board);
         }
-        if(playersColor == aiColor) {
-            return getMax(board, getOtherPlayersColor(playersColor), depth);
+        if(playersColor == getPlayersColor()) {
+            return getMax(board, getOtherPlayersColor(playersColor), depth, alpha, beta);
         } else {
-            return getMin(board, getOtherPlayersColor(playersColor), depth);
+            return getMin(board, getOtherPlayersColor(playersColor), depth, alpha, beta);
         }
     }
 
-    private int getMin(Board board, PieceColor playersColor, int depth) {
+    private int getMin(Board board, PieceColor playersColor, int depth, int alpha, int beta) {
         int min = Integer.MAX_VALUE;
         List<Point> piecesPositions = new ArrayList<>(); // the positions will be added while finding the pieces
         List<Piece> pieces = getPieces(board, playersColor, piecesPositions);
         for (int i = 0; i < pieces.size(); i++) {
             for (Point destination : pieces.get(i).getLegalMoves(board, piecesPositions.get(i))) {
+                Piece pieceAtDestination = getPiece(board, destination);
+                if(isEnemyKing(pieceAtDestination)) return Integer.MIN_VALUE;
                 board.updateTile(piecesPositions.get(i), null);
                 board.updateTile(destination, pieces.get(i));
-                int score = getMinMax(board, playersColor, depth + 1);
+                int score = getMinMax(board, playersColor, depth + 1, alpha, beta);
                 min = Integer.min(min, score);
+                beta = Integer.min(beta, min);
+                if(alpha >= beta) break;
                 board.updateTile(piecesPositions.get(i), pieces.get(i));
-                board.updateTile(destination, null);
+                board.updateTile(destination, pieceAtDestination);
             }
         }
         return min;
     }
 
-    private int getMax(Board board, PieceColor playersColor, int depth) {
+    private int getMax(Board board, PieceColor playersColor, int depth, int alpha, int beta) {
         int max = Integer.MIN_VALUE;
         List<Point> piecesPositions = new ArrayList<>(); // the positions will be added while finding the pieces
         List<Piece> pieces = getPieces(board, playersColor, piecesPositions);
         for (int i = 0; i < pieces.size(); i++) {
             for (Point destination : pieces.get(i).getLegalMoves(board, piecesPositions.get(i))) {
+                Piece pieceAtDestination = getPiece(board, destination);
+                if(isEnemyKing(pieceAtDestination)) return Integer.MAX_VALUE;
                 board.updateTile(piecesPositions.get(i), null);
                 board.updateTile(destination, pieces.get(i));
-                int score = getMinMax(board, playersColor, depth + 1);
+                int score = getMinMax(board, playersColor, depth + 1, alpha, beta);
                 max = Integer.max(max, score);
+                alpha = Integer.max(alpha, max);
+                if(alpha >= beta) break;
                 board.updateTile(piecesPositions.get(i), pieces.get(i));
-                board.updateTile(destination, null);
+                board.updateTile(destination, pieceAtDestination);
             }
         }
         return max;
     }
 
+    private Piece getPiece(Board board, Point position){
+        try {
+            return board.getPiece(position);
+        } catch (NoPieceFoundException e) {
+            return null;
+        }
+    }
+
     private int getBoardScore(Board board) {
         List<Point> playersPositions = new ArrayList<>();
-        List<Piece> playersPieces = getPieces(board, getOtherPlayersColor(aiColor), playersPositions);
+        List<Piece> playersPieces = getPieces(board, getOtherPlayersColor(getPlayersColor()), playersPositions);
         List<Point> aiPositions = new ArrayList<>();
-        List<Piece> aiPieces = getPieces(board, aiColor, aiPositions);
+        List<Piece> aiPieces = getPieces(board, getPlayersColor(), aiPositions);
         int score = getPiecesScore(playersPieces, aiPieces);
         //todo improve scoring method
         return score;
@@ -125,7 +150,7 @@ public class AI extends Player {
                 if(pieceCount >= MAX_PIECES) return pieces;
                 try {
                     Piece piece = board.getPiece(new Point(x, y));
-                    if(currentPlayersColor != piece.getPieceColor()) {
+                    if(currentPlayersColor == piece.getPieceColor()) {
                         pieceCount++;
                         pieces.add(piece);
                         positions.add(new Point(x, y));
