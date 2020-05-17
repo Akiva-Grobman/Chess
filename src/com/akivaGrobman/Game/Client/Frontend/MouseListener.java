@@ -1,16 +1,16 @@
 package com.akivaGrobman.Game.Client.Frontend;
 
-import com.akivaGrobman.Game.Client.GameManagers.Parent;
+import com.akivaGrobman.Game.Client.GameManagers.ChessGame;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
 public class MouseListener implements java.awt.event.MouseListener {
     
-    private final Parent game;
+    private final ChessGame game;
     private final Point position;
 
-    public MouseListener(Parent game, Point position) {
+    public MouseListener(ChessGame game, Point position) {
         this.game = game;
         this.position = position;
     }

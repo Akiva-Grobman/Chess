@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import static com.akivaGrobman.Game.Client.Backend.GameRules.BoardConditionsChecker.*;
-import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
+import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_COLUMNS;
 
 public class King extends Piece implements PieceMoves {
 

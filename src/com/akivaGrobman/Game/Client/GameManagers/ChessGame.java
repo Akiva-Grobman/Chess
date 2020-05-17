@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Parent {
+public abstract class ChessGame {
 
     public static final int SUM_OF_ROWS = 8;
     public static final int SUM_OF_COLUMNS = 8;

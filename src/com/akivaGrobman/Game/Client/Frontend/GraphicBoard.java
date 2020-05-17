@@ -3,7 +3,7 @@ package com.akivaGrobman.Game.Client.Frontend;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceType;
-import com.akivaGrobman.Game.Client.GameManagers.Parent;
+import com.akivaGrobman.Game.Client.GameManagers.ChessGame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,10 +16,10 @@ public class GraphicBoard {
 
     private JFrame frame;
     private GraphicTile[][] board;
-    private final Parent game;
+    private final ChessGame game;
     static final int TILE_SIZE = 90;
 
-    public GraphicBoard(Board board, Parent game) {
+    public GraphicBoard(Board board, ChessGame game) {
         this.game = game;
         boardSetUp(board);
         frame.setVisible(true);

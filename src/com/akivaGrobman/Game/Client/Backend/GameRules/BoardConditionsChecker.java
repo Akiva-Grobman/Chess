@@ -7,8 +7,8 @@ import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 
 import java.awt.*;
 
-import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
-import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_ROWS;
+import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_COLUMNS;
+import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_ROWS;
 
 public abstract class BoardConditionsChecker {
 

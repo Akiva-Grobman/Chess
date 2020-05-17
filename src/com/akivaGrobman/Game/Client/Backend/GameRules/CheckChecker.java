@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
-import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_ROWS;
+import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_COLUMNS;
+import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_ROWS;
 
 public class CheckChecker {
 

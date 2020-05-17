@@ -3,7 +3,6 @@ package com.akivaGrobman.Game.Client;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.Players.Enemy;
 import com.akivaGrobman.Game.Client.GameManagers.MultiPlayerChessGame;
-import com.akivaGrobman.Game.Client.GameManagers.Parent;
 import com.akivaGrobman.Game.Client.GameManagers.SinglePlayerChessGame;
 import com.akivaGrobman.Game.Server.Server;
 import java.io.IOException;

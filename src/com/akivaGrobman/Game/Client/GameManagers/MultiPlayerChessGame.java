@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 import static com.akivaGrobman.Game.Client.Backend.GameRules.SpecialMoves.*;
 
-public class MultiPlayerChessGame extends Parent {
+public class MultiPlayerChessGame extends ChessGame {
 
     private final Enemy enemy;
 

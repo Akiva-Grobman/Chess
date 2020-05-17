@@ -1,40 +1,66 @@
 package com.akivaGrobman.Game.Client.GameManagers;
 
+import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.*;
 import com.akivaGrobman.Game.Client.Backend.Players.AI;
 import com.akivaGrobman.Game.Client.Backend.Players.Player;
 import com.akivaGrobman.Game.Client.Backend.Players.Positions;
+import com.akivaGrobman.Game.Client.Frontend.GraphicBoard;
 import com.akivaGrobman.Game.Client.Frontend.PawnPromotionWindow;
 import java.awt.*;
+import java.util.ArrayList;
+
 import static com.akivaGrobman.Game.Client.Backend.GameRules.SpecialMoves.*;
 
-public class SinglePlayerChessGame extends Parent {
+public class SinglePlayerChessGame extends ChessGame {
 
     private final AI ai;
-    private PieceColor currentPlayersColor;
 
     public SinglePlayerChessGame(PieceColor playersColor) {
-        super();
+        backendBoard = new Board();
+        moves = new ArrayList<>();
         player = new Player(playersColor);
-        ai = new AI(getOtherColor(playersColor));
-        currentPlayersColor = PieceColor.WHITE;
+        player.setContext(this);
+        ai = new AI(getOtherColor(playersColor), this);
+        if(playersColor == PieceColor.WHITE) {
+            currentPlayer = player;
+        } else {
+            currentPlayer = ai;
+        }
+        onScreenBoard = new GraphicBoard(backendBoard, this);
+        if(currentPlayer.equals(ai)) {
+            ai.makeAMove(backendBoard);
+        }
+    }
+
+    @Override
+    public void tileClicked(Point tilePosition) {
+        if(currentPlayer.equals(player)) {
+            super.tileClicked(tilePosition);
+        }
     }
 
     @Override
     public void move(Positions positions, Player player) {
-        if(player.getPlayersColor() == currentPlayersColor) {
-            addMoveToMoveList(positions);
-            updateBoards(positions);
-            handleSpecialMoves(positions);
-            changeCurrentPlayer();
-            if(enemyKingIsInCheck(positions.getDestination())) {
-                putKingInCheck(currentPlayer);
-            }
+        assert currentPlayer.equals(player);
+        addMoveToMoveList(positions);
+        updateBoards(positions);
+        handleSpecialMoves(positions);
+        changeCurrentPlayer();
+        if(enemyKingIsInCheck(positions.getDestination())) {
+            putKingInCheck(currentPlayer);
+        }
+        if(currentPlayer.equals(ai)) {
+            ai.makeAMove(backendBoard);
         }
     }
 
     private void changeCurrentPlayer() {
-        currentPlayersColor = getOtherColor(currentPlayersColor);
+        if(currentPlayer == player) {
+            currentPlayer = ai;
+        } else {
+            currentPlayer = player;
+        }
     }
 
     private void handleSpecialMoves(Positions positions) {

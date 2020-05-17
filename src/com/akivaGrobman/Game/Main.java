@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         // todo opening window to chose multiplayer of single
-        boolean isMultiPlayerGame = true;
+        boolean isMultiPlayerGame = false;
         if(isMultiPlayerGame) {
             Client.startMultiplayerGame();
         } else {

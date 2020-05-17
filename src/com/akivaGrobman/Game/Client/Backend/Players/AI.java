@@ -4,25 +4,32 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
+import com.akivaGrobman.Game.Client.GameManagers.ChessGame;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
-import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_ROWS;
+import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_COLUMNS;
+import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_ROWS;
 
-public class AI implements ChessPlayer{
+public class AI extends Player {
 
     private final PieceColor aiColor;
     private final int MAX_DEPTH;
 
-    public AI(PieceColor color) {
+    public AI(PieceColor color, ChessGame chessGame) {
+        super(color);
         this.aiColor = color;
-        MAX_DEPTH = 4;
+        MAX_DEPTH = 2;
+        setContext(chessGame);
     }
 
-    public Positions getMove(Board board) {
+    public void makeAMove(Board board) {
+        game.move(getMove(board), this);
+    }
+
+    private Positions getMove(Board board) {
         return getBestMoveForAI(Board.getClone(board));
     }
 
@@ -105,13 +112,8 @@ public class AI implements ChessPlayer{
         List<Point> aiPositions = new ArrayList<>();
         List<Piece> aiPieces = getPieces(board, aiColor, aiPositions);
         int score = getPiecesScore(playersPieces, aiPieces);
-        //todo add this scoring method
-        score += getScoreByPosition();
+        //todo improve scoring method
         return score;
-    }
-
-    private int getScoreByPosition() {
-        return 0;
     }
 
     private List<Piece> getPieces(Board board, PieceColor currentPlayersColor, List<Point> positions) {
@@ -184,4 +186,13 @@ public class AI implements ChessPlayer{
         return (playersColor == PieceColor.BLACK)? PieceColor.WHITE: PieceColor.BLACK;
     }
 
+    @Override
+    public void addPositionToMove(Point position) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Positions getMove() {
+        throw new UnsupportedOperationException();
+    }
 }

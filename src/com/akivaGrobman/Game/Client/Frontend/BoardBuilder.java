@@ -4,7 +4,7 @@ import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
-import com.akivaGrobman.Game.Client.GameManagers.Parent;
+import com.akivaGrobman.Game.Client.GameManagers.ChessGame;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,8 +12,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import static com.akivaGrobman.Game.Client.Frontend.GraphicBoard.TILE_SIZE;
-import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_ROWS;
-import static com.akivaGrobman.Game.Client.GameManagers.Parent.SUM_OF_COLUMNS;
+import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_ROWS;
+import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_COLUMNS;
 
 public abstract class BoardBuilder {
 
@@ -51,7 +51,7 @@ public abstract class BoardBuilder {
         return frame;
     }
 
-    public static GraphicTile[][] getStartingBoard(Board board, Parent game) {
+    public static GraphicTile[][] getStartingBoard(Board board, ChessGame game) {
         GraphicTile[][] startingBoard = new GraphicTile[SUM_OF_ROWS][SUM_OF_COLUMNS];
         GraphicTile tile;
         Color color;
