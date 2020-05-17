@@ -6,9 +6,7 @@ import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.King;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.GameManagers.ChessGame;
-
 import java.awt.*;
-import java.nio.charset.IllegalCharsetNameException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +19,7 @@ public class AI extends Player {
 
     public AI(PieceColor color, ChessGame chessGame) {
         super(color);
-        MAX_DEPTH = 3;
+        MAX_DEPTH = 4;
         setContext(chessGame);
     }
 
@@ -47,7 +45,7 @@ public class AI extends Player {
                 board.updateTile(tempOrigin, null);
                 board.updateTile(tempDestination, pieces.get(i));
                 int score = getMinMax(board, getPlayersColor(), 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                System.out.println(tempOrigin + " -> " + tempDestination + " score:" + score);
+//                System.out.println(tempOrigin + " -> " + tempDestination + " score:" + score);
                 board.updateTile(tempOrigin, pieces.get(i));
                 board.updateTile(tempDestination, pieceAtDestination);
                 if(highestScore < score) {
@@ -57,7 +55,7 @@ public class AI extends Player {
                 }
             }
         }
-        System.out.println("---------------------------------------------------");
+//        System.out.println("---------------------------------------------------");
         Positions bestMove = new Positions(origin, getPlayersColor());
         bestMove.setDestination(destination);
         return bestMove;
@@ -71,7 +69,7 @@ public class AI extends Player {
     }
 
     private int getMinMax(Board board, PieceColor playersColor, int depth, int alpha, int beta) {
-        if(depth >= MAX_DEPTH) {
+        if(depth == MAX_DEPTH) {
             return getBoardScore(board);
         }
         if(playersColor == getPlayersColor()) {
@@ -94,7 +92,7 @@ public class AI extends Player {
                 int score = getMinMax(board, playersColor, depth + 1, alpha, beta);
                 min = Integer.min(min, score);
                 beta = Integer.min(beta, min);
-                if(alpha >= beta) break;
+                if(alpha >= beta) return min;
                 board.updateTile(piecesPositions.get(i), pieces.get(i));
                 board.updateTile(destination, pieceAtDestination);
             }
@@ -115,7 +113,7 @@ public class AI extends Player {
                 int score = getMinMax(board, playersColor, depth + 1, alpha, beta);
                 max = Integer.max(max, score);
                 alpha = Integer.max(alpha, max);
-                if(alpha >= beta) break;
+                if(alpha >= beta) return max;
                 board.updateTile(piecesPositions.get(i), pieces.get(i));
                 board.updateTile(destination, pieceAtDestination);
             }
@@ -123,7 +121,7 @@ public class AI extends Player {
         return max;
     }
 
-    private Piece getPiece(Board board, Point position){
+    private Piece getPiece(Board board, Point position) {
         try {
             return board.getPiece(position);
         } catch (NoPieceFoundException e) {
@@ -136,9 +134,8 @@ public class AI extends Player {
         List<Piece> playersPieces = getPieces(board, getOtherPlayersColor(getPlayersColor()), playersPositions);
         List<Point> aiPositions = new ArrayList<>();
         List<Piece> aiPieces = getPieces(board, getPlayersColor(), aiPositions);
-        int score = getPiecesScore(playersPieces, aiPieces);
         //todo improve scoring method
-        return score;
+        return getPiecesScore(playersPieces, aiPieces);
     }
 
     private List<Piece> getPieces(Board board, PieceColor currentPlayersColor, List<Point> positions) {
@@ -220,4 +217,5 @@ public class AI extends Player {
     public Positions getMove() {
         throw new UnsupportedOperationException();
     }
+
 }
