@@ -62,25 +62,27 @@ public class Bishop extends Piece implements PieceMoves {
         final int SUM_OF_LEGAL_MOVES = 13;
         List<Point> legalMoves = new ArrayList<>();
         Point temp;
-        for (int i = 1; i <= 4; i++) {
+        // the loops are separated because if one move is illegal in any direction we want to stop looking in that direction
+        // but that doesn't mean it's illegal in the other directions
+        for (int i = 1; i <= 7; i++) {
             temp = new Point(piecePosition.x + i, piecePosition.y + i);
             if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 7; i++) {
             temp = new Point(piecePosition.x - i, piecePosition.y + i);
             if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 7; i++) {
             temp = new Point(piecePosition.x + i, piecePosition.y - i);
             if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
                 break;
             }
         }
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 7; i++) {
             if (legalMoves.size() >= SUM_OF_LEGAL_MOVES) break;
             temp = new Point(piecePosition.x - i, piecePosition.y - i);
             if(!addedDestinationToLegalMovesList(legalMoves, piecePosition, temp)) {
@@ -89,4 +91,5 @@ public class Bishop extends Piece implements PieceMoves {
         }
         return legalMoves;
     }
+
 }

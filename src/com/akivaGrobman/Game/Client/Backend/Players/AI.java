@@ -120,15 +120,20 @@ public class AI extends Player {
         for (int i = 0; i < pieces.size(); i++) {
             for (Point destination : pieces.get(i).getLegalMoves(board, piecesPositions.get(i))) {
                 Piece pieceAtDestination = getPiece(board, destination);
+                Piece pieceForEnpassant = getPiece(board, new Point(destination.x, piecesPositions.get(i).y));
                 if(isEnemyKing(pieceAtDestination)) return Integer.MAX_VALUE;
                 board.updateTile(piecesPositions.get(i), null);
                 board.updateTile(destination, pieces.get(i));
+                if(wasEnpassant(board, piecesPositions.get(i), destination, pieceAtDestination)) {
+                    board.updateTile(new Point(destination.x, piecesPositions.get(i).y), null);
+                }
                 int score = getMinMax(board, playersColor, depth + 1, alpha, beta);
                 max = Integer.max(max, score);
                 alpha = Integer.max(alpha, max);
                 if(alpha >= beta) return max;
                 board.updateTile(piecesPositions.get(i), pieces.get(i));
                 board.updateTile(destination, pieceAtDestination);
+                board.updateTile(new Point(destination.x, piecesPositions.get(i).y), pieceForEnpassant);
             }
         }
         return max;

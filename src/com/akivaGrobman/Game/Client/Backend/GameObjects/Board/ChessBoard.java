@@ -114,6 +114,7 @@ public abstract class ChessBoard {
         board[destination.y][destination.x].setPiece(piece);
         board[origin.y][origin.x].setPiece(null);
         King king = getKing(piece.getPieceColor());
+        if(king == null) return true;
         isInCheck = king.isInCheck(backendBoard, depth);
         board[origin.y][origin.x].setPiece(piece);
         board[destination.y][destination.x].setPiece(oldPiece);
