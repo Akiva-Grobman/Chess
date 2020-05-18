@@ -6,6 +6,7 @@ import com.akivaGrobman.Game.Client.GameManagers.ChessGame;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -41,6 +42,9 @@ public class PawnPromotionWindow {
             buttons[ROOK_POSITION] = new JButton("Rook");
             buttons[KNIGHT_POSITION] = new JButton("Knight");
             buttons[BISHOP_POSITION] = new JButton("Bishop");
+        }
+        for (JButton button :buttons) {
+            button.setPreferredSize(new Dimension(GraphicBoard.TILE_SIZE, GraphicBoard.TILE_SIZE));
         }
         addListeners(buttons);
         return buttons;

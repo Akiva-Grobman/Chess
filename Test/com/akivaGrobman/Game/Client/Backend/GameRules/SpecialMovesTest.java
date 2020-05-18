@@ -30,7 +30,7 @@ class SpecialMovesTest {
         positions.setDestination(new Point(1, 2));
         moves.add(new Move(positions, null));
 
-        wasEnpassant = wasEnpassant(board, moves);
+        wasEnpassant = wasEnpassant(board, moves.get(moves.size() - 1).getPositions().getOrigin(), moves.get(moves.size() - 1).getPositions().getDestination(), moves.get(moves.size() - 1).getPieceAtDestination());
 
         assertTrue(wasEnpassant);
     }

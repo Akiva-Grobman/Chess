@@ -14,16 +14,13 @@ import java.util.List;
 
 public abstract class SpecialMoves {
 
-    public static boolean wasEnpassant(Board backendBoard, List<Move> moves)  {
-        Point destination = moves.get(moves.size() - 1).getPositions().getDestination();
-        Point origin = moves.get(moves.size() - 1).getPositions().getOrigin();
-        Piece piece = moves.get(moves.size() - 1).getPieceAtDestination();
-        if(piece == null) {
+    public static boolean wasEnpassant(Board backendBoard, Point origin, Point destination, Piece pieceAtDestination)  {
+        if(pieceAtDestination == null) {
             try {
                 if(backendBoard.getPiece(destination) instanceof Pawn && backendBoard.getPiece(new Point(destination.x, origin.y)) instanceof Pawn) {
                     return backendBoard.getPiece(new Point(destination.x, origin.y)).getPieceColor() != backendBoard.getPiece(destination).getPieceColor();
                 }
-            } catch (NoPieceFoundException e) {
+            } catch (NoPieceFoundException | NullPointerException e) {
                 return false;
             }
         }

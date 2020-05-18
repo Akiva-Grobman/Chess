@@ -10,6 +10,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.akivaGrobman.Game.Client.Backend.GameRules.SpecialMoves.wasEnpassant;
 import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_COLUMNS;
 import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_ROWS;
 
@@ -19,7 +20,7 @@ public class AI extends Player {
 
     public AI(PieceColor color, ChessGame chessGame) {
         super(color);
-        MAX_DEPTH = 4;
+        MAX_DEPTH = 2;
         setContext(chessGame);
     }
 
@@ -41,6 +42,7 @@ public class AI extends Player {
             Point tempOrigin = piecePositions.get(i);
             for (Point tempDestination: pieces.get(i).getLegalMoves(board, tempOrigin)) {
                 Piece pieceAtDestination = getPiece(board, tempDestination);
+                Piece pieceForEnpassant = getPiece(board, new Point(tempDestination.x, tempOrigin.y));
                 if(isEnemyKing(pieceAtDestination)) {
                     Positions bestMove = new Positions(origin, getPlayersColor());
                     bestMove.setDestination(tempDestination);
@@ -48,10 +50,13 @@ public class AI extends Player {
                 }
                 board.updateTile(tempOrigin, null);
                 board.updateTile(tempDestination, pieces.get(i));
+                if(wasEnpassant(board, origin, destination, pieceAtDestination)) {
+                    board.updateTile(new Point(tempDestination.x, tempOrigin.y), null);
+                }
                 int score = getMinMax(board, getPlayersColor(), 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
-//                System.out.println(tempOrigin + " -> " + tempDestination + " score:" + score);
                 board.updateTile(tempOrigin, pieces.get(i));
                 board.updateTile(tempDestination, pieceAtDestination);
+                board.updateTile(new Point(tempDestination.x, tempOrigin.y), pieceForEnpassant);
                 if(highestScore < score) {
                     highestScore = score;
                     origin = new Point(tempOrigin);
@@ -59,7 +64,6 @@ public class AI extends Player {
                 }
             }
         }
-//        System.out.println("---------------------------------------------------");
         Positions bestMove = new Positions(origin, getPlayersColor());
         bestMove.setDestination(destination);
         return bestMove;
@@ -90,15 +94,20 @@ public class AI extends Player {
         for (int i = 0; i < pieces.size(); i++) {
             for (Point destination : pieces.get(i).getLegalMoves(board, piecesPositions.get(i))) {
                 Piece pieceAtDestination = getPiece(board, destination);
+                Piece pieceForEnpassant = getPiece(board, new Point(destination.x, piecesPositions.get(i).y));
                 if(isEnemyKing(pieceAtDestination)) return Integer.MIN_VALUE;
                 board.updateTile(piecesPositions.get(i), null);
                 board.updateTile(destination, pieces.get(i));
+                if(wasEnpassant(board, piecesPositions.get(i), destination, pieceAtDestination)) {
+                    board.updateTile(new Point(destination.x, piecesPositions.get(i).y), null);
+                }
                 int score = getMinMax(board, playersColor, depth + 1, alpha, beta);
                 min = Integer.min(min, score);
                 beta = Integer.min(beta, min);
                 if(alpha >= beta) return min;
                 board.updateTile(piecesPositions.get(i), pieces.get(i));
                 board.updateTile(destination, pieceAtDestination);
+                board.updateTile(new Point(destination.x, piecesPositions.get(i).y), pieceForEnpassant);
             }
         }
         return min;

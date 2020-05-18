@@ -52,6 +52,7 @@ public class MultiPlayerChessGame extends ChessGame {
         if(!isLocalPlayer(player) || isLegalMove(positions)) {
             if(gameIsWon(positions.getDestination())) {
                 Thread sendGameOver = new Thread(() -> enemy.sendGameOver(player.getPlayersColor()));
+                sendGameOver.start();
                 gameOver(positions.getPlayersColor());
             }
             addMoveToMoveList(positions);
@@ -74,7 +75,10 @@ public class MultiPlayerChessGame extends ChessGame {
     private void handleSpecialMoves(Positions positions) {
         updateEnpassantData(positions);
         isPromoting = false;
-        if(wasEnpassant(backendBoard, moves)) {
+        /*Point destination = moves.get(moves.size() - 1).getPositions().getDestination();
+        Point origin = moves.get(moves.size() - 1).getPositions().getOrigin();
+        Piece piece = moves.get(moves.size() - 1).getPieceAtDestination();*/
+        if(wasEnpassant(backendBoard, moves.get(moves.size() - 1).getPositions().getOrigin(), moves.get(moves.size() - 1).getPositions().getDestination(), moves.get(moves.size() - 1).getPieceAtDestination())) {
             backendBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null);
             onScreenBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null, null);
         } else if(wasCastling(backendBoard, positions)) {

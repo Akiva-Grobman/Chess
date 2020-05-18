@@ -95,7 +95,7 @@ public abstract class ChessGame {
 
     protected boolean isLegalMove(Positions positions) {
         try {
-            if(player.getPlayersColor() != backendBoard.getPiece(positions.getOrigin()).getPieceColor()) return false;
+            if(currentPlayer.getPlayersColor() != backendBoard.getPiece(positions.getOrigin()).getPieceColor()) return false;
             int STARTING_DEPTH = 1;
             return backendBoard.isLegalMove(positions.getOrigin(), positions.getDestination(), STARTING_DEPTH);
         } catch (IllegalMoveException | NoPieceFoundException e) {

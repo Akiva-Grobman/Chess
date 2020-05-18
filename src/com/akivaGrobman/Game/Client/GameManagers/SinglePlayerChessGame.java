@@ -43,18 +43,20 @@ public class SinglePlayerChessGame extends ChessGame {
     @Override
     public void move(Positions positions, Player player) {
         assert currentPlayer.equals(player);
-        if(gameIsWon(positions.getDestination())) {
-            gameOver(positions.getPlayersColor());
+        if(isLegalMove(positions)) {
+            if (gameIsWon(positions.getDestination())) {
+                gameOver(positions.getPlayersColor());
+            }
+            addMoveToMoveList(positions);
+            updateBoards(positions);
+            handleSpecialMoves(positions);
+            changeCurrentPlayer();
+            if (enemyKingIsInCheck(positions.getDestination())) {
+                putKingInCheck(currentPlayer);
+            }
+            Thread aiMove = new Thread(this::makeAiMove);
+            aiMove.start();
         }
-        addMoveToMoveList(positions);
-        updateBoards(positions);
-        handleSpecialMoves(positions);
-        changeCurrentPlayer();
-        if(enemyKingIsInCheck(positions.getDestination())) {
-            putKingInCheck(currentPlayer);
-        }
-        Thread aiMove = new Thread(this::makeAiMove);
-        aiMove.start();
     }
 
     private void makeAiMove() {
@@ -74,7 +76,7 @@ public class SinglePlayerChessGame extends ChessGame {
     private void handleSpecialMoves(Positions positions) {
         updateEnpassantData(positions);
         isPromoting = false;
-        if(wasEnpassant(backendBoard, moves)) {
+        if(wasEnpassant(backendBoard, moves.get(moves.size() - 1).getPositions().getOrigin(), moves.get(moves.size() - 1).getPositions().getDestination(), moves.get(moves.size() - 1).getPieceAtDestination())) {
             backendBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null);
             onScreenBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null, null);
         } else if(wasCastling(backendBoard, positions)) {
@@ -97,26 +99,29 @@ public class SinglePlayerChessGame extends ChessGame {
             onScreenBoard.updateTile(new Point(originalX, y), null, null);
         } else if(wasPromotion(backendBoard, positions.getDestination())) {
             Piece piece;
-            Point promotionPosition;
-            promotedPieceType = null;
-            promotionPosition = positions.getDestination();
-            new PawnPromotionWindow(this, positions.getPlayersColor(), onScreenBoard.getFrame());
-            assert promotedPieceType != null; // will be set by the popup window
-            switch (promotedPieceType) {
-                case ROOK:
-                    piece = new Rook(positions.getPlayersColor());
-                    break;
-                case QUEEN:
-                    piece = new Queen(positions.getPlayersColor());
-                    break;
-                case BISHOP:
-                    piece = new Bishop(positions.getPlayersColor());
-                    break;
-                case KNIGHT:
-                    piece = new Knight(positions.getPlayersColor());
-                    break;
-                default:
-                    throw new Error("wrong type " + promotedPieceType);
+            Point promotionPosition = positions.getDestination();
+            if(currentPlayer.equals(player)) {
+                promotedPieceType = null;
+                new PawnPromotionWindow(this, positions.getPlayersColor(), onScreenBoard.getFrame());
+                assert promotedPieceType != null; // will be set by the popup window
+                switch (promotedPieceType) {
+                    case ROOK:
+                        piece = new Rook(positions.getPlayersColor());
+                        break;
+                    case QUEEN:
+                        piece = new Queen(positions.getPlayersColor());
+                        break;
+                    case BISHOP:
+                        piece = new Bishop(positions.getPlayersColor());
+                        break;
+                    case KNIGHT:
+                        piece = new Knight(positions.getPlayersColor());
+                        break;
+                    default:
+                        throw new Error("wrong type " + promotedPieceType);
+                }
+            } else {
+                piece = new Queen(positions.getPlayersColor());
             }
             backendBoard.updateTile(promotionPosition, piece);
             onScreenBoard.updateTile(promotionPosition, piece.getPieceType(), piece.getPieceColor());
