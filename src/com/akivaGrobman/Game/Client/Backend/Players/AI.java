@@ -9,6 +9,7 @@ import com.akivaGrobman.Game.Client.GameManagers.ChessGame;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static com.akivaGrobman.Game.Client.Backend.GameRules.SpecialMoves.wasEnpassant;
 import static com.akivaGrobman.Game.Client.GameManagers.ChessGame.SUM_OF_COLUMNS;
@@ -20,7 +21,7 @@ public class AI extends Player {
 
     public AI(PieceColor color, ChessGame chessGame) {
         super(color);
-        MAX_DEPTH = 2;
+        MAX_DEPTH = 4;
         setContext(chessGame);
     }
 
@@ -41,6 +42,7 @@ public class AI extends Player {
         for (int i = 0; i < pieces.size(); i++) {
             Point tempOrigin = piecePositions.get(i);
             for (Point tempDestination: pieces.get(i).getLegalMoves(board, tempOrigin)) {
+                System.out.print(tempOrigin + " -> " + tempDestination);
                 Piece pieceAtDestination = getPiece(board, tempDestination);
                 Piece pieceForEnpassant = getPiece(board, new Point(tempDestination.x, tempOrigin.y));
                 if(isEnemyKing(pieceAtDestination)) {
@@ -54,6 +56,7 @@ public class AI extends Player {
                     board.updateTile(new Point(tempDestination.x, tempOrigin.y), null);
                 }
                 int score = getMinMax(board, getPlayersColor(), 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                System.out.println(" score: " + score);
                 board.updateTile(tempOrigin, pieces.get(i));
                 board.updateTile(tempDestination, pieceAtDestination);
                 board.updateTile(new Point(tempDestination.x, tempOrigin.y), pieceForEnpassant);
@@ -66,6 +69,7 @@ public class AI extends Player {
         }
         Positions bestMove = new Positions(origin, getPlayersColor());
         bestMove.setDestination(destination);
+        System.out.println(bestMove);
         return bestMove;
     }
 
@@ -80,10 +84,14 @@ public class AI extends Player {
         if(depth == MAX_DEPTH) {
             return getBoardScore(board);
         }
-        if(playersColor == getPlayersColor()) {
-            return getMax(board, getOtherPlayersColor(playersColor), depth, alpha, beta);
-        } else {
-            return getMin(board, getOtherPlayersColor(playersColor), depth, alpha, beta);
+        try {
+            if (playersColor == getPlayersColor()) {
+                return getMax(board, getOtherPlayersColor(playersColor), depth, alpha, beta);
+            } else {
+                return getMin(board, getOtherPlayersColor(playersColor), depth, alpha, beta);
+            }
+        } catch (NoSuchElementException e) { // will happen if one of the kings are "killed"
+            return getBoardScore(board);
         }
     }
 
