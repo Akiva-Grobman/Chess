@@ -2,7 +2,7 @@ package com.akivaGrobman.Game.Client.GameManagers;
 
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.*;
-import com.akivaGrobman.Game.Client.Backend.Players.AI;
+import com.akivaGrobman.Game.Client.Backend.Players.Ai;
 import com.akivaGrobman.Game.Client.Backend.Players.Player;
 import com.akivaGrobman.Game.Client.Backend.Players.Positions;
 import com.akivaGrobman.Game.Client.Frontend.GraphicBoard;
@@ -14,14 +14,14 @@ import static com.akivaGrobman.Game.Client.Backend.GameRules.SpecialMoves.*;
 
 public class SinglePlayerChessGame extends ChessGame {
 
-    private final AI ai;
+    private final Ai ai;
 
     public SinglePlayerChessGame(PieceColor playersColor) {
         backendBoard = new Board();
         moves = new ArrayList<>();
         player = new Player(playersColor);
         player.setContext(this);
-        ai = new AI(getOtherColor(playersColor), this);
+        ai = new Ai(getOtherColor(playersColor), this);
         if(playersColor == PieceColor.WHITE) {
             currentPlayer = player;
         } else {
@@ -54,8 +54,10 @@ public class SinglePlayerChessGame extends ChessGame {
             if (enemyKingIsInCheck(positions.getDestination())) {
                 putKingInCheck(currentPlayer);
             }
-            Thread aiMove = new Thread(this::makeAiMove);
-            aiMove.start();
+            if(currentPlayer.equals(ai)) {
+                Thread aiMove = new Thread(this::makeAiMove);
+                aiMove.start();
+            }
         }
     }
 
