@@ -1,6 +1,5 @@
 package com.akivaGrobman.Game.Client.GameManagers;
 
-import com.akivaGrobman.Game.Client.Backend.Exceptions.NoPieceFoundException;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.*;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.PromotionMessage;
@@ -50,14 +49,20 @@ public class MultiPlayerChessGame extends ChessGame {
     @Override
     public void move(Positions positions, Player player) {
         if(!isLocalPlayer(player) || isLegalMove(positions)) {
-            if(gameIsWon(positions.getDestination())) {
-                Thread sendGameOver = new Thread(() -> enemy.sendGameOver(player.getPlayersColor()));
-                sendGameOver.start();
-                gameOver(positions.getPlayersColor());
-            }
             addMoveToMoveList(positions);
             updateBoards(positions);
             handleSpecialMoves(positions);
+            if(gameIsOver(positions.getPlayersColor(), positions.getDestination())) {
+                if(gameIsWon(positions.getPlayersColor())) {
+                    Thread sendGameWon = new Thread(() -> enemy.sendGameOver(player.getPlayersColor()));
+                    sendGameWon.start();
+                    endGameWithWinner(positions.getPlayersColor());
+                } else {
+                    Thread sendGameTie = new Thread(() -> enemy.sendGameOver(null));
+                    sendGameTie.start();
+                    endGameWithoutWinner();
+                }
+            }
             if(isLocalPlayer(player) && !isPromoting) { // if it was a promoting move the message is sent in handleSpacialMoves
                 enemy.sendMove(positions);
             }

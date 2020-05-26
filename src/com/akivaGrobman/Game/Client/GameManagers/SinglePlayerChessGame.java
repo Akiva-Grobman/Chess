@@ -44,12 +44,16 @@ public class SinglePlayerChessGame extends ChessGame {
     public void move(Positions positions, Player player) {
         assert currentPlayer.equals(player);
         if(isLegalMove(positions)) {
-            if (gameIsWon(positions.getDestination())) {
-                gameOver(positions.getPlayersColor());
-            }
             addMoveToMoveList(positions);
             updateBoards(positions);
             handleSpecialMoves(positions);
+            if (gameIsOver(positions.getPlayersColor(), positions.getDestination())) {
+                if(gameIsWon(positions.getPlayersColor())) {
+                    endGameWithWinner(positions.getPlayersColor());
+                } else {
+                    endGameWithoutWinner();
+                }
+            }
             changeCurrentPlayer();
             if (enemyKingIsInCheck(positions.getDestination())) {
                 putKingInCheck(currentPlayer);

@@ -36,7 +36,6 @@ public class CheckChecker {
             try {
                 Piece piece = BOARD.getPiece(enemyPiecePosition);
                 assert piece != null;
-                if(piece instanceof King) continue;
                 if(DEPTH < MAX_DEPTH) {
                     if(BOARD.isLegalMove(enemyPiecePosition, kingPosition, DEPTH + 1)) {
                         return true;

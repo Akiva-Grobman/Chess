@@ -3,6 +3,7 @@ package com.akivaGrobman.Game.Client.Backend.Players;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.Piece;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.PieceColor;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.PromotionMessage;
+import com.akivaGrobman.Game.Client.GameManagers.ChessGame;
 
 import java.awt.*;
 import java.io.IOException;
@@ -34,7 +35,11 @@ public class Enemy extends Player {
             if(input instanceof Positions) {
                 return (Positions)input;
             } else if(input instanceof String) {
-                game.gameOver(PieceColor.valueOf((String) input));
+                if(((String) input).contains(ChessGame.TIE_MESSAGE)) {
+                    game.endGameWithoutWinner();
+                } else {
+                    game.endGameWithWinner(PieceColor.valueOf((String) input));
+                }
             } throw new Error("wrong cast type " + input.getClass().getSimpleName());
         } catch (IOException | ClassNotFoundException e) {
             throw new Error(e.getMessage());
@@ -62,7 +67,11 @@ public class Enemy extends Player {
 
     public void sendGameOver(PieceColor playersColor) {
         try {
-            outputStream.writeObject(playersColor.toString());
+            if(playersColor == null) {
+                outputStream.writeObject(ChessGame.TIE_MESSAGE);
+            } else {
+                outputStream.writeObject(playersColor.toString());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

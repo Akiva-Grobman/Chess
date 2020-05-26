@@ -21,21 +21,17 @@ public class Ai extends Player{
 
     public Ai(PieceColor aiColor, ChessGame game) {
          super(aiColor);
-         MAX_DEPTH = 2;
+         MAX_DEPTH = 4;
          setContext(game);
      }
 
     public void makeAMove(Board board) {
-         game.move(getMove(board), this);
-     }
-
-    private Positions getMove(Board board) {
-         return getBestMoveForAi(Board.getClone(board));
-     }
+         game.move(getBestMoveForAi(Board.getClone(board)), this);
+    }
 
     private Positions getBestMoveForAi(Board board) {
         List<Point> piecePositions = getPiecePositions(board, getPlayersColor());
-        int highestScore = Integer.MIN_VALUE;
+        double highestScore = Double.MIN_VALUE;
         Point origin = null;
         Point destination = null;
         for (Point tempOrigin: piecePositions) {
@@ -43,34 +39,29 @@ public class Ai extends Player{
             assert piece != null; //check the getPiecePositions method to see why
             for (Point tempDestination: piece.getLegalMoves(board, tempOrigin)) {
                 Piece pieceAtDestination = getPiece(board, tempDestination);
-                Piece pieceInEnpassantPosition = getPiece(board, new Point(tempDestination.x, tempOrigin.y)); // will only actualy be enpassant position sometimes but the wasEnpassant method will do the actualy enpassnt check
                 if (hasKingAtDestination(board, tempDestination)) {
                     Positions bestMove = new Positions(tempOrigin, getPlayersColor());
                     bestMove.setDestination(tempDestination);
                     return bestMove;
                 }
-                board.updateTile(tempOrigin, null);
-                board.updateTile(tempDestination, piece);
-                if (wasEnpassant(board, tempOrigin, tempDestination, pieceAtDestination)) {
-                    board.updateTile(new Point(tempDestination.x, tempOrigin.y), null);
-                }
-                int score = getMinMax(board, getPlayersColor(), 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                board.updateTile(tempOrigin, piece);
-                board.updateTile(tempDestination, pieceAtDestination);
-                board.updateTile(new Point(tempDestination.x, tempOrigin.y), pieceInEnpassantPosition);
-                if(highestScore < score) {
+                Piece pieceInEnpassantPosition = getPiece(board, new Point(tempDestination.x, tempOrigin.y)); // will only actually be enpassant position sometimes but the wasEnpassant method will do the actually enpassant check
+                setBoard(board, tempOrigin, piece, tempDestination, pieceAtDestination);
+                double score = getMinMax(board, getPlayersColor(), 1, Double.MIN_VALUE, Double.MAX_VALUE);
+                resetBoard(board, tempOrigin, piece, tempDestination, pieceAtDestination, pieceInEnpassantPosition);
+                if(highestScore <= score) {
                     highestScore = score;
                     origin = new Point(tempOrigin);
                     destination = new Point(tempDestination);
                 }
             }
         }
+        assert origin != null && destination != null;
         Positions bestMove = new Positions(origin, getPlayersColor());
         bestMove.setDestination(destination);
         return bestMove;
     }
 
-    private int getMinMax(Board board, PieceColor playersColor, int depth, int alpha, int beta) {
+    private double getMinMax(Board board, PieceColor playersColor, int depth, double alpha, double beta) {
         if(depth == MAX_DEPTH) {
             return getBoardScore(board, playersColor);
         }
@@ -81,78 +72,84 @@ public class Ai extends Player{
                 return getMin(board, getOtherPlayersColor(playersColor), depth, alpha, beta);
             }
         } catch (NoSuchElementException e) { // todo might need to pass getOtherPlayersColor
-            return getBoardScore(board, playersColor);
+            return getBoardScore(board, getOtherPlayersColor(playersColor));
         }
     }
 
-    private int getMin(Board board, PieceColor playersColor, int depth, int alpha, int beta) {
-        int min = Integer.MAX_VALUE;
+    private double getMin(Board board, PieceColor playersColor, int depth, double alpha, double beta) {
+        double min = Double.MAX_VALUE;
         List<Point> piecesPositions = getPiecePositions(board, playersColor);
         for (Point piecePosition: piecesPositions) {
             Piece piece = getPiece(board, piecePosition);
             assert piece != null;
             for (Point destination : piece.getLegalMoves(board, piecePosition)) {
                 Piece pieceAtDestination = getPiece(board, destination);
-                Piece pieceForEnpassant = getPiece(board, new Point(destination.x, piecePosition.y));
                 if (hasKingAtDestination(board, destination)) {
                     return getBoardScore(board, playersColor);
                 }
-                board.updateTile(piecePosition, null);
-                board.updateTile(destination, piece);
-                if (wasEnpassant(board, piecePosition, destination, pieceAtDestination)) {
-                    board.updateTile(new Point(destination.x, piecePosition.y), null);
+                Piece pieceForEnpassant = getPiece(board, new Point(destination.x, piecePosition.y));
+                setBoard(board, piecePosition, piece, destination, pieceAtDestination);
+                double score = getMinMax(board, playersColor, depth + 1, alpha, beta);
+                resetBoard(board, piecePosition, piece, destination, pieceAtDestination, pieceForEnpassant);
+                min = Double.min(min, score);
+                beta = Double.min(beta, min);
+                if (alpha >= beta) {
+                    return min;
                 }
-                int score = getMinMax(board, playersColor, depth + 1, alpha, beta);
-                min = Integer.min(min, score);
-                beta = Integer.min(beta, min);
-                if (alpha >= beta) return min;
-                board.updateTile(piecePosition, piece);
-                board.updateTile(destination, pieceAtDestination);
-                board.updateTile(new Point(destination.x, piecePosition.y), pieceForEnpassant);
             }
         }
         return min;
     }
 
-    private int getMax(Board board, PieceColor playersColor, int depth, int alpha, int beta) {
-        int max = Integer.MIN_VALUE;
+    private double getMax(Board board, PieceColor playersColor, int depth, double alpha, double beta) {
+        double max = Double.MIN_VALUE;
         List<Point> piecesPositions = getPiecePositions(board, playersColor);
         for (Point piecePosition: piecesPositions) {
             Piece piece = getPiece(board, piecePosition);
             assert piece != null;
             for (Point destination : piece.getLegalMoves(board, piecePosition)) {
                 Piece pieceAtDestination = getPiece(board, destination);
-                Piece pieceForEnpassant = getPiece(board, new Point(destination.x, piecePosition.y));
                 if (hasKingAtDestination(board, destination)) {
                     return getBoardScore(board, playersColor);
                 }
-                board.updateTile(piecePosition, null);
-                board.updateTile(destination, piece);
-                if (wasEnpassant(board, piecePosition, destination, pieceAtDestination)) {
-                    board.updateTile(new Point(destination.x, piecePosition.y), null);
+                Piece pieceForEnpassant = getPiece(board, new Point(destination.x, piecePosition.y));
+                setBoard(board, piecePosition, piece, destination, pieceAtDestination);
+                double score = getMinMax(board, playersColor, depth + 1, alpha, beta);
+                resetBoard(board, piecePosition, piece, destination, pieceAtDestination, pieceForEnpassant);
+                max = Double.max(max, score);
+                alpha = Double.max(beta, max);
+                if (alpha >= beta) {
+                    return max;
                 }
-                int score = getMinMax(board, playersColor, depth + 1, alpha, beta);
-                max = Integer.max(max, score);
-                beta = Integer.max(beta, max);
-                if (alpha >= beta) return max;
-                board.updateTile(piecePosition, piece);
-                board.updateTile(destination, pieceAtDestination);
-                board.updateTile(new Point(destination.x, piecePosition.y), pieceForEnpassant);
             }
         }
         return max;
     }
 
-    private int getBoardScore(Board board, PieceColor currentPlayer) {
-        List<Point> playersPositions = new ArrayList<>();
-        List<Point> aiPositions = new ArrayList<>();
-        int score = getScoreByPieces(board, playersPositions, aiPositions);
-        int sumOfAiPossibleMoves = getPlayersPossibleMoves(board, aiPositions);
-        int sumOfPlayersPossibleMoves = getPlayersPossibleMoves(board, playersPositions);
-        score += ((sumOfAiPossibleMoves - sumOfPlayersPossibleMoves) / 50) * getMultiplier(currentPlayer);
+    private void setBoard(Board board, Point piecePosition, Piece piece, Point destination, Piece pieceAtDestination) {
+        board.updateTile(piecePosition, null);
+        board.updateTile(destination, piece);
+        if (wasEnpassant(board, piecePosition, destination, pieceAtDestination)) {
+            board.updateTile(new Point(destination.x, piecePosition.y), null);
+        }
+    }
+
+    private void resetBoard(Board board, Point piecePosition, Piece piece, Point destination, Piece pieceAtDestination, Piece pieceForEnpassant) {
+        board.updateTile(piecePosition, piece);
+        board.updateTile(destination, pieceAtDestination);
+        board.updateTile(new Point(destination.x, piecePosition.y), pieceForEnpassant);
+    }
+
+    private double getBoardScore(Board board, PieceColor currentPlayer) {
+        List<Point> playersPositions = getPiecePositions(board, getOtherPlayersColor(getPlayersColor()));
+        List<Point> aiPositions = getPiecePositions(board, getPlayersColor());
+        double score = getScoreByPieces(board, playersPositions, aiPositions);
+        int sumOfAiPossibleMoves = getPossibleMoves(board, aiPositions);
+        int sumOfPlayersPossibleMoves = getPossibleMoves(board, playersPositions);
+        score += ((double) (sumOfAiPossibleMoves - sumOfPlayersPossibleMoves) / 50d) * getMultiplier(currentPlayer);
         if(sumOfAiPossibleMoves == 0) {
             if(board.getKing(currentPlayer).isInCheck(board, 1)) {
-                return Integer.MAX_VALUE * -1 * getMultiplier(currentPlayer);
+                return Double.MAX_VALUE * -1 * getMultiplier(currentPlayer);
             } else {
                 return 0;
             }
@@ -160,7 +157,7 @@ public class Ai extends Player{
         return score;
     }
 
-    private int getPlayersPossibleMoves(Board board, List<Point> piecePositions) {
+    private int getPossibleMoves(Board board, List<Point> piecePositions) {
         int sumOfMoves = 0;
         for (Point piecePosition: piecePositions) {
             Piece piece = getPiece(board, piecePosition);
@@ -203,7 +200,7 @@ public class Ai extends Player{
         }
     }
 
-    private int getMultiplier(PieceColor currentPlayer) {
+    private double getMultiplier(PieceColor currentPlayer) {
         return (currentPlayer == getPlayersColor())? 1: -1;
     }
 

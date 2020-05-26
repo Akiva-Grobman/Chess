@@ -17,6 +17,7 @@ public abstract class ChessGame {
 
     public static final int SUM_OF_ROWS = 8;
     public static final int SUM_OF_COLUMNS = 8;
+    public static final CharSequence TIE_MESSAGE = "tie";
     protected Board backendBoard;
     protected GraphicBoard onScreenBoard;
     protected List<Move> moves;
@@ -99,23 +100,83 @@ public abstract class ChessGame {
             int STARTING_DEPTH = 1;
             return backendBoard.isLegalMove(positions.getOrigin(), positions.getDestination(), STARTING_DEPTH);
         } catch (IllegalMoveException | NoPieceFoundException e) {
-            String msg = e.getMessage();
             return false;
         }
     }
 
-    protected boolean gameIsWon(Point destination) {
-        try {
-            // no need to check for color(seeing as the move is legal)
-            return backendBoard.getPiece(destination) instanceof King;
-        } catch (NoPieceFoundException e) {
-            return false;
+    protected boolean gameIsOver(PieceColor playersColor, Point destination) {
+        List<Point> enemyPiecesPositions = getPiecePositions(getOtherPLayersColor(playersColor));
+        for (Point enemyPiecePosition: enemyPiecesPositions) {
+            Piece piece = getPiece(enemyPiecePosition);
+            assert piece != null;
+            if(piece.getLegalMoves(backendBoard, enemyPiecePosition).size() != 0) {
+                return false;
+            }
         }
+        return true;
     }
 
-    public void gameOver(PieceColor playersColor) {
+    protected boolean gameIsWon(PieceColor playersColor) {
+        Point enemyKingPosition = getEnemyKingPosition(playersColor);
+        List<Point> currentPlayersPiecePositions = getPiecePositions(playersColor);
+        for (Point piecePosition: currentPlayersPiecePositions) {
+            Piece piece = getPiece(piecePosition);
+            assert piece != null;
+            try {
+                if(piece.isLegalMove(piecePosition, enemyKingPosition, backendBoard)) {
+                    return true;
+                }
+            } catch (IllegalMoveException ignored) {}
+        }
+
+        return false;
+    }
+
+    private PieceColor getOtherPLayersColor(PieceColor playersColor) {
+        return (playersColor == PieceColor.BLACK)? PieceColor.WHITE: PieceColor.BLACK;
+    }
+
+    private Point getEnemyKingPosition(PieceColor playersColor) {
+        for (int y = 0; y < SUM_OF_ROWS; y++) {
+            for (int x = 0; x < SUM_OF_COLUMNS; x++) {
+                Piece piece = getPiece(new Point(x, y));
+                if (piece instanceof King && piece.getPieceColor() != playersColor) {
+                    return new Point(x, y);
+                }
+            }
+        }
+        throw new Error("no king found " + playersColor);
+    }
+
+    private List<Point> getPiecePositions(PieceColor playersColor) {
+        final int MAX_SUM_OF_PIECES = 16;
+        List<Point> pieces = new ArrayList<>();
+        for (int y = 0; y < SUM_OF_ROWS; y++) {
+            for (int x = 0; x < SUM_OF_COLUMNS; x++) {
+                if(pieces.size() == MAX_SUM_OF_PIECES) {
+                    return pieces;
+                }
+                Piece piece = getPiece(new Point(x, y));
+                if (piece != null && piece.getPieceColor() == playersColor) {
+                    pieces.add(new Point(x, y));
+                }
+            }
+        }
+        return pieces;
+    }
+
+    public void endGameWithWinner(PieceColor playersColor) {
         //todo make popup window
-        System.out.println("Game Over\n" + playersColor.toString().toLowerCase() + " Won!!!!!!!");
+        System.out.println("Game Over\n" + playersColor.toString().toLowerCase() + " player Won!!!!!!!");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ignored) {}
+        System.exit(0);
+    }
+
+    public void endGameWithoutWinner() {
+        //todo make popup window
+        System.out.println("stale mate :(");
         System.exit(0);
     }
 
