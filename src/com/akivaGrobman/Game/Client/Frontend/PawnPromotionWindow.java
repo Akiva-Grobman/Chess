@@ -32,22 +32,25 @@ public class PawnPromotionWindow {
 
     private JButton[] getButtons(PieceColor playersColor) {
         JButton[] buttons = new JButton[4];
-        try {
-            buttons[QUEEN_POSITION] = new JButton(new ImageIcon(getImageFromFileName(getUrl(playersColor, PieceType.QUEEN))));
-            buttons[ROOK_POSITION] = new JButton(new ImageIcon(getImageFromFileName(getUrl(playersColor, PieceType.ROOK))));
-            buttons[KNIGHT_POSITION] = new JButton(new ImageIcon(getImageFromFileName(getUrl(playersColor, PieceType.KNIGHT))));
-            buttons[BISHOP_POSITION] = new JButton(new ImageIcon(getImageFromFileName(getUrl(playersColor, PieceType.BISHOP))));
-        } catch (IOException e) {
-            buttons[QUEEN_POSITION] = new JButton("Queen");
-            buttons[ROOK_POSITION] = new JButton("Rook");
-            buttons[KNIGHT_POSITION] = new JButton("Knight");
-            buttons[BISHOP_POSITION] = new JButton("Bishop");
-        }
+        buttons[QUEEN_POSITION] = new JButton(getImage(playersColor, PieceType.QUEEN));
+        buttons[ROOK_POSITION] = new JButton(getImage(playersColor, PieceType.ROOK));
+        buttons[KNIGHT_POSITION] = new JButton(getImage(playersColor, PieceType.KNIGHT));
+        buttons[BISHOP_POSITION] = new JButton(getImage(playersColor, PieceType.BISHOP));
         for (JButton button :buttons) {
             button.setPreferredSize(new Dimension(GraphicBoard.TILE_SIZE, GraphicBoard.TILE_SIZE));
         }
         addListeners(buttons);
         return buttons;
+    }
+
+    private ImageIcon getImage(PieceColor pieceColor, PieceType pieceType) {
+        try {
+            Image image = getImageFromFileName(getUrl(pieceColor, pieceType));
+            image.getScaledInstance(GraphicBoard.TILE_SIZE, GraphicBoard.TILE_SIZE, Image.SCALE_DEFAULT);
+            return new ImageIcon(image);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     private void addListeners(JButton[] buttons) {

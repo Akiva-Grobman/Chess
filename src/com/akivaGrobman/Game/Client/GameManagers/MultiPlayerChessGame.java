@@ -3,6 +3,7 @@ package com.akivaGrobman.Game.Client.GameManagers;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Board.Board;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.Pieces.*;
 import com.akivaGrobman.Game.Client.Backend.GameObjects.PromotionMessage;
+import com.akivaGrobman.Game.Client.Backend.Players.Ai;
 import com.akivaGrobman.Game.Client.Backend.Players.Enemy;
 import com.akivaGrobman.Game.Client.Backend.Players.Player;
 import com.akivaGrobman.Game.Client.Backend.Players.Positions;
@@ -25,11 +26,14 @@ public class MultiPlayerChessGame extends ChessGame {
         onScreenBoard = new GraphicBoard(backendBoard, this);
         if (player.getPlayersColor() == PieceColor.BLACK) {
             makeEnemyMove();
+        } else {
+            ((Ai)player).makeAMove(backendBoard);
         }
     }
 
     private void setPlayers(PieceColor playersColor) {
-        player = new Player(playersColor);
+//        player = new Player(playersColor);
+        player = new Ai(playersColor, this);
         this.enemy.setContext(this);
         player.setContext(this);
         if(player.getPlayersColor() == PieceColor.WHITE) {
@@ -73,6 +77,8 @@ public class MultiPlayerChessGame extends ChessGame {
             if(isLocalPlayer(player)) {
                 Thread messageSender = new Thread(this::makeEnemyMove);
                 messageSender.start();
+            } else {
+                ((Ai) this.player).makeAMove(backendBoard);
             }
         }
     }
@@ -80,9 +86,6 @@ public class MultiPlayerChessGame extends ChessGame {
     private void handleSpecialMoves(Positions positions) {
         updateEnpassantData(positions);
         isPromoting = false;
-        /*Point destination = moves.get(moves.size() - 1).getPositions().getDestination();
-        Point origin = moves.get(moves.size() - 1).getPositions().getOrigin();
-        Piece piece = moves.get(moves.size() - 1).getPieceAtDestination();*/
         if(wasEnpassant(backendBoard, moves.get(moves.size() - 1).getPositions().getOrigin(), moves.get(moves.size() - 1).getPositions().getDestination(), moves.get(moves.size() - 1).getPieceAtDestination())) {
             backendBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null);
             onScreenBoard.updateTile(new Point(positions.getDestination().x, positions.getOrigin().y), null, null);
